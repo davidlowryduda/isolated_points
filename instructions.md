@@ -1,6 +1,6 @@
 Data files required:
 
-1) gon_data.m (Gonality data for X1(N) when N<=300)
+1) gon_data.m (Gonality data for $X_1(N)$ when $N\geq 300$)
 2) Curves.txt (file containing the list of representative curves for
    j-invariants in LMFDB which do not correspond to adelic genus 0 and do not have
    CM)
@@ -37,7 +37,7 @@ coefficient vector execute the following commands
 
 To run for a list of curves in the file Curves.txt execute the following command
 
-2') parallel --joblog JOB_LOG_FILE_NAME --shuf --timeout TIMEOUT --eta -jNUMBER_OF_CORES magma -b seq:={} NotSporadic.m ::: {LINE_NUMBERS_OF_INTEREST} >> OUTPUT_FILE_NAME.out
+2) parallel --joblog JOB_LOG_FILE_NAME --shuf --timeout TIMEOUT --eta -jNUMBER_OF_CORES magma -b seq:={} NotSporadic.m ::: {LINE_NUMBERS_OF_INTEREST} >> OUTPUT_FILE_NAME.out
 
 Details of the last command: 
 
