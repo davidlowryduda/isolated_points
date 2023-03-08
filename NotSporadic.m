@@ -91,14 +91,14 @@ This program was written during COUNT at CIRM.
 
 //Refuting the bad levels and degrees based on gonality data (see gon_data.m).
 NotSporadicGon := function(a);
-    E:= a[1];
+    E := a[1];
     superbad := a[2];
     special_care := {};
     for s in superbad do  
         if s[1] le 300 then
-        if s[2] lt gon_dat[s[1]] then 
-            Include(~special_care, s);
-        end if;
+            if s[2] lt gon_dat[s[1]] then 
+                Include(~special_care, s);
+            end if;
         else 
             Include(~special_care,s);
         end if;
@@ -108,29 +108,29 @@ end function;
 
 
 NonSurjectivePrimes:=function(G)
-        m:=Modulus(BaseRing(G));
-        return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
+        m := Modulus(BaseRing(G));
+        return [p : p in PrimeFactors(m) | #ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
 end function;
 
 
 //Level reduction from the output of Zywina's algorithm
 ReducedLevel:=function(G)
-        m:=Modulus(BaseRing(G));
-        NS:=Set(NonSurjectivePrimes(G));
-        sE:={2,3} join NS;
-        m0:=&*[p^Valuation(m,p):p in sE];
-        G:=ChangeRing(G,Integers(m0));
-        for p in PrimeFactors(m0) do
-                while Valuation(m0,p) gt 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq p^4 do
-                        m0:=m0 div p;
-                        G:=ChangeRing(G,Integers(m0));
-                end while;
-                if not p in NS and Valuation(m0,p) eq 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then
-                        m0:=m0 div p;
-                        G:=ChangeRing(G,Integers(m0));
-                end if;
-        end for;
-        return G,m0;
+    m:=Modulus(BaseRing(G));
+    NS:=Set(NonSurjectivePrimes(G));
+    sE:={2,3} join NS;
+    m0:=&*[p^Valuation(m,p):p in sE];
+    G:=ChangeRing(G,Integers(m0));
+    for p in PrimeFactors(m0) do
+        while Valuation(m0,p) gt 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq p^4 do
+            m0:=m0 div p;
+            G:=ChangeRing(G,Integers(m0));
+        end while;
+        if not p in NS and Valuation(m0,p) eq 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then
+            m0:=m0 div p;
+            G:=ChangeRing(G,Integers(m0));
+        end if;
+    end for;
+    return G,m0;
 end function;
 
 
@@ -148,7 +148,7 @@ MinDegreeOfPoint:=function(G)
     H:=sub<GL(2,Integers(m))|G,-G!1>;
     orb:=Orbits(H);
     sorb:=Sort(orb,func<o1,o2|#o1-#o2>);
-    s2:=[x: x in sorb| VectorOrder(x[1]) eq m];
+    s2 := [x : x in sorb | VectorOrder(x[1]) eq m];
     return (#s2[1]) div 2;
 end function;
 
@@ -165,36 +165,35 @@ NotSporadic:=function(a);
 	good:=[];
 	bad:=[];
 	for b in Divisors(k) do
-	if b gt 12 then
-			ww:=MinDegreeOfPoint(ChangeRing(G0t,Integers(b)));
+        if b gt 12 then
+            ww:=MinDegreeOfPoint(ChangeRing(G0t,Integers(b)));
             //if the min degree >= g+1 then the dimension of the Reimann-Roch
             //space associated to the point of min degree is at least 2 hence it
             //is not sporadic.
-			if  ww ge (Genus(Gamma1(b))+1) then 
-				Append(~good,<b, ww>);
-			else 
-            //otherwise we need to check if gonality/degree reduction 
-            //arguments can be used
-			Append(~bad,<b, ww>);
-			end if;
-	end if;
-end for;
-remove:={};
+            if ww ge (Genus(Gamma1(b))+1) then 
+                Append(~good,<b, ww>);
+            else 
+                //otherwise we need to check if gonality/degree reduction 
+                //arguments can be used
+                Append(~bad,<b, ww>);
+            end if;
+        end if;
+    end for;
+    remove:={};
 
-//Refuting levels and degrees based on the level reduction theorem of BELOV.
-//If j is a sporadic point of degree d in level m then it becomes a point of
-//d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.
+    //Refuting levels and degrees based on the level reduction theorem of BELOV.
+    //If j is a sporadic point of degree d in level m then it becomes a point of
+    //d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.
 
-for x in bad do 
-	for y in good do
-		if IsDivisibleBy(x[1],y[1]) then
-			b:=x[1] div y[1];
-			
-			deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
-			if deg eq x[2] div y[2] then Include(~remove,x); end if;
-		end if;
-	end for;
-end for;
+    for x in bad do 
+        for y in good do
+            if IsDivisibleBy(x[1],y[1]) then
+                b:=x[1] div y[1];
+                deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
+                if deg eq x[2] div y[2] then Include(~remove,x); end if;
+            end if;
+        end for;
+    end for;
 
     bad := SequenceToSet(bad);
 
@@ -204,12 +203,12 @@ end for;
         bad := bad diff remove;
         r := NotSporadicGon(<a, bad>);
         if r[2] ne 0 then 
-            return [*jInvariant(E), a, false, r[3]*];
-           end if;
-           return [*jInvariant(E), a, true*];
-        else 
-       return [*jInvariant(E), a,true*];
-      end if;
+            return [* jInvariant(E), a, false, r[3] *];
+        end if;
+        return [* jInvariant(E), a, true *];
+    else 
+        return [* jInvariant(E), a, true *];
+    end if;
 end function;
 
 
