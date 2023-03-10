@@ -1,0 +1,77 @@
+\documentclass[11pt,reqno]{amsart}
+% We ain't got no time for eq. nums. on the left
+
+% Enable UTF-8 encodings for input, to enter é instead of \'{e}.
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath,amsthm,amssymb}
+
+% Presented to you by Technicolor, and the number 3
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage[usenames, dvipsnames]{xcolor}
+
+% For full page usage, shockingly
+%\usepackage{fullpage}
+
+% Don't worry about starred environments. YOU are the star!
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+
+% For ease in writing labels and references
+%\usepackage{showkeys}
+\usepackage[square,sort,comma,numbers]{natbib}
+
+% For pretty hyperlinks
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+\hypersetup{colorlinks,breaklinks,
+  linkcolor=darkblue,urlcolor=darkblue,
+anchorcolor=darkblue,citecolor=darkblue}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+
+%\numberwithin{equation}{section}
+
+% Nongross real and imaginary parts
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\Re}{\operatorname{Re}}
+
+\newcommand{\davidnote}[1]{\marginpar{\footnotesize{\textcolor{Plum}{David: #1}}}}
+
+% Don't have subsections appear in TOC
+%\setcounter{tocdepth}{1}
+
+\title{title}
+\author{DLD}
+\date{\today}
+%% Grant Info
+% \thanks{This work was supported by the Simons Collaboration in Arithmetic
+% Geometry, Number Theory, and Computation via the Simons Foundation grant
+% 546235.}
+
+\begin{document}
+
+\maketitle
+
+Content
+
+\vspace{20 mm}
+\bibliographystyle{alpha}
+\bibliography{bibliofile}
+
+\end{document}
