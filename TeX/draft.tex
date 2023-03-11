@@ -12,7 +12,7 @@
 \usepackage[usenames, dvipsnames]{xcolor}
 
 % For full page usage, shockingly
-%\usepackage{fullpage}
+\usepackage{fullpage}
 
 % Don't worry about starred environments. YOU are the star!
 \usepackage{mathtools}
@@ -50,25 +50,67 @@ anchorcolor=darkblue,citecolor=darkblue}
 % Nongross real and imaginary parts
 \renewcommand{\Im}{\operatorname{Im}}
 \renewcommand{\Re}{\operatorname{Re}}
+\newcommand{\Q}{\mathbb{Q}}
 
 \newcommand{\davidnote}[1]{\marginpar{\footnotesize{\textcolor{Plum}{David: #1}}}}
 
 % Don't have subsections appear in TOC
 %\setcounter{tocdepth}{1}
 
-\title{title}
+\title{Towards a Classification of Sporadic $j$-invariants}
 \input{author_info.tex}
 \date{\today}
 
 \begin{document}
-
+\begin{abstract}
+We develop an algorithm to test whether a non-CM elliptic curve $E/\Q$ gives rise to a sporadic point of any degree on any modular curve of the form $X_1(N)$. This builds on prior work of Zywina which gives a method for computing the image of the adelic Galois representation associated to $E$. Running this algorithm on all elliptic curves presetly in the LMFDB yields strong evidence for the fact that $E$ gives rise to a sporadic point if and only if $j(E)=-140625/8$ or $-9317$.
+    \end{abstract}
 \maketitle
 
 
-[To be written\ldots]
+The modular curve $X_1(N)$ is an algebraic curve over $\Q$ whose non-cuspidal points parametrize elliptic curves with a distinguished point of order $N$. We are interested in studying \textbf{sporadic} points $x \in X_1(N)$, which are points for which there are only finitely many points on $X_1(N)$ of degree at most $\deg(x)$. Hence a non-cuspidal sporadic point corresponds to an elliptic curve with a point of order $N$ in ``usually low degree." Elliptic curves with complex multiplication (CM) provide many natural examples of sporadic points, as the extra endomorphisms of a CM elliptic curve give constraints on the size of the image of the associated Galois representation. Indeed, there exist sporadic CM points on $X_1(N)$ for all $N\geq 721$; see \cite[Theorem 8.2]{CGPS2022}.
+
+Non-CM sporadic points on $X_1(N)$ remain much more mysterious. One recent line of investigation has focused on the class of sporadic points associated to non-CM elliptic curves with $j$-invariant in $\Q$. To date, there are only two known examples of such curves, up to isomorphism over $\overline{\Q}$:
+\begin{itemize}
+\item The elliptic curve with $j$-invariant $-140625/8$ corresponds to points of degree 3 on $X_1(21)$. As there are only finitely many points of degree at most 3 on this modular curve, these are sporadic. This example was first discovered by Najman \cite{najman16}. In fact, this is the unique elliptic curve giving a sporadic point of degree at most 3 on \emph{any} modular curve of the form $X_1(N)$, as shown in recent work of Derickx, Etropolski, van Hoeij, Morrow, and Zureick-Brown \cite{DEvHMZB2021}.
+\item The elliptic curve with $j$-invariant $-9317$ gives a degree 6 point on $X_1(37)$, as in work of van Hoeij \cite{vanHoeij}. Since this degree is less than half the $\Q$-gonality of $X_1(37)$, as computed in \cite{DerickxVanHoeij2014}, the point is necessarily sporadic by work of Frey \cite{frey}.
+\end{itemize}
+
+We say these are \textbf{sporadic $j$-invariants} since they are the image of a sporadic point on $X_1(N)$. We have good reason to believe that the collection of all sporadic $j$-invariants in $\Q$ is finite.
+\begin{theorem}[Bourdon, Ejder, Liu, Odumodu, Viray \cite{BELOV}]
+Suppose there exists a constant $C$ such that the mod $\ell$ Galois representation of any non-CM elliptic curve over $\Q$ is surjective for primes $\ell>C$. Then there are only finitely many sporadic $j$-invariants in $\Q$.
+\end{theorem}
+
+\noindent The assumption about Galois representations stated in Theorem 1 was originally asked as a question by Serre \cite{serre72}, and it has now been formally conjectured by both Sutherland \cite{sutherland} and Zywina \cite{ZywinaImages}. It is even suspected that $C=37$. Theorem 1 is known unconditionally for points of odd degree \cite{OddDeg}: indeed, $j=-140625/8$ is the only non-CM $j$-invariant in $\Q$ giving a sporadic point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers. 
+
+In \cite{BELOV}, they ask whether one can explicitly determine the set of sporadic $j$-invariants in $\Q$, and this is the motivation for the present work. In particular, we conjecture that the two non-CM sporadic $j$-invariants identified above are in fact the \emph{only} sporadic $j$-invariants in $\Q$ associated to non-CM elliptic curves. 
+
+\begin{conjecture}
+If $x\in X_1(N)$ is a sporadic point with $j(x) \in \Q$, then $j(x)=-140625/8$ or $-9317$ or is one of the 13 CM $j$-invariants in $\Q$. 
+\end{conjecture}
+
+\noindent Since any CM elliptic curve is known to produce sproadic points on infinitely many modular curves of the form $X_1(N)$, it follows conversely that every $j$-invariant in this set is sporadic.
+
+The basis for this conjecture is the following result.
+
+\begin{theorem}
+Let $x=[E,P]\in X_1(N)$ be a non-CM sporadic point with $j(E) \in \Q$. Fix an equation of $E/\Q$, and let $N_E$ denote its conductor. Suppose
+\begin{itemize}
+\item$N_E \leq 500,000$,
+\item $N_E$ is only divisible prime primes $p \leq 7$, or
+\item $N_E=p \leq 200,000,000$ for some prime number $p$.
+\end{itemize}
+Then $j(E) =-140625/8$ or $-9317$.
+\end{theorem}
+
+Since both known examples of sporadic points on $X_1(N)$ associated to non-CM rational $j$-invariants lie above exceptional rational points on $X_0(N)$ -- that is, they correspond to rational points in cases where the set of all such rational points is finite -- is natural to ask whether this construction might yield other examples of sporadic points. Our work shows that the answer is no.
+\begin{corollary}
+Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve corresponding to a rational point on $X_0(N)$. If there exists a sporadic point $x \in X_1(N')$ with $j(x)=j(E)$, then $j(E) =-140625/8$ or $-9317$.
+\end{corollary}
 
 
-\nocite{bourdon2021sporadic}
+
+
 \vspace{20 mm}
 \bibliographystyle{alpha}
 \bibliography{bibfile}
