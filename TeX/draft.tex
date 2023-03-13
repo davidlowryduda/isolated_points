@@ -44,13 +44,60 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{algorithm}[theorem]{Algorithm}
 
 %\numberwithin{equation}{section}
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\renewcommand{\theta}{\vartheta}
+
+\renewcommand\labelenumi{(\theenumi)}
+\renewcommand{\theenumi}{\roman{enumi}}
+
+%%% Basic Macro%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ol#1{\overline{#1}}% 		overline
+\def\wh#1{\widehat{#1}}% 	wide hat
+\def\wt#1{\widetilde{#1}}% 	wide tilde
+\def\ul#1{\underline{#1}}% 	underline
+\def\smcompactification#1{\ol{#1}}% 	wide tilde
+%%% Define \Alphabet&\endpiece------------------------------------------------------------------------
+\def\Alphabet{A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z}%  Capitalized Alphabet
+\def\alphabet{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z}%	lowercase alphabet
+\def\endpiece{xxx}%									marks end of list
+%%% Define \makeAlphabet------------------------------------------------------------------------
+\def\makeAlphabet[#1]{\expandafter\makeA#1,xxx,}%		Ex. \makeAlphabet[A,B]
+\def\makealphabet[#1]{\expandafter\makea#1,xxx,}%		Ex. \makealphabet[c,d]
+\def\makeA#1,{\def\temp{#1}\ifx\temp\endpiece\else%
+	\mkbb{#1}\mkfrak{#1}\mkbf{#1}\mkcal{#1}\mkscr{#1}\mkbs{#1}\expandafter\makeA\fi}%
+\def\makea#1,{\def\temp{#1}\ifx\temp\endpiece\else\mkfrak{#1}\mkbf{#1}\mkbs{#1}\expandafter\makea\fi}%
+\def\mkbb#1{\expandafter\def\csname bb#1\endcsname{\mathbb{#1}}}%      Define bb
+\def\mkfrak#1{\expandafter\def\csname fr#1\endcsname{\mathfrak{#1}}}%    Define frak
+\def\mkbf#1{\expandafter\def\csname b#1\endcsname{\mathbf{#1}}}%           Define bold letters
+\def\mkcal#1{\expandafter\def\csname c#1\endcsname{\mathcal{#1}}}%       Define calligraphy
+\def\mkscr#1{\expandafter\def\csname s#1\endcsname{\mathscr{#1}}}%       Define script
+\def\mkbs#1{\expandafter\def\csname bs#1\endcsname{{\boldsymbol{#1}}}}%       Define bold symbol
+%%% Define \makeop-------------------------------------------------------------------------------------------------------
+\def\makeop[#1]{\xmakeop#1,xxx,}%					Ex. \makeop[Hom,Spec]
+\def\mkop#1{\expandafter\def\csname #1\endcsname{{\mathrm{#1}}}} %
+\def\xmakeop#1,{\def\temp{#1}\ifx\temp\endpiece\else\mkop{#1}\expandafter\xmakeop\fi}%
+\def\makeup[#1]{\xmakeup#1,xxx,}%					Ex. \makeop[Hom,Spec]
+\def\mkup#1{\expandafter\def\csname #1\endcsname{{\mathrm{#1}\,}}} %
+\def\xmakeup#1,{\def\temp{#1}\ifx\temp\endpiece\else\mkup{#1}\expandafter\xmakeup\fi}%
+%%% Initialize------------------------------------------------------------------------------------------------------------------
+% Define Alphabets.  Alphabets stored in \Alphabet
+\makeAlphabet[\Alphabet]%				Define bb, frak, bf, cal for Capitalized Alphabet
+\makealphabet[\alphabet]%  				Define frak and bf for uncapitalized alphabet
+% Define Operators.  Separate Items by using comma.
+\makeop[Hom,Aut,End,Mor,SL,GL,H,ord,Irr,Ell,Gal,Cl,Pic,NS,Gal,d,Re,Im,res,Symb,Ev,Char,Ram,SU]
+% 		Homs
+\makeup[Spec,Proj,id,dR,new,old,AJ,tr,dim,ker,im,coker]
 
 % Nongross real and imaginary parts
 \renewcommand{\Im}{\operatorname{Im}}
 \renewcommand{\Re}{\operatorname{Re}}
-\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Q}{\bQ}
+\newcommand{\Z}{\bZ}
 
 \newcommand{\davidnote}[1]{\marginpar{\footnotesize{\textcolor{Plum}{David: #1}}}}
 
@@ -108,7 +155,17 @@ Since both known examples of sporadic points on $X_1(N)$ associated to non-CM ra
 Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve corresponding to a rational point on $X_0(N)$. If there exists a sporadic point $x \in X_1(N')$ with $j(x)=j(E)$, then $j(E) =-140625/8$ or $-9317$.
 \end{corollary}
 
+\section{Proving that a point is not sporadic}
 
+\begin{algorithm}
+\textbf{Input:} A non-CM $j$-invariant $j = j(E) \in \Q$.
+
+\textbf{Output:} \textsc{False} if $j$ is not a sporadic $j$-invariant.
+
+\begin{enumerate}
+    \item Compute the adelic image of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $M$ together with a subgroup $G$ of $\GL_2(\Z/M\Z)$.
+\end{enumerate}
+\end{algorithm}
 
 
 \vspace{20 mm}
