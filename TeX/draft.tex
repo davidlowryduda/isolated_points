@@ -98,7 +98,7 @@ anchorcolor=darkblue,citecolor=darkblue}
 \renewcommand{\Re}{\operatorname{Re}}
 \newcommand{\Q}{\bQ}
 \newcommand{\Z}{\bZ}
-
+\newcommand{\filip}[1]{{\color{cyan} \textsf{$\sun\sun\sun$ Filip: [#1]}}}
 \newcommand{\davidnote}[1]{\marginpar{\footnotesize{\textcolor{Plum}{David: #1}}}}
 
 % Don't have subsections appear in TOC
@@ -143,9 +143,9 @@ The basis for this conjecture is the following result.
 \begin{theorem}
 Let $x=[E,P]\in X_1(N)$ be a non-CM sporadic point with $j(E) \in \Q$. Fix an equation of $E/\Q$, and let $N_E$ denote its conductor. Suppose
 \begin{itemize}
-\item$N_E \leq 500,000$,
+\item$N_E \leq 500{,}000$,
 \item $N_E$ is only divisible prime primes $p \leq 7$, or
-\item $N_E=p \leq 200,000,000$ for some prime number $p$.
+\item $N_E=p \leq 200{,}000{,}000$ for some prime number $p$.
 \end{itemize}
 Then $j(E) =-140625/8$ or $-9317$.
 \end{theorem}
@@ -163,9 +163,15 @@ Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve c
 \textbf{Output:} \textsc{False} if $j$ is not a sporadic $j$-invariant.
 
 \begin{enumerate}
-    \item Compute the adelic image of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $M$ together with a subgroup $G$ of $\GL_2(\Z/M\Z)$.
+    \item Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $M$ together with a subgroup $G$ of $\GL_2(\Z/M\Z)$.
+
+    \item Reduce level.
+
+    \item For all $12 < b \mid M$ compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$. (For that, compute the orbits of $\langle G, -G \rangle \mod b$ on $\bP^1(\Z/b\Z)$. Sort the orbits by size. Return ) \filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
 \end{enumerate}
 \end{algorithm}
+
+(In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/M\Z)$.)
 
 
 \vspace{20 mm}
