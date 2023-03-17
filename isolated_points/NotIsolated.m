@@ -136,7 +136,7 @@ end function;
 
 
 //main function to check if a j invariant is sporadic.
-NotIsolated:=function(a);
+NotIsolated:=function(a, j);
 	E:=EllipticCurve(a);
 	G,n,S:=FindOpenImage(path, E);
 	G0:=ReducedLevel(G);
@@ -183,9 +183,9 @@ end for;
     //bad but not in remove can be handled using gonality arguments.
     if bad ne remove then 
         supbad := bad diff remove;
-        return [*jInvariant(E), a, false, supbad*];
+        return [*j, a, false, supbad*]; //return j-invariant we already have
     end if;
-    return [*jInvariant(E), a, true*];    
+    return [*j, a, true*];    
 end function;
 
 
@@ -196,9 +196,12 @@ if assigned seq then
     SetAutoColumns(false);
     seq := eval seq;
     inputs := Split(Read("isolated_refined.txt"), "\n");
-    input := eval inputs[seq];
-    output := NotIsolated(input);
-    output := [*input*] cat output;
+    input := inputs[seq];
+    i := Index(s, ")");
+    jinv := s[1..18]; //construct j-invariant
+    ainv := eval  s[i+2 .. #s];
+    output := NotIsolated(ainv, jinv);
+    output := [*ainv*] cat output;
     print Join([Sprint(elt) : elt in output], ":");
     exit;
 end if;
