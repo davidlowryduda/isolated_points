@@ -197,9 +197,9 @@ if assigned seq then
     seq := eval seq;
     inputs := Split(Read("isolated_refined.txt"), "\n");
     input := inputs[seq];
-    i := Index(s, ")");
-    jinv := s[1..18]; //construct j-invariant
-    ainv := eval  s[i+2 .. #s];
+    i := Index(input, ")");
+    jinv := input[1..18]; //construct j-invariant
+    ainv := eval  input[i+2 .. #input];
     output := NotIsolated(ainv, jinv);
     output := [*ainv*] cat output;
     print Join([Sprint(elt) : elt in output], ":");
