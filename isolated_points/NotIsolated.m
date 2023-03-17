@@ -1,6 +1,6 @@
-AttachSpec("~/ModularCurves/equations/equations.spec");//change if you have 
+AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");//change if you have 
                                                        //different path to the spec file
-path := OpenImageContext("~/ModularCurves/equations/OpenImage/data-files"); //change if you have 
+path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files"); //change if you have 
                                                                             //different path to 
                                                                             //data-files.
 
@@ -195,7 +195,7 @@ if assigned seq then
     SetColumns(0);
     SetAutoColumns(false);
     seq := eval seq;
-    inputs := Split(Read("Curves.txt"), "\n");
+    inputs := Split(Read("isolated_refined.txt"), "\n");
     input := eval inputs[seq];
     output := NotIsolated(input);
     output := [*input*] cat output;
