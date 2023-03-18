@@ -201,7 +201,6 @@ if assigned seq then
     jinv := input[1..i]; //construct j-invariant
     ainv := eval  input[i+2 .. #input];
     output := NotIsolated(ainv, jinv);
-    output := [*ainv*] cat output;
     print Join([Sprint(elt) : elt in output], ":");
     exit;
 end if;
