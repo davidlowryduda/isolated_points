@@ -198,7 +198,7 @@ if assigned seq then
     inputs := Split(Read("isolated_refined.txt"), "\n");
     input := inputs[seq];
     i := Index(input, ")");
-    jinv := input[1..18]; //construct j-invariant
+    jinv := input[1..i]; //construct j-invariant
     ainv := eval  input[i+2 .. #input];
     output := NotIsolated(ainv, jinv);
     output := [*ainv*] cat output;
