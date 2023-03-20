@@ -136,16 +136,18 @@ In \cite{BELOV}, they ask whether one can explicitly determine the set of sporad
 If $x\in X_1(N)$ is a sporadic point with $j(x) \in \Q$, then $j(x)=-140625/8$ or $-9317$ or is one of the 13 CM $j$-invariants in $\Q$. 
 \end{conjecture}
 
-\noindent Since any CM elliptic curve is known to produce sproadic points on infinitely many modular curves of the form $X_1(N)$, it follows conversely that every $j$-invariant in this set is sporadic.
+\noindent Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$, it follows conversely that every $j$-invariant in this set is sporadic.
 
 The basis for this conjecture is the following result.
 
 \begin{theorem}
-Let $x=[E,P]\in X_1(N)$ be a non-CM sporadic point with $j(E) \in \Q$. Fix an equation of $E/\Q$, and let $N_E$ denote its conductor. Suppose
+Let $x=[E,P]\in X_1(N)$ be a non-CM sporadic point with $j(E) \in \Q$.
+Fix an equation for $E/\Q$ and let $N_E$ denote its conductor.
+Suppose that one of the following holds:
 \begin{itemize}
-\item$N_E \leq 500{,}000$,
-\item $N_E$ is only divisible prime primes $p \leq 7$, or
-\item $N_E=p \leq 200{,}000{,}000$ for some prime number $p$.
+    \item$N_E \leq 500{,}000$,
+    \item $N_E$ is only divisible by primes $p \leq 7$, or
+    \item $N_E=p \leq 200{,}000{,}000$ for some prime number $p$.
 \end{itemize}
 Then $j(E) =-140625/8$ or $-9317$.
 \end{theorem}
@@ -167,7 +169,8 @@ Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve c
 
     \item Reduce level.
 
-    \item For all $12 < b \mid M$ compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$. (For that, compute the orbits of $\langle G, -G \rangle \mod b$ on $\bP^1(\Z/b\Z)$. Sort the orbits by size. Return ) \filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
+    \item For all $12 < b \mid M$ compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$. (For that, compute the orbits of $\langle G, -G \rangle \mod b$ on the elements of $(\Z/b\Z)^2$ of order $b$. Sort the orbits by size. Return ) 
+    %\filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
 \end{enumerate}
 \end{algorithm}
 
