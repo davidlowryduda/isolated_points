@@ -12,7 +12,10 @@ for name in data_files:
             bad_curves.append(line)
     file.close()
 
-fileout = open('potentially_isolated.txt', 'w')
-for curve in bad_curves:
-    fileout.write(curve)
-fileout.close()
+if bad_curves:
+    fileout = open('potentially_isolated.txt', 'w')
+    for curve in bad_curves:
+        fileout.write(curve)
+    fileout.close()
+else:
+    print("No potentially isolated curves were found.")
