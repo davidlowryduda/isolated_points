@@ -1,0 +1,433 @@
+\documentclass[11pt,reqno]{amsart}
+% We ain't got no time for eq. nums. on the left
+
+% Enable UTF-8 encodings for input, to enter é instead of \'{e}.
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath,amsthm,amssymb}
+
+% Presented to you by Technicolor, and the number 3
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage[usenames, dvipsnames]{xcolor}
+
+% For full page usage, shockingly
+\usepackage{fullpage}
+
+% Don't worry about starred environments. YOU are the star!
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+
+% For ease in writing labels and references
+%\usepackage{showkeys}
+\usepackage[square,sort,comma,numbers]{natbib}
+
+% For pretty hyperlinks
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+\hypersetup{colorlinks,breaklinks,
+  linkcolor=darkblue,urlcolor=darkblue,
+anchorcolor=darkblue,citecolor=darkblue}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+
+%\numberwithin{equation}{section}
+
+% Nongross real and imaginary parts
+\renewcommand{\Im}{\operatorname{Im}}
+\renewcommand{\Re}{\operatorname{Re}}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator*{\Res}{Res}
+
+\newcommand{\DLD}[1]{\textcolor{Plum}{DLD:\@ #1}}
+
+\usepackage{minted}
+\usemintedstyle{lovelace}
+\definecolor{mintbf}{gray}{0.95}
+\setminted{bgcolor=mintbf}
+
+% Don't have subsections appear in TOC
+%\setcounter{tocdepth}{1}
+
+% This uses a hacky but reasonable parser that is not actually public
+% \renewcommand{\MintedPygmentize}{./magma.py}
+
+\title{Meeting notes}
+\author{DLD}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+We (Abbey, Travis, David, Sachi, and Himanshu) had a meeting
+from today (29 March 2023) where we talked about
+\texttt{NotIsolated.m}.
+I annotated our code with notes from this meeting, which I show
+here.
+
+\vspace*{0.2cm}
+\begin{quote}
+  Pseudocode is the sort of code that compiles on a human, not on a computer.
+
+  --- Travis
+\end{quote}
+
+This is all a description of \texttt{NotIsolated.m}. Note that this does
+not include Filip's more recent enhancements --- that remains to be explained.
+
+\section{\texttt{NotIsolated} function}\label{sec:notisolated}
+
+The main function is \texttt{NotIsolated}, which is how we frame our code
+examination.
+
+\begin{minted}[mathescape, linenos, samepage]{c}
+/* First half of NotIsolated function, which determines if j
+ * can't give isolated points. */
+NotIsolated:=function(a, j);             // #1
+    E:=EllipticCurve(a);
+    G,n,S:=FindOpenImage(path, E);       // #2
+    G0:=ReducedLevel(G);                 // #3 (Things to be proved!)
+    G0t := sub<
+      GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]
+    >;                                   // #4
+    k:=#BaseRing(G0t);
+    good:=[];                            // "not isolated"
+    bad:=[];                             // "potentially isolated"
+    for b in Divisors(k) do
+        if b gt 12 then                  // #5
+            ww:=MinDegreeOfPoint(ChangeRing(G0t,Integers(b)));
+                                         // #6
+            // if the min degree >= g+1 then the dimension of the Reimann-Roch
+            // space associated to the point of min degree is at least 2 hence it
+            // is not sporadic.
+            if  ww ge (Genus(Gamma1(b))+1) then
+                Append(~good,<b, ww>);   // #7
+            else
+                // otherwise we need to check if gonality/degree reduction
+                // arguments can be used
+                Append(~bad,<b, ww>);
+            end if;
+        end if;
+    end for;
+\end{minted}
+
+
+Along the side, I've indicated several annotation points. We address these in
+turn. The numbers of each point in the following list align with an annotation
+point in the code above.
+
+\begin{enumerate}
+  \item The function \texttt{NotIsolated} takes the coefficients \texttt{a =
+  \{a\_1, \ldots, a\_6\}} of the Weierstrass equation of an elliptic curve and a
+  $j$-invariant \texttt{j}. Ultimately, this function will try to show that $j$
+  doesn't give an isolated point, and will either report that it was successful
+  --- or that it couldn't show that $j$ doesn't give isolated points.
+
+  Note the double negatives here. The algorithm confirms that an elliptic curve
+  $E$ with $j$-invariant $j(E)$ \emph{doesn't} give sporadic points, or fails
+  and gives partial information.
+
+  \item \texttt{FindOpenImage} is Zywina's code. It returns three things: the
+  image \texttt{G}, the index \texttt{n} of \texttt{G} in $\GL(2, \widehat{Z})$,
+  and the intersection \texttt{S} of \texttt{G} with $\SL(2, \widehat{Z})$.
+
+  \item\label{item:reduced_level_lemma} \texttt{ReducedLevel} is a function we
+  define. There are many things to prove about it. I defer the individual
+  description until \S\ref{sec:reducedlevel}. But the content of this line is
+  the following:
+
+  Zywina's code identifies an adelic level of the image of $G$. But to
+  determine if a point is isolated, we don't need to consider the entire level.
+  We can reduce the level to be more manageable. We (need to) prove that we can
+  do this in Lemma~\ref{lemma:reduced_level} in \S\ref{sec:reducedlevel}.
+
+  \item Note the transpose in this line! This confused us before. But this is
+  because Magma things of vectors as row vectors, and thus matrices naturally
+  act on the right.
+
+  \item\label{item:b_geq_12} For each $b$, we assert that it is sufficient to
+  consider only $b > 12$. We (need to) prove that this is sufficient in
+  Lemma~\ref{lemma:b_geq_12}.
+\end{enumerate}
+
+% This Lemma corresponds to item~\ref{item:b_geq_12}.
+
+\begin{lemma}\label{lemma:b_geq_12}
+  (Roughly, we can restrict to $b > 12$).
+\end{lemma}
+
+\begin{enumerate}\setcounter{enumi}{5}
+  \item\label{item:min_degree} \texttt{MinDegreeOfPoint} is a function we
+  define. It returns the minimum degree of the field of definition of a point.
+  We calculate this in a nice way, but I defer the individual description until
+  \S\ref{sec:mindegreeofpoint}.
+
+  \item\label{item:min_deg_genus} This is very simple, but we need a citation for the claim that if
+  $\mathrm{mindeg}(b) \geq \mathrm{genus}(\Gamma_1(b)) + 1$, then the point is
+  not isolated. We call this Lemma~\ref{lemma:min_deg_genus}.
+\end{enumerate}
+
+% This Lemma corresponds to item~\ref{item:min_deg_genus}.
+
+\begin{lemma}\label{lemma:min_deg_genus}
+  If $\deg(b) \geq \mathrm{genus}(\Gamma_1(b)) + 1$, then $b$ is not sporadic.
+\end{lemma}
+
+
+At the end of this half of the main function, we have accumulated two lists of
+points, \texttt{good} and \texttt{bad}. Here, \emph{good} means that the point
+is not isolated for the simple reasons from Lemma~\ref{lemma:min_deg_genus};
+\emph{bad} simply means that we don't yet know.
+
+The second half of the main function implements an idea based
+on~\cite{Bourdon2019} to further eliminate points.
+
+
+\begin{minted}[mathescape, linenos, firstnumber=last, samepage]{c}
+    /* continuing from before */
+    // Refuting levels and degrees based on the level reduction theorem of BELOV.
+    // If j is a sporadic point of degree d in level m then it becomes a point of
+    // d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.
+    remove:={};                          // #8 START
+    for x in bad do
+        for y in good do
+            if IsDivisibleBy(x[1],y[1]) then
+                b:=x[1] div y[1];
+                deg:=b^2*&*[Rationals()
+                              | 1-1/p^2 : p in PrimeDivisors(x[1])
+                              | p notin PrimeDivisors(y[1]) ];
+                if deg eq x[2] div y[2] then Include(~remove,x); end if;
+            end if;
+        end for;
+    end for;                             // #8 END
+
+    // Now we check using gonality arguments if the levels, degrees in the set
+    // bad but not in remove can be handled using gonality arguments.
+    bad := SequenceToSet(bad);
+    if bad ne remove then                // #9
+        supbad := bad diff remove;
+        return [*j, a, false, supbad*]; //return j-invariant we already have
+    end if;
+    return [*j, a, true*];
+end function;
+\end{minted}
+
+This code does two things.
+
+The region surrounded by \texttt{\#8 START} and
+\texttt{\#8 END} is an implementation of~\cite{Bourdon2019}.
+
+\begin{enumerate}\setcounter{enumi}{7}
+  \item\label{item:belov} The region surrounded by \texttt{\#8 START} and
+  \texttt{\#8 END} is an implementation of~\cite{Bourdon2019}. Conceptually, we
+  can think of this region as a function (creating \texttt{remove} from
+  \texttt{good} and \texttt{bad}) that is a concrete code function on its own.
+  We describe this implementation further in Proposition~\ref{prop:belov}.
+
+  \item Finally, we see if there is anything left after trying to remove
+  as much as possible using Proposition~\ref{prop:belov}. If there are, then we
+  return the remaining elements of uncertainty (which we call \texttt{supbad},
+  presumably short for \emph{super bad}).
+\end{enumerate}
+
+\begin{proposition}\label{prop:belov}
+  The algorithm in \#8 correctly determines \ldots
+\end{proposition}
+
+\begin{theorem}\label{thm:main}
+  The algorithm in \texttt{NotIsolated} either confirms that a $j$-invariant doesn't
+  give rise to sporadic points or indicates that additional information is
+  necessary. (There is a lot to be said here, and it will incorporate each
+  other intermediate result).
+\end{theorem}
+
+\clearpage
+\section{\texttt{ReducedLevel} function}\label{sec:reducedlevel}
+
+We now consider \texttt{ReducedLevel}, which is a rather important piece of
+code. Despite how quickly we wrote it (almost entirely written in the first
+day), a lot of things are happening.
+
+\begin{minted}[mathescape, linenos, samepage]{c}
+/* NOTE: We explicitly check those primes dividing m when G doesn't surject to
+ * GL2FP. */
+NonSurjectivePrimes:=function(G)                     // #1
+    m:=Modulus(BaseRing(G));
+    return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
+end function;
+
+// Level reduction from the output of Zywina's algorithm
+ReducedLevel:=function(G)
+    m:=Modulus(BaseRing(G));
+    NS:=Set(NonSurjectivePrimes(G));
+    sE:={2,3} join NS;                    // always consider 2 and 3
+    m0:=&*[p^Valuation(m,p):p in sE];
+    G:=ChangeRing(G,Integers(m0));
+    for p in PrimeFactors(m0) do                     // #2
+        while Valuation(m0,p) gt 1                   // #3
+                and #G/#ChangeRing(G,Integers(m0 div p)) eq p^4 do
+            m0:=m0 div p;
+            G:=ChangeRing(G,Integers(m0));
+        end while;
+        if not p in NS and Valuation(m0,p) eq 1      // #4
+               and #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then
+            m0:=m0 div p;
+            G:=ChangeRing(G,Integers(m0));
+        end if;
+    end for;
+    return G,m0;
+end function;
+\end{minted}
+
+Along the side, I've indicated several annotation points. We address these in
+turn. The numbers of each point in the following list align with an annotation
+point in the code above.
+
+\begin{enumerate}
+  \item \texttt{NonSurjectivePrimes} is almost pseudocode as is, representing
+  almost exactly a definition.
+
+  \item In our meeting, we had a couple of thoughts about the relationship
+  between \texttt{NS}, \texttt{sE}, \texttt{m0}, and
+  \texttt{PrimeFactors(m0)}. We briefly talked about whether it was inefficient
+  to compute the prime factors of \texttt{m0} again in this line, as in some
+  sense we already know the primes from just above.
+
+  \item The moral story of this line is that we check to make sure that the
+  index when passing from $G(m_0)$ to $G(m_0/p)$ is as large as possible. If it
+  is, then nothing is lost by removing a power of $p$.
+
+  We had a lot of discussion about this when $p = 2$. See Proposition 3.5
+  of~\cite{Bourdon2019} (or other places) for the idea. But note that $2$ needs
+  to be handled differently in principle.
+
+  \item The purpose of this line is to possibly consider removing the factors
+  of $2$ and $3$ that we (forcibly) added above.
+  Notice that \texttt{p in PrimeFactors(m0)} and \texttt{not p in NS} implies
+  that $p \in \{2, 3\}$.
+
+  It might be possible that this portion of code could be simplified.
+\end{enumerate}
+
+The primary claim about what this code for is contained in the Level Reduction
+Lemma, Lemma~\ref{lemma:reduced_level}. But we need to guarantee that this
+implementation is correct.
+
+\begin{lemma}\label{lemma:reduced_level}[Level Reduction Lemma]
+  Suppose that $E/\mathbb{Q}$ has adelic image $G$ in $\GL(2, \widehat{Z})$ and
+  $G$ has level $M$. To determine if $E$ gives rise to a sporadic, it suffices
+  to consider level $N$ \ldots (where $N$ consists essentially of nonsurjective
+  primes, and also $2$ and $3$).
+\end{lemma}
+
+
+\begin{proposition}
+  The algorithm in \texttt{ReducedLevel} correctly reduces level.
+\end{proposition}
+
+I note that this will probably use Proposition 3.5 of~\cite{Bourdon2019} (or
+other places) for the idea, and should pay close attention to what happens for
+the prime $2$.
+
+
+
+\section{\texttt{MinDegreeOfPoint} function}\label{sec:mindegreeofpoint}
+
+We now consider \texttt{MinDegreeOfPoint}.
+
+\begin{minted}[mathescape, linenos, samepage]{c}
+VectorOrder:=function(v)
+    m:=#Parent(v[1]);
+    g:=GCD([m, Integers()!v[2], Integers()!v[1]]);
+    return m div g;
+end function;
+
+//compute min degree of a point i.e. the min degree of the field of definition
+//of a point expressed as a 1 x 2  vector.
+MinDegreeOfPoint:=function(G)
+    m:=Modulus(BaseRing(G));
+    H:=sub<GL(2,Integers(m))|G,-G!1>;           // #1
+    orb:=Orbits(H);                             // #2
+    sorb:=Sort(orb,func<o1,o2|#o1-#o2>);        // #3
+    s2:=[x: x in sorb| VectorOrder(x[1]) eq m]; // #4
+    return (#s2[1]) div 2;                      // #5
+end function;
+\end{minted}
+
+Along the side, I've indicated several annotation points. We address these in
+turn. The numbers of each point in the following list align with an annotation
+point in the code above.
+
+\begin{enumerate}
+  \item When finding the minimum degree of a point, we deliberately include
+  $-1$ in the group.
+
+  \item \texttt{Orbits} is a standard magma command that outputs the orbits as
+  a list of lists of row-vectors. It's very fast, and led to radical speed
+  improvements when we began to use it instead of our earlier code.
+
+  \item This defines a sorting function. The effect is that \texttt{sorb}
+  contains sorted orbits, sorted in increasing order of size.
+
+  \item We isolate to those elements with compatible \texttt{VectorOrder}s.
+
+  \item As we included $-1$, we can always divide by $2$ when we return the
+  elements. Since the orbits are sorted, the first element will be the
+  smallest, which is why we return the first element.
+\end{enumerate}
+
+I think there are perhaps two things to show here.
+
+\begin{lemma}
+  The algorithm in \texttt{VectorOrder} correctly returns \ldots
+\end{lemma}
+
+\begin{proposition}
+  The algorithm in \texttt{MinDegreeOfPoint} correctly returns the minimum
+  degree of the field of definition.
+
+  Either in this proposition or in an additional lemma, describe why we can
+  divide the resulting degree by $2$ \emph{always}, including when $-1 \in G$
+  already. \DLD{I only note this because I can't remember why this is true.}
+\end{proposition}
+
+
+\section{Additional notes}
+
+In the process of writing these descriptions, we will probably rewrite parts of
+the code. As we're going to make the code public, we will also need to make a
+\emph{sanitized} version that we stand by.
+
+There is also a consideration of what we're phrasing. Initially, we thought
+about sporadic $j$-invariants. But we're moving on from that.
+
+Finally, there are additional components of processing that we've done but
+which aren't incorporated here. These include
+
+\begin{enumerate}
+  \item The basic gonality processing, and
+  \item The other things that Filip wrote about in zulip.
+\end{enumerate}
+
+
+\vspace{20 mm}
+\bibliographystyle{alpha}
+\bibliography{bibliofile}
+
+\end{document}
