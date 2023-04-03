@@ -56,10 +56,11 @@ anchorcolor=darkblue,citecolor=darkblue}
 
 \newcommand{\DLD}[1]{\textcolor{Plum}{DLD:\@ #1}}
 
-\usepackage{minted}
-\usemintedstyle{lovelace}
-\definecolor{mintbf}{gray}{0.95}
-\setminted{bgcolor=mintbf}
+% Don't use minted, b/c overleaf
+% \usepackage{minted}
+% \usemintedstyle{lovelace}
+% \definecolor{mintbf}{gray}{0.95}
+% \setminted{bgcolor=mintbf}
 
 % Don't have subsections appear in TOC
 %\setcounter{tocdepth}{1}
@@ -96,7 +97,7 @@ not include Filip's more recent enhancements --- that remains to be explained.
 The main function is \texttt{NotIsolated}, which is how we frame our code
 examination.
 
-\begin{minted}[mathescape, linenos, samepage]{c}
+\begin{verbatim}
 /* First half of NotIsolated function, which determines if j
  * can't give isolated points. */
 NotIsolated:=function(a, j);             // #1
@@ -125,7 +126,7 @@ NotIsolated:=function(a, j);             // #1
             end if;
         end if;
     end for;
-\end{minted}
+\end{verbatim}
 
 
 Along the side, I've indicated several annotation points. We address these in
@@ -199,7 +200,7 @@ The second half of the main function implements an idea based
 on~\cite{Bourdon2019} to further eliminate points.
 
 
-\begin{minted}[mathescape, linenos, firstnumber=last, samepage]{c}
+\begin{verbatim}
     /* continuing from before */
     // Refuting levels and degrees based on the level reduction theorem of BELOV.
     // If j is a sporadic point of degree d in level m then it becomes a point of
@@ -226,7 +227,7 @@ on~\cite{Bourdon2019} to further eliminate points.
     end if;
     return [*j, a, true*];
 end function;
-\end{minted}
+\end{verbatim}
 
 This code does two things.
 
@@ -264,7 +265,7 @@ We now consider \texttt{ReducedLevel}, which is a rather important piece of
 code. Despite how quickly we wrote it (almost entirely written in the first
 day), a lot of things are happening.
 
-\begin{minted}[mathescape, linenos, samepage]{c}
+\begin{verbatim}
 /* NOTE: We explicitly check those primes dividing m when G doesn't surject to
  * GL2FP. */
 NonSurjectivePrimes:=function(G)                     // #1
@@ -293,7 +294,7 @@ ReducedLevel:=function(G)
     end for;
     return G,m0;
 end function;
-\end{minted}
+\end{verbatim}
 
 Along the side, I've indicated several annotation points. We address these in
 turn. The numbers of each point in the following list align with an annotation
@@ -351,7 +352,7 @@ the prime $2$.
 
 We now consider \texttt{MinDegreeOfPoint}.
 
-\begin{minted}[mathescape, linenos, samepage]{c}
+\begin{verbatim}
 VectorOrder:=function(v)
     m:=#Parent(v[1]);
     g:=GCD([m, Integers()!v[2], Integers()!v[1]]);
@@ -368,7 +369,7 @@ MinDegreeOfPoint:=function(G)
     s2:=[x: x in sorb| VectorOrder(x[1]) eq m]; // #4
     return (#s2[1]) div 2;                      // #5
 end function;
-\end{minted}
+\end{verbatim}
 
 Along the side, I've indicated several annotation points. We address these in
 turn. The numbers of each point in the following list align with an annotation
