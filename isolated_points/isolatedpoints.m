@@ -1,28 +1,11 @@
-AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");//change if you have 
-                                                       //different path to the spec file
-path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files"); //change if you have 
-                                                                            //different path to 
-
-/*#################################################################################################
-The following program checks given an elliptic curve with rational j-invariant if it represents an 
-isolated point of any degree and any level. The flow of execution is as follows:
-
-Input curve (Cremona label or with coefficient array) -> Zywina's algorithm -> Level reduction -> compute min degree for all divisors of reduced level -> refute using genus/Reiman-Roch
-arguments -> refute by pushing down to lower levels using BELOV -> Output 
-(True if everything is refuted / false with left over levels/degrees, otherwise).
-
-This program was written during COUNT at CIRM.
-#################################################################################################*/
-
-
-NonSurjectivePrimes:=function(G)
+intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
+    {Given G the adelic image of the Galois representation, compute the non-surjective primes}
         m:=Modulus(BaseRing(G));
         return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
-end function;
+end intrinsic;
 
-
-//Level reduction from the output of Zywina's algorithm
-ReducedLevel:=function(G)
+intrinsic ReducedLevel(G::GrpMat) -> GrpMat, RngIntElt
+    {Level reduction from the output of Zywina's algorithm}
     m:=Modulus(BaseRing(G));
     NS:=Set(NonSurjectivePrimes(G));
     sE:={2,3} join NS; 
@@ -39,29 +22,28 @@ ReducedLevel:=function(G)
         end if;
     end for;
     return G,m0;
-end function;
+end intrinsic;
 
-
-VectorOrder:=function(v)
+intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
+    {Order of a vector with entries in Z/mZ}
     m:=#Parent(v[1]);
     g:=GCD([m, Integers()!v[2], Integers()!v[1]]);
     return m div g;
-end function;
+end intrinsic;
 
-
-//compute min degree of a point i.e. the min degree of the field of definition
-//of a point expressed as a 1 x 2  vector.
-MinDegreeOfPoint:=function(G)
+intrinsic MinDegreeOfPoint(G::GrpMat) -> RngIntElt
+    {compute min degree of a point i.e. the min degree of the field of definition
+    of a point expressed as a 1 x 2  vector}
     m:=Modulus(BaseRing(G));
     H:=sub<GL(2,Integers(m))|G,-G!1>;
     orb:=Orbits(H);
     sorb:=Sort(orb,func<o1,o2|#o1-#o2>);
     s2:=[x: x in sorb| VectorOrder(x[1]) eq m]; //equivalently Minimum([x: x in orb| VectorOrder(x[1]) eq m]);
     return (#s2[1]) div 2;
-end function;
+end intrinsic;
 
-//compute all degrees of points, and returns the ones that are greater than g
-DegreesOfPotIsolatedPoints:=function(G, g)
+intrinsic DegreesOfPotIsolatedPoints(G::GrpMat, g::RngIntElt) -> SeqEnum[RngIntElt]
+    {compute all degrees of points, and returns the ones that are greater than g}
     m := Modulus(BaseRing(G));
     H := sub<GL(2,Integers(m))|G,-G!1>;
     orb := Orbits(H);
@@ -69,10 +51,10 @@ DegreesOfPotIsolatedPoints:=function(G, g)
     orbmg := [#x div 2 : x in orbm | (#x div 2) ge g];
     degrees := SetToSequence(Set(orbmg)); //remove duplicates
     return degrees;
-end function;
+end intrinsic;
 
-//main function to check if a j invariant is sporadic.
-NotIsolated:=function(a, j);
+intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
+    {main function to check if a j invariant is sporadic}
     E:=EllipticCurve(a);
     G,n,S:=FindOpenImage(path, E);
     G0:=ReducedLevel(G);
@@ -126,22 +108,4 @@ NotIsolated:=function(a, j);
         return [*j, a, false, supbad*]; //return j-invariant we already have
     end if;
     return [*j, a, true*];    
-end function;
-
-
-//code snippet for parallelizing the execution of NotSporadic()
-
-if assigned seq then
-    SetColumns(0);
-    SetAutoColumns(false);
-    seq := eval seq;
-    inputs := Split(Read("isolated_refined.txt"), "\n");
-    input := inputs[seq];
-    i := Index(input, ")");
-    jinv := input[1..i]; //construct j-invariant
-    ainv := eval input[i+2 .. #input];
-    output := NotIsolated(ainv, jinv);
-    print Join([Sprint(elt) : elt in output], ":");
-    exit;
-end if;
-
+end intrinsic;
