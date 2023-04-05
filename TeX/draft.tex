@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{amsmath,amsthm,amssymb}
+% \usepackage{algorithm2e}
 
 % Presented to you by Technicolor, and the number 3
 \usepackage{graphics}
@@ -51,7 +52,7 @@ anchorcolor=darkblue,citecolor=darkblue}
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
 \renewcommand{\theta}{\vartheta}
-
+\newcommand{\Supp}{\operatorname{Supp}}
 \renewcommand\labelenumi{(\theenumi)}
 \renewcommand{\theenumi}{\roman{enumi}}
 
@@ -176,6 +177,76 @@ Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve c
 \end{algorithm}
 
 (In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/M\Z)$.)
+
+
+\section{Reduce Level}
+\noindent \textbf{Input:} Non-CM elliptic curve $E/\Q$\\
+\textbf{Output:} Finite set of positive integers $\mathcal{I}_1$ such that any isolated point $x \in X_1(n)$ with $j(x) =j(E)$ maps under the natural projection map to an isolated point on $X_1(d)$ for $d \in \mathcal{I}_1$.
+\begin{theorem}
+Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. Let $M_E$ be any positive integer such that 
+\[
+\im \rho_E=\pi^{-1}(\im \rho_{E, M_E}).
+\]
+Then for any $x \in X_1(n)$ with $j(x)=j(E)$ we have $\deg(x)=\deg(f)\cdot \deg(f(x))$, where $f: X_1(n) \rightarrow X_1(\gcd(n,M_E))$ denotes the natural map. It follows that:
+\begin{enumerate}
+\item If $x$ is $\mathbb{P}^1$-isolated, then $f(x)$ is $\mathbb{P}^1$-isolated.
+\item If $x$ is AV-isolated, then $f(x)$ is AV-isolated.
+\item If $x$ is sporadic, then $f(x)$ is sporadic.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+This follows from the arguments in Section 5.3 of BELOV (see Remark 5.5 in particular) and Theorem 4.3.
+\end{proof}
+
+Let $S_E=\{2,3\} \cup \{\ell : \rho_{E,\ell^{\infty}}(\Gal_{\Q}) \neq \GL_2(\Z_{\ell})\}$. Let $M_E=M_1\cdot M_2$ where $\Supp(M_1) \subseteq S_E$ and $\Supp(M_2) \cap S_E =\emptyset$.
+
+\begin{corollary}
+Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. 
+Then for any $x \in X_1(n)$ with $j(x)=j(E)$ we have $\deg(x)=\deg(f)\cdot \deg(f(x))$, where $f: X_1(n) \rightarrow X_1(\gcd(n,M_1))$ denotes the natural map. It follows that:
+\begin{enumerate}
+\item If $x$ is $\mathbb{P}^1$-isolated, then $f(x)$ is $\mathbb{P}^1$-isolated.
+\item If $x$ is AV-isolated, then $f(x)$ is AV-isolated.
+\item If $x$ is sporadic, then $f(x)$ is sporadic.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+This should follow from BELOV Proposition 5.7.
+\end{proof}
+
+Main idea beyond this: Let $m$ be the product of the primes in $\Supp(M_1)$. By Proposition 5.8 in BELOV, it suffices to replace $M_1$ in the corollary above with the level of the $m$-adic Galois representation. This should be the main point of the ``ReducedLevel" operation: to compute this level. Note in particular we do not need to add in 2 and 3 if they were not already in $\Supp(M_E)$.
+
+\section{Compute Degree}
+
+\noindent \textbf{Input:} $\mathcal{I}_1$ from step 1\\
+\textbf{Output:} For each $d \in \mathcal{I}_1$, compute degree(s) of closed point on $X_1(n)$ associated to $E$. Return ???
+
+\begin{proposition}
+Let $E/\Q$ be a non-CM elliptic curve and $n \in \mathbb{Z}^+$. If $\im \rho_{E,n} \cong G \leq \GL_2(\Z/n\Z)$, then ...
+\end{proposition}
+
+
+
+\section{Riemann-Roch}
+
+\noindent \textbf{Input:} Output from step 2\\
+\textbf{Output:} Smaller list of pairs to check
+
+\begin{lemma}
+Let $C$ be a curve over a number field $k$ with genus $g$. If $x \in C(\overline{k})$ is a closed point with degree
+$\geq g+1$, then $x$ is not $\mathbb{P}^{1}$-isolated.
+\end{lemma}
+
+\begin{proof}
+This is Lemma 13 in revision of B., Gill, Rouse, Watson.
+\end{proof}
+
+\section{Remaining Cases}
+
+Filip's arguemnts
+
+
 
 \section{Genus 0 adelic images do not produce isolated points}
 
