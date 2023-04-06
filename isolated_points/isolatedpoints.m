@@ -68,7 +68,7 @@ intrinsic RefuteLevel(potisolated::SeqEnum[Tup], allpts::SeqEnum[Tup]) -> SeqEnu
     {Refuting levels and degrees based on the level reduction theorem of BELOV.
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
-
+	remove := {};
     for x in potisolated do 
         for y in allpts do
             if IsDivisibleBy(x[1],y[1]) then
@@ -98,20 +98,20 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
 
             listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
-            for d in listofdeg do
+	genusGamma1lplus1 := Genus(Gamma1(l))+1;
+            for deg in listofdeg do
                 Append(~allpoints,<l, deg>);
-            end for;
-            genusGamma1lplus1 := (Genus(Gamma1(l))+1);
-
-            if deg ge genusGamma1lplus1 then
-                Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
-            end if;
+            	if deg ge genusGamma1lplus1 then
+                	Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
+            	end if;
+	end for;
    
         end if;
     end for;
 
-    remove := RefuteLevel(potisolated, allpts);
-    potisolated := potisolated diff remove; //the remaining potentially isolated
+    remove := RefuteLevel(potisolated, allpoints);
+	potisolated := SequenceToSet(potisolated);
+	potisolated := potisolated diff remove; //the remaining potentially isolated
 
     if #potisolated gt 0 then
         return [*j, a, false, potisolated*]; 
