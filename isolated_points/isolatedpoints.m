@@ -72,7 +72,10 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
         end for;
     end for;
 
-    return remove;
+    potisolated := SequenceToSet(potisolated);
+    potisolated := potisolated diff remove; //the remaining potentially isolated
+
+    return potisolated;
 
 end intrinsic;
 
@@ -86,7 +89,6 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     k:=#BaseRing(G0t);
 
     allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg 
-    potisolated := [];
     for l in Divisors(k) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
@@ -94,9 +96,7 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
         end if;
     end for;
 
-    remove := RefuteLevel(potisolated, allpoints);
-    potisolated := SequenceToSet(potisolated);
-    potisolated := potisolated diff remove; //the remaining potentially isolated
+    potisolated := RefuteLevel(allpoints);
 
     if #potisolated gt 0 then
         return [*j, a, false, potisolated*]; 
