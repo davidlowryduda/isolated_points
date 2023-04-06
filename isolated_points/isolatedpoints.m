@@ -56,7 +56,7 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
                 Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
             end if;
         end for;
-        return potisolted;
+        return potisolated;
     end function;
 
     potisolated := easyRiemannRoch(allpts);
