@@ -42,10 +42,23 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
 end intrinsic;
 
 //TODO: rename this function
-intrinsic RefuteLevel(potisolated::SeqEnum[Tup], allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
+intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     {Refuting levels and degrees based on the level reduction theorem of BELOV.
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
+   
+    function easyRiemannRoch(listofpts)
+        for pt in listofpts do
+            l, deg := Explode(pt);
+            genusGamma1lplus1 := Genus(Gamma1(l))+1;
+            if deg ge genusGamma1lplus1 then
+                Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
+            end if;
+        end for;
+    end function;
+
+    potisolated := easyRiemannRoch(allpts);
+
     remove := {};
     for x in potisolated do 
         for y in allpts do
@@ -61,6 +74,7 @@ intrinsic RefuteLevel(potisolated::SeqEnum[Tup], allpts::SeqEnum[Tup]) -> SeqEnu
 
 end intrinsic;
 
+
 intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     {main function to check if a j invariant is sporadic}
     E:=EllipticCurve(a);
@@ -74,14 +88,7 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     for l in Divisors(k) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
-            genusGamma1lplus1 := Genus(Gamma1(l))+1;
-            for deg in listofdeg do
-                Append(~allpoints,<l, deg>);
-                if deg ge genusGamma1lplus1 then
-                    Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
-                end if;
-            end for;
-   
+            allpoints := [<l, deg> : deg in listofdeg];
         end if;
     end for;
 
