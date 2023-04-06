@@ -53,43 +53,24 @@ intrinsic DegreesOfPotIsolatedPoints(G::GrpMat, g::RngIntElt) -> SeqEnum[RngIntE
     return degrees;
 end intrinsic;
 
-intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
-    {main function to check if a j invariant is sporadic}
-    E:=EllipticCurve(a);
-    G,n,S:=FindOpenImage(path, E);
-    G0:=ReducedLevel(G);
-    G0t := sub<GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]>;
-    k:=#BaseRing(G0t);
-    good:=[];
-    bad:=[];
-    for b in Divisors(k) do
-        if b gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
-            ww:=MinDegreeOfPoint(ChangeRing(G0t,Integers(b)));
-            //if the min degree >= g+1 then the dimension of the Riemann-Roch
-            //space associated to the point of min degree is at least 2 hence it
-            //is not sporadic.
-            genusGamma1bplus1 := (Genus(Gamma1(b))+1);
-            if  ww ge genusGamma1bplus1 then 
-                Append(~good,<b, ww>); //not isolated
-            else 
-            //otherwise we need to check if gonality/degree reduction 
-            //arguments can be used
-            //then we return all of the orbit sizes / 2 as long as degree < g+1
-            wws := DegreesOfPotIsolatedPoints(ChangeRing(G0t,Integers(b)), genusGamma1bplus1);
-            for ww in wws do
-                Append(~bad,<b, ww>); //potentially isolated
-            end for;
-            end if;
-        end if;
-    end for;
-    remove:={};
+intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
+    {compute all degrees of points without doing Riemann-Roch}
+    m := Modulus(BaseRing(G));
+    H := sub<GL(2,Integers(m))|G,-G!1>;
+    orb := Orbits(H);
+    orbm := [#x div 2 : x in orb | VectorOrder(x[1]) eq m]; 
+    degrees := SetToSequence(Set(orbm)); //remove duplicates
+    return degrees;
+end intrinsic;
 
-//Refuting levels and degrees based on the level reduction theorem of BELOV.
-//If j is a sporadic point of degree d in level m then it becomes a point of
-//d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.
-
-    for x in bad do 
-        for y in good do
+//TODO: rename this function
+intrinsic RefuteLevel(potisolated::SeqEnum[Tup], allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
+    {Refuting levels and degrees based on the level reduction theorem of BELOV.
+    If j is a sporadic point of degree d in level m then it becomes a point of
+    d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
+	remove := {};
+    for x in potisolated do 
+        for y in allpts do
             if IsDivisibleBy(x[1],y[1]) then
                 b:=x[1] div y[1];
                 
@@ -99,13 +80,43 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
         end for;
     end for;
 
-    bad := SequenceToSet(bad);
+    return remove;
 
-    //Now we check using gonality arguments if the levels, degrees in the set
-    //bad but not in remove can be handled using gonality arguments.
-    if bad ne remove then 
-        supbad := bad diff remove; //the remaining potentially isolated
-        return [*j, a, false, supbad*]; //return j-invariant we already have
+end intrinsic;
+
+intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
+    {main function to check if a j invariant is sporadic}
+    E:=EllipticCurve(a);
+    G,n,S:=FindOpenImage(path, E);
+    G0:=ReducedLevel(G);
+    G0t := sub<GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]>;
+    k:=#BaseRing(G0t);
+
+    allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg 
+    potisolated := [];
+    for l in Divisors(k) do
+        if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
+
+            listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
+	genusGamma1lplus1 := Genus(Gamma1(l))+1;
+            for deg in listofdeg do
+                Append(~allpoints,<l, deg>);
+            	if deg ge genusGamma1lplus1 then
+                	Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
+            	end if;
+	end for;
+   
+        end if;
+    end for;
+
+    remove := RefuteLevel(potisolated, allpoints);
+	potisolated := SequenceToSet(potisolated);
+	potisolated := potisolated diff remove; //the remaining potentially isolated
+
+    if #potisolated gt 0 then
+        return [*j, a, false, potisolated*]; 
+    else
+        return [*j, a, true, potisolated*]; 
     end if;
-    return [*j, a, true*];    
+
 end intrinsic;

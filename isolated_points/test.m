@@ -1,5 +1,5 @@
-AttachSpec("/Users/sachihashimoto/Repos/ModularCurves/equations/equations.spec");                                                      //different path to the spec file
-path := OpenImageContext("/Users/sachihashimoto/Repos/ModularCurves/equations/OpenImage/data-files");                                                                           
+AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");                                                      //different path to the spec file
+path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files");                                                                           
 AttachSpec("isolated.spec");
 
 if assigned seq then
