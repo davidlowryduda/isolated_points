@@ -31,28 +31,6 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     return m div g;
 end intrinsic;
 
-intrinsic MinDegreeOfPoint(G::GrpMat) -> RngIntElt
-    {compute min degree of a point i.e. the min degree of the field of definition
-    of a point expressed as a 1 x 2  vector}
-    m:=Modulus(BaseRing(G));
-    H:=sub<GL(2,Integers(m))|G,-G!1>;
-    orb:=Orbits(H);
-    sorb:=Sort(orb,func<o1,o2|#o1-#o2>);
-    s2:=[x: x in sorb| VectorOrder(x[1]) eq m]; //equivalently Minimum([x: x in orb| VectorOrder(x[1]) eq m]);
-    return (#s2[1]) div 2;
-end intrinsic;
-
-intrinsic DegreesOfPotIsolatedPoints(G::GrpMat, g::RngIntElt) -> SeqEnum[RngIntElt]
-    {compute all degrees of points, and returns the ones that are greater than g}
-    m := Modulus(BaseRing(G));
-    H := sub<GL(2,Integers(m))|G,-G!1>;
-    orb := Orbits(H);
-    orbm := [x : x in orb | VectorOrder(x[1]) eq m]; 
-    orbmg := [#x div 2 : x in orbm | (#x div 2) ge g];
-    degrees := SetToSequence(Set(orbmg)); //remove duplicates
-    return degrees;
-end intrinsic;
-
 intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
     {compute all degrees of points without doing Riemann-Roch}
     m := Modulus(BaseRing(G));
@@ -68,12 +46,11 @@ intrinsic RefuteLevel(potisolated::SeqEnum[Tup], allpts::SeqEnum[Tup]) -> SeqEnu
     {Refuting levels and degrees based on the level reduction theorem of BELOV.
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
-	remove := {};
+    remove := {};
     for x in potisolated do 
         for y in allpts do
             if IsDivisibleBy(x[1],y[1]) then
                 b:=x[1] div y[1];
-                
                 deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
                 if deg eq x[2] div y[2] then Include(~remove,x); end if;
             end if;
@@ -96,22 +73,21 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     potisolated := [];
     for l in Divisors(k) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
-
             listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
-	genusGamma1lplus1 := Genus(Gamma1(l))+1;
+            genusGamma1lplus1 := Genus(Gamma1(l))+1;
             for deg in listofdeg do
                 Append(~allpoints,<l, deg>);
-            	if deg ge genusGamma1lplus1 then
-                	Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
-            	end if;
-	end for;
+                if deg ge genusGamma1lplus1 then
+                    Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
+                end if;
+            end for;
    
         end if;
     end for;
 
     remove := RefuteLevel(potisolated, allpoints);
-	potisolated := SequenceToSet(potisolated);
-	potisolated := potisolated diff remove; //the remaining potentially isolated
+    potisolated := SequenceToSet(potisolated);
+    potisolated := potisolated diff remove; //the remaining potentially isolated
 
     if #potisolated gt 0 then
         return [*j, a, false, potisolated*]; 
