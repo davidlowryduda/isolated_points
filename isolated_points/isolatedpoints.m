@@ -48,6 +48,7 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
    
     function easyRiemannRoch(listofpts)
+        potisolated := [];
         for pt in listofpts do
             l, deg := Explode(pt);
             genusGamma1lplus1 := Genus(Gamma1(l))+1;
@@ -55,6 +56,7 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
                 Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
             end if;
         end for;
+        return potisolted;
     end function;
 
     potisolated := easyRiemannRoch(allpts);
