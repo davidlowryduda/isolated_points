@@ -106,7 +106,7 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newcommand{\davidnote}[1]{\textcolor{Plum}{David: #1}}
 
 \newcommand{\abbey}[1]{\textcolor{blue}{Abbey: #1}}
-
+\newcommand{\dld}[1]{\textcolor{Plum}{dld: #1}}
 \newcommand{\sachi}[1]{\textcolor{purple}{Sachi: #1}}
 % \newcommand{\travis}[1]{\textcolor{chartreuse}{Travis: #1}}
 
@@ -137,12 +137,12 @@ We say these are \textbf{sporadic $j$-invariants} since they are the image of a 
 Suppose there exists a constant $C$ such that the mod $\ell$ Galois representation of any non-CM elliptic curve over $\Q$ is surjective for primes $\ell>C$. Then there are only finitely many sporadic $j$-invariants in $\Q$.
 \end{theorem}
 
-\noindent The assumption about Galois representations stated in Theorem 1 was originally asked as a question by Serre \cite{serre72}, and it has now been formally conjectured by both Sutherland \cite{sutherland} and Zywina \cite{ZywinaImages}. It is even suspected that $C=37$. Theorem 1 is known unconditionally for points of odd degree \cite{OddDeg}: indeed, $j=-140625/8$ is the only non-CM $j$-invariant in $\Q$ giving a sporadic point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers. 
+\noindent The assumption about Galois representations stated in Theorem 1 was originally asked as a question by Serre \cite{serre72}, and it has now been formally conjectured by both Sutherland \cite{sutherland} and Zywina \cite{ZywinaImages}. It is even suspected that $C=37$. Theorem 1 is known unconditionally for points of odd degree \cite{OddDeg}: indeed, $j=-140625/8$ is the only non-CM $j$-invariant in $\Q$ giving a sporadic point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers.
 
-In \cite{BELOV}, they ask whether one can explicitly determine the set of sporadic $j$-invariants in $\Q$, and this is the motivation for the present work. In particular, we conjecture that the two non-CM sporadic $j$-invariants identified above are in fact the \emph{only} sporadic $j$-invariants in $\Q$ associated to non-CM elliptic curves. 
+In \cite{BELOV}, they ask whether one can explicitly determine the set of sporadic $j$-invariants in $\Q$, and this is the motivation for the present work. In particular, we conjecture that the two non-CM sporadic $j$-invariants identified above are in fact the \emph{only} sporadic $j$-invariants in $\Q$ associated to non-CM elliptic curves.
 
 \begin{conjecture}
-If $x\in X_1(N)$ is a sporadic point with $j(x) \in \Q$, then $j(x)=-140625/8$ or $-9317$ or is one of the 13 CM $j$-invariants in $\Q$. 
+If $x\in X_1(N)$ is a sporadic point with $j(x) \in \Q$, then $j(x)=-140625/8$ or $-9317$ or is one of the 13 CM $j$-invariants in $\Q$.
 \end{conjecture}
 
 \noindent Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$, it follows conversely that every $j$-invariant in this set is sporadic.
@@ -169,7 +169,7 @@ Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve c
 \section{Background}
 
 \begin{theorem}
-Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. Let $M_E$ be any positive integer such that 
+Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. Let $M_E$ be any positive integer such that
 \[
 \im \rho_E=\pi^{-1}(\im \rho_{E, M_E}).
 \]
@@ -204,16 +204,12 @@ For all $12 < b \mid N$, using Algorithm~\ref{alg:compute_degree} compute the mi
 
 \abbey{Travis,Sachi, Abbey}
 
-\begin{theorem}[\cite{BELOV}]\label{BELOVthm}
-Let $E/\Q$ be a non-CM elliptic curve, and let $m$ be the product of 2, 3, and all primes $\ell$ where the $\ell$-adic Galois representation of $E$ is not surjective. Let $m_0$ be the level of the $m$-adic Galois representation associated to $E$ and let $f: X_1(n) \rightarrow X_1(\gcd(n,m_0))$ denote the natural map. If $x\in X_1(n)$ is an isolated point with $j(x)=j(E)$, then $f(x)\in X_1(\gcd(n,m_0))$ is an isolated point. 
-\end{theorem}
-
 Using Zywina's algorithm for the level of the adelic Galois representation as a starting point, we may obtain the level of the $m$-adic Galois representation associated to $E$ as in Theorem \ref{BELOVthm}.
 
 
 \begin{algorithm}[H]
   \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level}
-  \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal \abbey{Don't we need to include 2 and 3 in our definition of $m$? It is possible 2 and 3 may divide $m_0$ even if they are not surjective primes. If they are not necessary, then 2 and 3 need not divide $m_0$ in the final output.} } 
+  \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal \abbey{Don't we need to include 2 and 3 in our definition of $m$? It is possible 2 and 3 may divide $m_0$ even if they are not surjective primes. If they are not necessary, then 2 and 3 need not divide $m_0$ in the final output.} }
   \caption{Reduce level}%
   \label{alg:reduce_level}
   Let $N_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
@@ -234,14 +230,14 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
     Algorithm~\ref{alg:reduce_level} is correct.
   \end{proposition}
   \begin{proof}
-    Since $N$ is the level of the adelic representation and both $m$ and $m_0$ divides $N$, we must have that $\im\rho_{E, m^\infty} = \pi^{-1}(\im \rho_{E,m_0})$. This property is an invariant of the for-loop. The for-loop 
-    terminates once as many powers of $\ell$ have been removed from $m_0$ 
-    as possible while maintaining this invariant. Thus $m_0$ is the minimal such integer and is thus the level. 
+    Since $N$ is the level of the adelic representation and both $m$ and $m_0$ divides $N$, we must have that $\im\rho_{E, m^\infty} = \pi^{-1}(\im \rho_{E,m_0})$. This property is an invariant of the for-loop. The for-loop
+    terminates once as many powers of $\ell$ have been removed from $m_0$
+    as possible while maintaining this invariant. Thus $m_0$ is the minimal such integer and is thus the level.
   \end{proof}
 
 
 
-  
+
 \section{Compute Degree}
 
 \noindent \textbf{Input:} $\mathcal{I}_1$ from step 1 \\
@@ -249,7 +245,7 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
 
 \begin{algorithm}[H]\label{alg:compute_degree}
   \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level; a bound $g \in \Z$}
-  \KwOut{all degrees of $x$-coordinates of points that are $\geq g$} 
+  \KwOut{all degrees of $x$-coordinates of points that are $\geq g$}
   Let $H \colonequals \langle G, -I_2\rangle \leq \GL_2(\Z/N\Z)$\;
   Compute the orbits of $H$ acting on $(\Z/N\Z)^2$\label{Inc-1}\;
   Filter the orbit representatives that have order equal to $N$\;
@@ -264,23 +260,48 @@ Note that only working with orbit(s) (representatives) significantly speeds up t
 Let $E/\Q$ be a non-CM elliptic curve and $N \in \Z_{>0}$. If $\im \rho_{E,N} \cong G \leq \GL_2(\Z/N\Z)$, then the Algorithm \ref{alg:compute_degree} outputs the sequence consisting of all possible degrees of $x(P)$, where $P\in E[N]$ is a point of order $N$.
 \end{proposition}
 \begin{proof}
-    We begin by noting that $(E, P)$ and $(E, -P)$ denote the same point on $X_1(N)$, for $P \in E[N]$. Therefore, the degree of 
+    We begin by noting that $(E, P)$ and $(E, -P)$ denote the same point on $X_1(N)$, for $P \in E[N]$. Therefore, the degree of
     a point represented by $(E, P)$, when
-    $E$ is defined over $\Q$ depends only on $x(P)$. 
+    $E$ is defined over $\Q$ depends only on $x(P)$.
     If $E[N]$ is identified with $(\Z/N\Z)^2$, then $\deg(P)=\# (G. P)$, where $P$ on the left hand side is considered as an element of $(\Z/N\Z)^2$
     and on right hand side as an element of $E[N]$.
-    If $P$ and $-P$ are in the same Galois orbit, i.e., $-I_2\in G$, then $[\Q(x(P)):\Q]=[\Q(P):\Q]/2$. On the other hand, one has $[\Q(x(P)):\Q]=[\Q(P):\Q]$, when 
-    $-I_2\notin G$. 
-    Therefore, computing the orbit sizes with respect to the 
+    If $P$ and $-P$ are in the same Galois orbit, i.e., $-I_2\in G$, then $[\Q(x(P)):\Q]=[\Q(P):\Q]/2$. On the other hand, one has $[\Q(x(P)):\Q]=[\Q(P):\Q]$, when
+    $-I_2\notin G$.
+    Therefore, computing the orbit sizes with respect to the
     group $H\coloneqq \langle G, -I_2 \rangle$ (step~\ref{Inc-1} in Algorithm \ref{alg:compute_degree}) and dividing
-    by $2$ (step~\ref{DivBy2}) handles both the cases, because in the later case (i.e., when $-I_2\notin G$) the orbit sizes will be doubled. 
+    by $2$ (step~\ref{DivBy2}) handles both the cases, because in the later case (i.e., when $-I_2\notin G$) the orbit sizes will be doubled.
     Finally, step~\ref{RemDup} makes sure that every degree occurs only once in the output sequence.
 \end{proof}
 
-\section{Riemann-Roch}
 
-\noindent \textbf{Input:} Output from step 2\\
-\textbf{Output:} Smaller list of pairs to check
+\section{Filtering by Level Mapping}
+
+\begin{theorem}[\cite{BELOV}]\label{BELOVthm}
+Let $E/\Q$ be a non-CM elliptic curve, and let $m$ be the product of 2, 3, and all primes $\ell$ where the $\ell$-adic Galois representation of $E$ is not surjective. Let $m_0$ be the level of the $m$-adic Galois representation associated to $E$ and let $f: X_1(n) \rightarrow X_1(\gcd(n,m_0))$ denote the natural map. If $x\in X_1(n)$ is an isolated point with $j(x)=j(E)$, then $f(x)\in X_1(\gcd(n,m_0))$ is an isolated point.
+\end{theorem}
+
+\dld{This is \texttt{FilterByLevelMapping}, which used to be called
+\texttt{RefuteLevel}. It acts as a filter. We feed in a list, and the output is
+a (hopefully smaller) list guaranteed to contain all isolated points. If the
+list is empty, then we have shown that the curve doesn't give rise to an
+isolated point! If not, then perhaps other work is necessary.}
+
+\dld{I imagine other filters being potentially applied afterwards, each
+removing some set of non-isolated points.}
+
+\begin{algorithm}[H]\label{alg:level_mapping}
+  \KwIn{A list of pairs $(N, d)$ such that $E$ gives a nonCM point on $X_1(N)$
+  of degree $d$.}
+  \KwOut{A list of pairs $(N, d)$ containing all isolated points.}
+  (sketch)\;
+  create list of guaranteed nonisolated points using easy Riemann--Roch\;
+  filter potentially isolated points via Theorem~\ref{BELOVthm}\;
+  \Return{remaining $(N, d)$ pairs.}
+\end{algorithm}
+
+\dld{I collect the ingredients for use. The easy Riemann--Roch argument we use
+is from the following lemma. In principle, we could use any source of
+guaranteed nonisolated points.}
 
 \begin{lemma}
 Let $C$ be a curve over a number field $k$ with genus $g$. If $x \in C(\overline{k})$ is a closed point with degree
@@ -291,7 +312,10 @@ $\geq g+1$, then $x$ is not $\mathbb{P}^{1}$-isolated.
 This is Lemma 13 in revision of B., Gill, Rouse, Watson.
 \end{proof}
 
-\section{Remaining Cases}
+\dld{For the filter, we apply (the contrapositive of) Theorem~\ref{BELOVthm}.
+We also use the degree of the natural map as in Proposition~2.2 of BELOV.}
+
+\section{Remaining Filters}
 \abbey{Filip? Abbey?}
 Filip's arguments.
 
@@ -305,11 +329,11 @@ Let $E/ \Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. By 
 Let $E/\Q$ be an elliptic curve with adelic image of genus $0$. Then there does not exist an $n$ such that a point corresponding to $E$ on $X_1(n)$ is sporadic.
 \end{proposition}
 \begin{proof}
-Since $G$ is by assumption of genus $0$, it follows that so is $G(n)$. Let $P$ be a $\Q$-rational point on $X_{G(n)}$ corresponding to $E$. 
+Since $G$ is by assumption of genus $0$, it follows that so is $G(n)$. Let $P$ be a $\Q$-rational point on $X_{G(n)}$ corresponding to $E$.
 
-%Let $B$ be the group generated by $G(n)$ and a conjugate of $B_1(n)$ in $\GL_2(\Z/n\Z)$; this is again a group of genus $0$ on which the image $P'$ of $P$ under the map $X_{G(n)}\rightarro X_B$ is $\Q$-rational. The inclusion of subgroups $B\subset B_1(n)$ induces a map $X_1(n)\rightarrow  X_B$. 
+%Let $B$ be the group generated by $G(n)$ and a conjugate of $B_1(n)$ in $\GL_2(\Z/n\Z)$; this is again a group of genus $0$ on which the image $P'$ of $P$ under the map $X_{G(n)}\rightarro X_B$ is $\Q$-rational. The inclusion of subgroups $B\subset B_1(n)$ induces a map $X_1(n)\rightarrow  X_B$.
 
-The minimal degree of a point on $X_1(n)$ corresponding to $E$ is the minimal index of $B:=c(B_1(n))\cap G(n)$ in $G(n)$, where $c$ denotes conjugation in $\GL_2(\Z /n \Z)$. 
+The minimal degree of a point on $X_1(n)$ corresponding to $E$ is the minimal index of $B:=c(B_1(n))\cap G(n)$ in $G(n)$, where $c$ denotes conjugation in $\GL_2(\Z /n \Z)$.
 Call this (minimal) index $d$ and let $f:X_{B}\rightarrow X_{G(n)}$ be the corresponding map of modular curves. By construction, all the points in $f^{-1}(P)$ are of degree $d$ and obviously $\gon_\Q X_{B}\leq d.$ Let $P'\in f^{-1}(P) \subseteq X_{B}$ be a point corresponding to $E$, and let $g:X_{B}\rightarrow X_1(n)$ be the map induced by the inclusion $B_1(n) \subseteq B$. Then by the argument above we have that $g(P')$ is of degree $d$ (as this is the minimal degree of a point on $X_1(n)$ corresponding to $E$), and on the other hand we have that $\gon_\Q X_1(n)\leq d$ by \cite[Proposition A.1 (vii)]{Poonen:gonality}.
 \end{proof}
 

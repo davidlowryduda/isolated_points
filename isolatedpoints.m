@@ -8,10 +8,10 @@ intrinsic ReducedLevel(G::GrpMat) -> GrpMat, RngIntElt
     {Level reduction from the output of Zywina's algorithm}
     m:=Modulus(BaseRing(G));
     NS:=Set(NonSurjectivePrimes(G));
-    sE:={2,3} join NS; 
+    sE:={2,3} join NS;
     m0:=&*[p^Valuation(m,p):p in sE];
     G:=ChangeRing(G,Integers(m0));
-    for p in PrimeFactors(m0) do 
+    for p in PrimeFactors(m0) do
         while Valuation(m0,p) gt 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq p^4 do
             m0:=m0 div p;
             G:=ChangeRing(G,Integers(m0));
@@ -36,17 +36,16 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
     m := Modulus(BaseRing(G));
     H := sub<GL(2,Integers(m))|G,-G!1>;
     orb := Orbits(H);
-    orbm := [#x div 2 : x in orb | VectorOrder(x[1]) eq m]; 
+    orbm := [#x div 2 : x in orb | VectorOrder(x[1]) eq m];
     degrees := SetToSequence(Set(orbm)); //remove duplicates
     return degrees;
 end intrinsic;
 
-//TODO: rename this function
-intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
-    {Refuting levels and degrees based on the level reduction theorem of BELOV.
+intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
+    {Filtering levels and degrees based on the level reduction theorem of BELOV.
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
-   
+
     function easyRiemannRoch(listofpts)
         potisolated := [];
         for pt in listofpts do
@@ -63,8 +62,8 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     nonisolated := SequenceToSet(allpts) diff SequenceToSet(potisolated);
 
     remove := {};
-    for x in potisolated do //<l, deg> a point of degree deg on X1(l) 
-        for y in nonisolated do 
+    for x in potisolated do //<l, deg> a point of degree deg on X1(l)
+        for y in nonisolated do
             if IsDivisibleBy(x[1],y[1]) then
                 b:=x[1] div y[1]; //how much you are reducing the level by
                 deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
@@ -90,7 +89,7 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     G0t := sub<GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]>;
     k:=#BaseRing(G0t);
 
-    allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg 
+    allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg
     for l in Divisors(k) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l))); //MAJOR CHANGE!!
@@ -100,12 +99,12 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
         end if;
     end for;
 
-    potisolated := RefuteLevel(allpoints);
+    potisolated := FilterByLevelMapping(allpoints);
 
     if #potisolated gt 0 then
-        return [*j, a, false, potisolated*]; 
+        return [*j, a, false, potisolated*];
     else
-        return [*j, a, true, potisolated*]; 
+        return [*j, a, true, potisolated*];
     end if;
 
 end intrinsic;
