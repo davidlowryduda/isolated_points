@@ -60,10 +60,11 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     end function;
 
     potisolated := easyRiemannRoch(allpts);
+    nonisolated :=  Set(allpts) diff Set(potisolated);
 
     remove := {};
-    for x in potisolated do 
-        for y in allpts do
+    for x in potisolated do //<l, deg> a point of degree deg on X1(l) 
+        for y in nonisolated do 
             if IsDivisibleBy(x[1],y[1]) then
                 b:=x[1] div y[1];
                 deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
@@ -90,8 +91,8 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
 
     allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg 
     for l in Divisors(k) do
-        if l gt 12 then //X1(11) is a rank 0 elliptic curve with non noncuspidal rational pts
-            listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l)));
+        if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
+            listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l))); //MAJOR CHANGE!!
             for deg in listofdeg do
                 Append(~allpoints, <l, deg>);
             end for;
