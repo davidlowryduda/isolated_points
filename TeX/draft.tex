@@ -219,8 +219,8 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
   Let $N_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
   Let $S_E= N_E \cup \{ 2, 3\}$\;
   Let $m_0 = \prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$\;
-  \For{$\ell \in \{ \ell | m_0 \colon \ell_0 \text{ prime} \}$}{
-  \While{$\ell|m_0$ and $\#G/\#(G \pmod{m_0/p}) = p^4$}{
+  \For{$p \in \{ \ell | m_0 \colon \ell \text{ prime} \}$}{
+  \While{$p |m_0$ and $\#G/\#(G \pmod{m_0/p}) = p^4$}{
     $m_0 = m_0/p$\;
     $G = G \pmod{m_0}$\;
   }
@@ -253,7 +253,7 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
   Let $H \colonequals \langle G, -I_2\rangle \leq \GL_2(\Z/N\Z)$\;
   Compute the orbits of $H$ acting on $(\Z/N\Z)^2$\label{Inc-1}\;
   Filter the orbit representatives that have order equal to $N$\;
-  Compute the orbit sizes ``degrees'' $s$ such that $s/2 \geq g$\label{DivBy2}\;
+  Compute the orbit sizes $s$ and``degrees'' as $s/2$ \label{DivBy2}\;
   Remove duplicates\label{RemDup}\;
   \Return{degrees}
 \end{algorithm}
@@ -312,6 +312,8 @@ Since $G$ is by assumption of genus $0$, it follows that so is $G(n)$. Let $P$ b
 The minimal degree of a point on $X_1(n)$ corresponding to $E$ is the minimal index of $B:=c(B_1(n))\cap G(n)$ in $G(n)$, where $c$ denotes conjugation in $\GL_2(\Z /n \Z)$. 
 Call this (minimal) index $d$ and let $f:X_{B}\rightarrow X_{G(n)}$ be the corresponding map of modular curves. By construction, all the points in $f^{-1}(P)$ are of degree $d$ and obviously $\gon_\Q X_{B}\leq d.$ Let $P'\in f^{-1}(P) \subseteq X_{B}$ be a point corresponding to $E$, and let $g:X_{B}\rightarrow X_1(n)$ be the map induced by the inclusion $B_1(n) \subseteq B$. Then by the argument above we have that $g(P')$ is of degree $d$ (as this is the minimal degree of a point on $X_1(n)$ corresponding to $E$), and on the other hand we have that $\gon_\Q X_1(n)\leq d$ by \cite[Proposition A.1 (vii)]{Poonen:gonality}.
 \end{proof}
+
+
 
 
 \vspace{20 mm}
