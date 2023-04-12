@@ -1,3 +1,0 @@
-{
-  isolatedpoints.m
-}
