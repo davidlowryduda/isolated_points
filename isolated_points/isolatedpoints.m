@@ -60,7 +60,7 @@ intrinsic RefuteLevel(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     end function;
 
     potisolated := easyRiemannRoch(allpts);
-    nonisolated :=  Set(allpts) diff Set(potisolated);
+    nonisolated := SequenceToSet(allpts) diff SequenceToSet(potisolated);
 
     remove := {};
     for x in potisolated do //<l, deg> a point of degree deg on X1(l) 
