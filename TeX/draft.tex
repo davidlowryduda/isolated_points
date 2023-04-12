@@ -5,7 +5,9 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{amsmath,amsthm,amssymb}
-% \usepackage{algorithm2e}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\usepackage{colonequals}
 
 % Presented to you by Technicolor, and the number 3
 \usepackage{graphics}
@@ -45,7 +47,7 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{exercise}[theorem]{Exercise}
-\newtheorem{algorithm}[theorem]{Algorithm}
+% \newtheorem{algorithm}[theorem]{Algorithm}
 \DeclareMathOperator{\gon}{gon}
 %\numberwithin{equation}{section}
 
@@ -101,7 +103,12 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newcommand{\Z}{\bZ}
 \newcommand{\PP}{\mathbb P}
 \newcommand{\filip}[1]{{\color{cyan} \textsf{$\sun\sun\sun$ Filip: [#1]}}}
-\newcommand{\davidnote}[1]{\marginpar{\footnotesize{\textcolor{Plum}{David: #1}}}}
+\newcommand{\davidnote}[1]{\textcolor{Plum}{David: #1}}
+
+\newcommand{\abbey}[1]{\textcolor{blue}{Abbey: #1}}
+
+\newcommand{\sachi}[1]{\textcolor{purple}{Sachi: #1}}
+% \newcommand{\travis}[1]{\textcolor{chartreuse}{Travis: #1}}
 
 % Don't have subsections appear in TOC
 %\setcounter{tocdepth}{1}
@@ -159,29 +166,8 @@ Since both known examples of sporadic points on $X_1(N)$ associated to non-CM ra
 Let $X_0(N)$ have genus greater than 0, and let $E$ be a non-CM elliptic curve corresponding to a rational point on $X_0(N)$. If there exists a sporadic point $x \in X_1(N')$ with $j(x)=j(E)$, then $j(E) =-140625/8$ or $-9317$.
 \end{corollary}
 
-\section{Proving that a point is not sporadic}
+\section{Background}
 
-\begin{algorithm}
-\textbf{Input:} A non-CM $j$-invariant $j = j(E) \in \Q$.
-
-\textbf{Output:} \textsc{False} if $j$ is not a sporadic $j$-invariant.
-
-\begin{enumerate}
-    \item Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $M$ together with a subgroup $G$ of $\GL_2(\Z/M\Z)$.
-
-    \item Reduce level.
-
-    \item For all $12 < b \mid M$ compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$. (For that, compute the orbits of $\langle G, -G \rangle \mod b$ on the elements of $(\Z/b\Z)^2$ of order $b$. Sort the orbits by size. Return ) 
-    %\filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
-\end{enumerate}
-\end{algorithm}
-
-(In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/M\Z)$.)
-
-
-\section{Reduce Level}
-\noindent \textbf{Input:} Non-CM elliptic curve $E/\Q$\\
-\textbf{Output:} Finite set of positive integers $\mathcal{I}_1$ such that any isolated point $x \in X_1(n)$ with $j(x) =j(E)$ maps under the natural projection map to an isolated point on $X_1(d)$ for $d \in \mathcal{I}_1$.
 \begin{theorem}
 Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. Let $M_E$ be any positive integer such that 
 \[
@@ -196,37 +182,100 @@ Then for any $x \in X_1(n)$ with $j(x)=j(E)$ we have $\deg(x)=\deg(f)\cdot \deg(
 \end{theorem}
 
 \begin{proof}
-This follows from the arguments in Section 5.3 of BELOV (see Remark 5.5 in particular) and Theorem 4.3.
+This follows from the arguments \cite[$\S5.3$]{BELOV} and \cite[Theorem 4.3]{BELOV}. \abbey{This is mentioned in Remark 5.5 of \cite{BELOV} in particular. I'm not sure if we should include more details here.}
 \end{proof}
 
-Let $S_E=\{2,3\} \cup \{\ell : \rho_{E,\ell^{\infty}}(\Gal_{\Q}) \neq \GL_2(\Z_{\ell})\}$. Let $M_E=M_1\cdot M_2$ where $\Supp(M_1) \subseteq S_E$ and $\Supp(M_2) \cap S_E =\emptyset$.
+\section{Proving that a point is not sporadic}
 
-\begin{corollary}
-Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois representation of $E$. 
-Then for any $x \in X_1(n)$ with $j(x)=j(E)$ we have $\deg(x)=\deg(f)\cdot \deg(f(x))$, where $f: X_1(n) \rightarrow X_1(\gcd(n,M_1))$ denotes the natural map. It follows that:
-\begin{enumerate}
-\item If $x$ is $\mathbb{P}^1$-isolated, then $f(x)$ is $\mathbb{P}^1$-isolated.
-\item If $x$ is AV-isolated, then $f(x)$ is AV-isolated.
-\item If $x$ is sporadic, then $f(x)$ is sporadic.
-\end{enumerate}
-\end{corollary}
+\begin{algorithm}
+\KwIn{A non-CM $j$-invariant $j = j(E) \in \Q$.}
+\KwOut{\textsc{False} if $j$ is not a sporadic $j$-invariant. \abbey{Update: Finite list of curves, degrees such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point in this list. If empty, $j$ is not isolated.)}}
+Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $N$ together with a subgroup $G$ of $\GL_2(\Z/N\Z)$\;
+Reduce level\;
+For all $12 < b \mid N$, using Algorithm~\ref{alg:compute_degree} compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$\;
+\Return{?} \;
+    %\filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
+\end{algorithm}
 
-\begin{proof}
-This should follow from BELOV Proposition 5.7.
-\end{proof}
+(In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/N\Z)$.)
 
-Main idea beyond this: Let $m$ be the product of the primes in $\Supp(M_1)$. By Proposition 5.8 in BELOV, it suffices to replace $M_1$ in the corollary above with the level of the $m$-adic Galois representation. This should be the main point of the ``ReducedLevel" operation: to compute this level. Note in particular we do not need to add in 2 and 3 if they were not already in $\Supp(M_E)$.
 
+\section{Reduce Level}
+
+\abbey{Travis,Sachi, Abbey}
+
+\begin{theorem}[\cite{BELOV}]\label{BELOVthm}
+Let $E/\Q$ be a non-CM elliptic curve, and let $m$ be the product of 2, 3, and all primes $\ell$ where the $\ell$-adic Galois representation of $E$ is not surjective. Let $m_0$ be the level of the $m$-adic Galois representation associated to $E$ and let $f: X_1(n) \rightarrow X_1(\gcd(n,m_0))$ denote the natural map. If $x\in X_1(n)$ is an isolated point with $j(x)=j(E)$, then $f(x)\in X_1(\gcd(n,m_0))$ is an isolated point. 
+\end{theorem}
+
+Using Zywina's algorithm for the level of the adelic Galois representation as a starting point, we may obtain the level of the $m$-adic Galois representation associated to $E$ as in Theorem \ref{BELOVthm}.
+
+
+\begin{algorithm}[H]
+  \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level}
+  \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal \abbey{Don't we need to include 2 and 3 in our definition of $m$? It is possible 2 and 3 may divide $m_0$ even if they are not surjective primes. If they are not necessary, then 2 and 3 need not divide $m_0$ in the final output.} } 
+  \caption{Reduce level}%
+  \label{alg:reduce_level}
+  Let $N_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
+  Let $S_E= N_E \cup \{ 2, 3\}$\;
+  Let $m_0 = \prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$\;
+  \For{$\ell \in \{ \ell | m_0 \colon \ell_0 \text{ prime} \}$}{
+  \While{$\ell|m_0$ and $\#G/\#(G \pmod{m_0/p}) = p^4$}{
+    $m_0 = m_0/p$\;
+    $G = G \pmod{m_0}$\;
+  }
+  \If{not $p$ in $N_E$ and $\ord_p(m_0) = 1$ and $\#G/\#(G \pmod{m_0/p}) = \#\GL_2(\Z/p\Z)$}{
+  $m_0 = m_0/p$\;
+   $G = G \pmod{m_0}$\;}}
+  \Return{$G,m_0$}
+\end{algorithm}
+
+  \begin{proposition}
+    Algorithm~\ref{alg:reduce_level} is correct.
+  \end{proposition}
+  \begin{proof}
+    Since $N$ is the level of the adelic representation and both $m$ and $m_0$ divides $N$, we must have that $\im\rho_{E, m^\infty} = \pi^{-1}(\im \rho_{E,m_0})$. This property is an invariant of the for-loop. The for-loop 
+    terminates once as many powers of $\ell$ have been removed from $m_0$ 
+    as possible while maintaining this invariant. Thus $m_0$ is the minimal such integer and is thus the level. 
+  \end{proof}
+
+
+
+  
 \section{Compute Degree}
 
-\noindent \textbf{Input:} $\mathcal{I}_1$ from step 1\\
-\textbf{Output:} For each $d \in \mathcal{I}_1$, compute degree(s) of closed point on $X_1(n)$ associated to $E$. Return ???
+\noindent \textbf{Input:} $\mathcal{I}_1$ from step 1 \\
+\textbf{Output:} For each $d \in \mathcal{I}_1$, compute degree(s) of closed point on $X_1(N)$ associated to $E$. Return ??? \abbey{update algorithm description}
+
+\begin{algorithm}[H]\label{alg:compute_degree}
+  \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level; a bound $g \in \Z$}
+  \KwOut{all degrees of $x$-coordinates of points that are $\geq g$} 
+  Let $H \colonequals \langle G, -I_2\rangle \leq \GL_2(\Z/N\Z)$\;
+  Compute the orbits of $H$ acting on $(\Z/N\Z)^2$\label{Inc-1}\;
+  Filter the orbit representatives that have order equal to $N$\;
+  Compute the orbit sizes ``degrees'' $s$ such that $s/2 \geq g$\label{DivBy2}\;
+  Remove duplicates\label{RemDup}\;
+  \Return{degrees}
+\end{algorithm}
+
+Note that only working with orbit(s) (representatives) significantly speeds up the implementation. The computation of the orbits of $G$ acting on $(\Z/N\Z)^2$ is efficiently implemented in Magma.
 
 \begin{proposition}
-Let $E/\Q$ be a non-CM elliptic curve and $n \in \mathbb{Z}^+$. If $\im \rho_{E,n} \cong G \leq \GL_2(\Z/n\Z)$, then ...
+Let $E/\Q$ be a non-CM elliptic curve and $N \in \Z_{>0}$. If $\im \rho_{E,N} \cong G \leq \GL_2(\Z/N\Z)$, then the Algorithm \ref{alg:compute_degree} outputs the sequence consisting of all possible degrees of $x(P)$, where $P\in E[N]$ is a point of order $N$.
 \end{proposition}
-
-
+\begin{proof}
+    We begin by noting that $(E, P)$ and $(E, -P)$ denote the same point on $X_1(N)$, for $P \in E[N]$. Therefore, the degree of 
+    a point represented by $(E, P)$, when
+    $E$ is defined over $\Q$ depends only on $x(P)$. 
+    If $E[N]$ is identified with $(\Z/N\Z)^2$, then $\deg(P)=\# (G. P)$, where $P$ on the left hand side is considered as an element of $(\Z/N\Z)^2$
+    and on right hand side as an element of $E[N]$.
+    If $P$ and $-P$ are in the same Galois orbit, i.e., $-I_2\in G$, then $[\Q(x(P)):\Q]=[\Q(P):\Q]/2$. On the other hand, one has $[\Q(x(P)):\Q]=[\Q(P):\Q]$, when 
+    $-I_2\notin G$. 
+    Therefore, computing the orbit sizes with respect to the 
+    group $H\coloneqq \langle G, -I_2 \rangle$ (step~\ref{Inc-1} in Algorithm \ref{alg:compute_degree}) and dividing
+    by $2$ (step~\ref{DivBy2}) handles both the cases, because in the later case (i.e., when $-I_2\notin G$) the orbit sizes will be doubled. 
+    Finally, step~\ref{RemDup} makes sure that every degree occurs only once in the output sequence.
+\end{proof}
 
 \section{Riemann-Roch}
 
@@ -243,14 +292,14 @@ This is Lemma 13 in revision of B., Gill, Rouse, Watson.
 \end{proof}
 
 \section{Remaining Cases}
-
-Filip's arguemnts
+\abbey{Filip? Abbey?}
+Filip's arguments.
 
 
 
 \section{Genus 0 adelic images do not produce isolated points}
 
-Let $E/ \Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. By $G(n)$ denote the image of its mod $n$ representation. Denote by $B_1(n)$ the subgroup of $\GL_2(\Z /n \Z)$ consisting of the upper triangular matrices with a $1$ in the upper left entry. Note that $X_{B_1(n)}=X_1(n)$. We say that a congruence group $\Gamma$ is of genus $g$ if $X_\Gamma$ is of genus $g$. We say that a point $P$ corresponds to an elliptic curve $E$ if $j(P)=j(E)$.
+Let $E/ \Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. By $G(n)$ denote the image of its mod $n$ representation. Denote by $B_1(n)$ the subgroup of $\GL_2(\Z/n\Z)$ consisting of the upper triangular matrices with a $1$ in the upper left entry. Note that $X_{B_1(n)}=X_1(n)$. We say that a congruence group $\Gamma$ is of genus $g$ if $X_\Gamma$ is of genus $g$. We say that a point $P$ corresponds to an elliptic curve $E$ if $j(P)=j(E)$.
 
 \begin{proposition}
 Let $E/\Q$ be an elliptic curve with adelic image of genus $0$. Then there does not exist an $n$ such that a point corresponding to $E$ on $X_1(n)$ is sporadic.
