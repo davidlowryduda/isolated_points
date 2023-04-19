@@ -186,16 +186,32 @@ This follows from the arguments \cite[$\S5.3$]{BELOV} and \cite[Theorem 4.3]{BEL
 \end{proof}
 
 \section{Proving that a point is not sporadic}
+The following algorithm is the main procedure for determining a $j$-invariant is not sporadic. It gives an overview of the structure.
 
-\begin{algorithm}
-\KwIn{A non-CM $j$-invariant $j = j(E) \in \Q$.}
-\KwOut{\textsc{False} if $j$ is not a sporadic $j$-invariant. \abbey{Update: Finite list of curves, degrees such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point in this list. If empty, $j$ is not isolated.)}}
+\begin{algorithm}[h!]
+\caption{Main Algorithm}\label{alg:mainalgorithm}
+\KwIn{A non-CM $j$-invariant $j = j(E) \in \Q$ and $a$-invariants for $E$ with $j$-invariant $j$.}
+\KwOut{Finite list of pairs $(n,d)$ such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point of degree $d$ in this list. \sachi{is this better?} \abbey{Don't we mean ``Finite list of pairs $(n_i,d_i)$ such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point of degree $d_i$ on $X_1(n_i)$ for some $n_i \mid n$ and $(n_i,d_i)$ in this list. But maybe with better notation.}}
 Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $N$ together with a subgroup $G$ of $\GL_2(\Z/N\Z)$\;
-Reduce level\;
-For all $12 < b \mid N$, using Algorithm~\ref{alg:compute_degree} compute the minimum degree of the field of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$\;
-\Return{?} \;
+Using Algorithm \ref{alg:reduce_level}, reduce the level to $G, m_0$\; 
+Define $L \colonequals \{\}$\;
+\For{all $12 < b \mid m_0$}{
+Using Algorithm~\ref{alg:compute_degree} compute the set $D$ of degrees of all fields of definition of a point with respect to $G \mod b$, the image of $G$ in $\GL_2(\Z/b\Z)$\;
+Set $L \colonequals L \cup \{ (b, d) : d \in D\}$ \;}
+Using Algorithm \ref{alg:level_mapping} filter the list $L$ to obtain a refined list $L'$\;
+\Return{the list $L'$ } \;
     %\filip{We need to look at the orbits of $\langle G, -G \rangle \mod b$ on $(\Z/b\Z)^2$, not $\bP^1(\Z/b\Z)$. If we consider the action on $\bP^1(\Z/b\Z)$, the orbits might be too small and hence the degree we get. Furthermore, it is necessary to consider only the elements of $(\Z/b\Z)^2$ of order $b$.}
 \end{algorithm}
+
+
+
+\begin{theorem}
+ Algorithm \ref{alg:mainalgorithm} is correct. 
+\end{theorem}
+\begin{corollary}
+If Algorithm \ref{alg:mainalgorithm} outputs an empty set on some $j$-invariant $j = j(E)$ and $a$-invariants $a$ for $E$, then $j$ is not a  $\mathbf{P}^1$-isolated point on $X_1(N)$.
+\end{corollary}
+\abbey{Zywina said the results returned from his adelic image algrithm are guaranteed to be correct and that ``errors will always occur if $E$ gives rise to an unknown exceptional rational point on certain high genus modular curves." Since an error in his algorithm will result in an error in our algorithm, I don't know what should be said about this in our writeup.} \sachi{maybe the easiest thing is just to add a remark saying that the results are guaranteed to be correct, and getting an error instead of a result is possible but that we did not encounter it?}
 
 (In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/N\Z)$.)
 
@@ -212,7 +228,7 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
   \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal \abbey{Don't we need to include 2 and 3 in our definition of $m$? It is possible 2 and 3 may divide $m_0$ even if they are not surjective primes. If they are not necessary, then 2 and 3 need not divide $m_0$ in the final output.} }
   \caption{Reduce level}%
   \label{alg:reduce_level}
-  Let $N_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
+  Let $P_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
   Let $S_E= N_E \cup \{ 2, 3\}$\;
   Let $m_0 = \prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$\;
   \For{$p \in \{ \ell | m_0 \colon \ell \text{ prime} \}$}{
@@ -220,7 +236,7 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
     $m_0 = m_0/p$\;
     $G = G \pmod{m_0}$\;
   }
-  \If{not $p$ in $N_E$ and $\ord_p(m_0) = 1$ and $\#G/\#(G \pmod{m_0/p}) = \#\GL_2(\Z/p\Z)$}{
+  \If{not $p$ in $P_E$ and $\ord_p(m_0) = 1$ and $\#G/\#(G \pmod{m_0/p}) = \#\GL_2(\Z/p\Z)$}{
   $m_0 = m_0/p$\;
    $G = G \pmod{m_0}$\;}}
   \Return{$G,m_0$}
@@ -240,15 +256,17 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
 
 \section{Compute Degree}
 
-\noindent \textbf{Input:} $\mathcal{I}_1$ from step 1 \\
-\textbf{Output:} For each $d \in \mathcal{I}_1$, compute degree(s) of closed point on $X_1(N)$ associated to $E$. Return ??? \abbey{update algorithm description}
+The following algorithm computes the degrees of closed points on $X_1(N)$ associated to $E$.
 
-\begin{algorithm}[H]\label{alg:compute_degree}
-  \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level; a bound $g \in \Z$}
-  \KwOut{all degrees of $x$-coordinates of points that are $\geq g$}
+% \noindent \textbf{Input:} $\mathcal{I}_1$ from step 1 \\
+% \textbf{Output:} For each $d \in \mathcal{I}_1$, compute degree(s) of closed point on $X_1(N)$ associated to $E$. Return ??? \abbey{update algorithm description}
+
+\begin{algorithm}[H] \caption{Compute Degree}\label{alg:compute_degree}
+  \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level}
+  \KwOut{all degrees of $x$-coordinates of points}
   Let $H \colonequals \langle G, -I_2\rangle \leq \GL_2(\Z/N\Z)$\;
   Compute the orbits of $H$ acting on $(\Z/N\Z)^2$\label{Inc-1}\;
-  Filter the orbit representatives that have order equal to $N$\;
+  Filter the orbit representatives for orbits that have order equal to $N$\;
   Compute the orbit sizes $s$ and``degrees'' as $s/2$ \label{DivBy2}\;
   Remove duplicates\label{RemDup}\;
   \Return{degrees}
@@ -260,7 +278,7 @@ Note that only working with orbit(s) (representatives) significantly speeds up t
 Let $E/\Q$ be a non-CM elliptic curve and $N \in \Z_{>0}$. If $\im \rho_{E,N} \cong G \leq \GL_2(\Z/N\Z)$, then the Algorithm \ref{alg:compute_degree} outputs the sequence consisting of all possible degrees of $x(P)$, where $P\in E[N]$ is a point of order $N$.
 \end{proposition}
 \begin{proof}
-    We begin by noting that $(E, P)$ and $(E, -P)$ denote the same point on $X_1(N)$, for $P \in E[N]$. Therefore, the degree of
+    We begin by noting that $(E, P)$ and $(E, -P)$ \abbey{induce the same closed} point on $X_1(N)$, for $P \in E[N]$. Therefore, the degree of
     a point represented by $(E, P)$, when
     $E$ is defined over $\Q$ depends only on $x(P)$.
     If $E[N]$ is identified with $(\Z/N\Z)^2$, then $\deg(P)=\# (G. P)$, where $P$ on the left hand side is considered as an element of $(\Z/N\Z)^2$
@@ -289,7 +307,7 @@ isolated point! If not, then perhaps other work is necessary.}
 \dld{I imagine other filters being potentially applied afterwards, each
 removing some set of non-isolated points.}
 
-\begin{algorithm}[H]\label{alg:level_mapping}
+\begin{algorithm}[H]\caption{Filter by Level Mapping}\label{alg:level_mapping}
   \KwIn{A list of pairs $(N, d)$ such that $E$ gives a nonCM point on $X_1(N)$
   of degree $d$.}
   \KwOut{A list of pairs $(N, d)$ containing all isolated points.}
@@ -321,7 +339,7 @@ Filip's arguments.
 
 
 
-\section{Genus 0 adelic images do not produce isolated points}
+\section{Genus 0 adelic images do not produce sporadic points}
 
 Let $E/ \Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. By $G(n)$ denote the image of its mod $n$ representation. Denote by $B_1(n)$ the subgroup of $\GL_2(\Z/n\Z)$ consisting of the upper triangular matrices with a $1$ in the upper left entry. Note that $X_{B_1(n)}=X_1(n)$. We say that a congruence group $\Gamma$ is of genus $g$ if $X_\Gamma$ is of genus $g$. We say that a point $P$ corresponds to an elliptic curve $E$ if $j(P)=j(E)$.
 
