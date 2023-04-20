@@ -47,19 +47,19 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
 
     function easyRiemannRoch(listofpts)
-        potisolated := [];
+        nonisolated := [];
         for pt in listofpts do
             l, deg := Explode(pt);
             genusGamma1lplus1 := Genus(Gamma1(l))+1;
             if deg ge genusGamma1lplus1 then
-                Append(~potisolated, <l, deg>); //"easy" Riemann--Roch condition
+                Append(~nonisolated, <l, deg>); //"easy" Riemann--Roch condition
             end if;
         end for;
-        return potisolated;
+        return nonisolated;
     end function;
 
-    potisolated := easyRiemannRoch(allpts);
-    nonisolated := SequenceToSet(allpts) diff SequenceToSet(potisolated);
+    nonisolated := easyRiemannRoch(allpts);
+    potisolated := SequenceToSet(allpts) diff SequenceToSet(nonisolated);
 
     remove := {};
     for x in potisolated do //<l, deg> a point of degree deg on X1(l)
