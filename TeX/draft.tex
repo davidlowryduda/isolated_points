@@ -25,8 +25,8 @@
 %\usepackage{showkeys}
 \usepackage[square,sort,comma,numbers]{natbib}
 
-% For pretty hyperlinks
-\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+% For pretty hyperlinks (I changed this because I cannot see what is a ref/link and what is not, sorry! - Sachi)
+\definecolor{darkblue}{rgb}{0.0,0.0,1}
 \hypersetup{colorlinks,breaklinks,
   linkcolor=darkblue,urlcolor=darkblue,
 anchorcolor=darkblue,citecolor=darkblue}
@@ -108,6 +108,7 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newcommand{\abbey}[1]{\textcolor{blue}{Abbey: #1}}
 \newcommand{\dld}[1]{\textcolor{Plum}{dld: #1}}
 \newcommand{\sachi}[1]{\textcolor{purple}{Sachi: #1}}
+\newcommand{\timo}[1]{\textcolor{red}{Timo: #1}}
 % \newcommand{\travis}[1]{\textcolor{chartreuse}{Travis: #1}}
 
 % Don't have subsections appear in TOC
@@ -175,7 +176,7 @@ Let $E/\Q$ be a non-CM elliptic curve, and let $\rho_E$ denote the adelic Galois
 \]
 Then for any $x \in X_1(n)$ with $j(x)=j(E)$ we have $\deg(x)=\deg(f)\cdot \deg(f(x))$, where $f: X_1(n) \rightarrow X_1(\gcd(n,M_E))$ denotes the natural map. It follows that:
 \begin{enumerate}
-\item If $x$ is $\mathbb{P}^1$-isolated, then $f(x)$ is $\mathbb{P}^1$-isolated.
+\item If $x$ is $\mathbf{P}^1$-isolated, then $f(x)$ is $\mathbf{P}^1$-isolated.
 \item If $x$ is AV-isolated, then $f(x)$ is AV-isolated.
 \item If $x$ is sporadic, then $f(x)$ is sporadic.
 \end{enumerate}
@@ -191,7 +192,7 @@ The following algorithm is the main procedure for determining a $j$-invariant is
 \begin{algorithm}[h!]
 \caption{Main Algorithm}\label{alg:mainalgorithm}
 \KwIn{A non-CM $j$-invariant $j = j(E) \in \Q$ and $a$-invariants for $E$ with $j$-invariant $j$.}
-\KwOut{Finite list of pairs $(n,d)$ such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point of degree $d$ in this list. \sachi{is this better?} \abbey{Don't we mean ``Finite list of pairs $(n_i,d_i)$ such that any isolated point on $X_1(n)$ associated to $E$ maps down under the natural projection map to a point of degree $d_i$ on $X_1(n_i)$ for some $n_i \mid n$ and $(n_i,d_i)$ in this list. But maybe with better notation.}}
+\KwOut{Finite list of pairs $(n,d)$ such that any isolated point on $X_1(N)$ associated to $E$ maps down under the natural projection map to an isolated point of degree $d$ on $X_1(n)$ in the list. }
 Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm. Represent the output as some \emph{level} $N$ together with a subgroup $G$ of $\GL_2(\Z/N\Z)$\;
 Using Algorithm \ref{alg:reduce_level}, reduce the level to $G, m_0$\; 
 Define $L \colonequals \{\}$\;
@@ -211,7 +212,7 @@ Using Algorithm \ref{alg:level_mapping} filter the list $L$ to obtain a refined 
 \begin{corollary}
 If Algorithm \ref{alg:mainalgorithm} outputs an empty set on some $j$-invariant $j = j(E)$ and $a$-invariants $a$ for $E$, then $j$ is not a  $\mathbf{P}^1$-isolated point on $X_1(N)$.
 \end{corollary}
-\abbey{Zywina said the results returned from his adelic image algrithm are guaranteed to be correct and that ``errors will always occur if $E$ gives rise to an unknown exceptional rational point on certain high genus modular curves." Since an error in his algorithm will result in an error in our algorithm, I don't know what should be said about this in our writeup.} \sachi{maybe the easiest thing is just to add a remark saying that the results are guaranteed to be correct, and getting an error instead of a result is possible but that we did not encounter it?}
+\abbey{Zywina said the results returned from his adelic image algrithm are guaranteed to be correct and that ``errors will always occur if $E$ gives rise to an unknown exceptional rational point on certain high genus modular curves." Since an error in his algorithm will result in an error in our algorithm, I don't know what should be said about this in our writeup.} \sachi{maybe the easiest thing is just to add a remark saying that the results are guaranteed to be correct, and getting an error instead of a result is possible but that we did not encounter it?} \timo{I second that.} \abbey{alternatively, separate Zywina's algorithm from ours in this paper}
 
 (In the \texttt{Magma} implementation, we have to be careful that \texttt{Magma} uses right actions, but in our mathematics, we use left action. We therefore use the transposes of the matrices in $\GL_2(\Z/N\Z)$.)
 
@@ -225,11 +226,11 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
 
 \begin{algorithm}[H]
   \KwIn{$G\subseteq \GL_2(\Z/N\Z)$ such that $\im\rho_E=\pi^{-1}(G)$ and $N$ is the level}
-  \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal \abbey{Don't we need to include 2 and 3 in our definition of $m$? It is possible 2 and 3 may divide $m_0$ even if they are not surjective primes. If they are not necessary, then 2 and 3 need not divide $m_0$ in the final output.} }
+  \KwOut{$G\subseteq \GL_2(\Z/m_0\Z)$ such that $G=\im\rho_{E,m_0}$ and $\im\rho_{E,m^{\infty}}=\pi^{-1}(\im\rho_{E,m_0})$ where $m$ is the product of the non-surjective primes and $2$ and $3$ (if they do not already divide $m$), and $m_0$ is minimal }
   \caption{Reduce level}%
   \label{alg:reduce_level}
   Let $P_E = \{\ell|N \text{ prime} \colon \rho_{E,\ell} \text{ is non-surjective} \}$\;
-  Let $S_E= N_E \cup \{ 2, 3\}$\;
+  Let $S_E= P_E \cup \{ 2, 3\}$\;
   Let $m_0 = \prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$\;
   \For{$p \in \{ \ell | m_0 \colon \ell \text{ prime} \}$}{
   \While{$p |m_0$ and $\#G/\#(G \pmod{m_0/p}) = p^4$}{
@@ -251,10 +252,10 @@ Using Zywina's algorithm for the level of the adelic Galois representation as a 
     as possible while maintaining this invariant. Thus $m_0$ is the minimal such integer and is thus the level.
   \end{proof}
 
+\abbey{give example}
 
 
-
-\section{Compute Degree}
+\section{Compute Degrees}
 
 The following algorithm computes the degrees of closed points on $X_1(N)$ associated to $E$.
 
@@ -267,7 +268,7 @@ The following algorithm computes the degrees of closed points on $X_1(N)$ associ
   Let $H \colonequals \langle G, -I_2\rangle \leq \GL_2(\Z/N\Z)$\;
   Compute the orbits of $H$ acting on $(\Z/N\Z)^2$\label{Inc-1}\;
   Filter the orbit representatives for orbits that have order equal to $N$\;
-  Compute the orbit sizes $s$ and``degrees'' as $s/2$ \label{DivBy2}\;
+  Compute the orbit sizes $s$ and ``degrees'' as $s/2$ \label{DivBy2}\;
   Remove duplicates\label{RemDup}\;
   \Return{degrees}
 \end{algorithm}
@@ -308,7 +309,7 @@ isolated point! If not, then perhaps other work is necessary.}
 removing some set of non-isolated points.}
 
 \begin{algorithm}[H]\caption{Filter by Level Mapping}\label{alg:level_mapping}
-  \KwIn{A list of pairs $(N, d)$ such that $E$ gives a nonCM point on $X_1(N)$
+  \KwIn{A list of pairs $(N, d)$ such that $E$ gives a non-CM point on $X_1(N)$
   of degree $d$.}
   \KwOut{A list of pairs $(N, d)$ containing all isolated points.}
   (sketch)\;
@@ -321,13 +322,15 @@ removing some set of non-isolated points.}
 is from the following lemma. In principle, we could use any source of
 guaranteed nonisolated points.}
 
+\abbey{give example}
+
 \begin{lemma}
 Let $C$ be a curve over a number field $k$ with genus $g$. If $x \in C(\overline{k})$ is a closed point with degree
 $\geq g+1$, then $x$ is not $\mathbb{P}^{1}$-isolated.
 \end{lemma}
 
 \begin{proof}
-This is Lemma 13 in revision of B., Gill, Rouse, Watson.
+This is Lemma 13 in revision of B., Gill, Rouse, Watson. \cite{OddDeg}
 \end{proof}
 
 \dld{For the filter, we apply (the contrapositive of) Theorem~\ref{BELOVthm}.
