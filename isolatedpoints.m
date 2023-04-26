@@ -73,7 +73,6 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     end for;
     //See https://arxiv.org/pdf/1808.04520.pdf Prop 2.2
 
-    potisolated := SequenceToSet(potisolated);
     potisolated := potisolated diff remove; //the remaining potentially isolated
 
     return potisolated;
@@ -81,8 +80,12 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
 end intrinsic;
 
 
-intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
+intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
     {main function to check if a j invariant is sporadic}
+    if #a eq 0 then
+        a := [1,0,0,-36/(j-1728),-1/(j-1728)];
+        assert jInvariant(EllipticCurve(a)) eq j;
+    end if;
     E:=EllipticCurve(a);
     G,n,S:=FindOpenImage(path, E);
     G0:=ReducedLevel(G);
@@ -102,9 +105,9 @@ intrinsic NotIsolated(a::SeqEnum[RngIntElt], j::MonStgElt, path::Assoc) -> List
     potisolated := FilterByLevelMapping(allpoints);
 
     if #potisolated gt 0 then
-        return [*j, a, false, potisolated*];
+        return [*Sprint(j), false, potisolated*];
     else
-        return [*j, a, true, potisolated*];
+        return [*Sprint(j), true, potisolated*];
     end if;
 
 end intrinsic;
