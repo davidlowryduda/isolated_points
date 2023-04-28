@@ -4,7 +4,7 @@ intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
         return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
 end intrinsic;
 
-intrinsic ReducedLevel(G::GrpMat) -> GrpMat, RngIntElt
+intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
     {Level reduction from the output of Zywina's algorithm}
     m:=Modulus(BaseRing(G));
     NS:=Set(NonSurjectivePrimes(G));
@@ -16,12 +16,15 @@ intrinsic ReducedLevel(G::GrpMat) -> GrpMat, RngIntElt
             m0:=m0 div p;
             G:=ChangeRing(G,Integers(m0));
         end while;
-        if not p in NS and Valuation(m0,p) eq 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then //this #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) is implied by other two conditions
-            m0:=m0 div p;
-            G:=ChangeRing(G,Integers(m0));
+        if not p in NS and Valuation(m0,p) eq 1 then
+            if m0 eq p and #G eq #GL(2,GF(p)) then
+                return 1;
+            elif #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then 
+                m0:=m0 div p;
+            end if;
         end if;
     end for;
-    return G,m0;
+    return m0;
 end intrinsic;
 
 intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
@@ -88,7 +91,13 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
     end if;
     E:=EllipticCurve(a);
     G,n,S:=FindOpenImage(path, E);
-    G0:=ReducedLevel(G);
+    m0:=ReducedLevel(G);
+    
+    if m0 eq 1 then
+        return [*Sprint(j), true, {}*];
+    end if;
+
+    G0:=ChangeRing(G,Integers(m0));
     G0t := sub<GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]>;
     k:=#BaseRing(G0t);
 
