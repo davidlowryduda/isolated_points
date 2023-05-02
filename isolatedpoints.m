@@ -44,20 +44,18 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
     return degrees;
 end intrinsic;
 
-intrinsic CachedGenus(l::RngIntElt, A::Assoc) -> RngIntElt, Assoc
-    {Genus cached}
-    if l notin Keys(A) then
-        A[l] := Genus(Gamma1(l));
-    end if; 
-    return l,A;
-end intrinsic;
-
 intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     {Filtering levels and degrees based on the level reduction theorem of BELOV.
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
 
-    A := AssociativeArray();
+    function CachedGenus(l, A)
+        if l notin Keys(A) then
+            A[l] := Genus(Gamma1(l));
+        end if; 
+        return l, A;
+    end function;
+
     function easyRiemannRoch(listofpts,A)
         nonisolated := [];
         for pt in listofpts do
@@ -69,6 +67,8 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
         end for;
         return nonisolated;
     end function;
+
+    A := AssociativeArray();
 
     nonisolated := easyRiemannRoch(allpts,A);
     potisolated := SequenceToSet(allpts) diff SequenceToSet(nonisolated);
