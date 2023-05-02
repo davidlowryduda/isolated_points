@@ -53,7 +53,7 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
         if l notin Keys(A) then
             A[l] := Genus(Gamma1(l));
         end if; 
-        return l, A;
+        return A[l], A;
     end function;
 
     function easyRiemannRoch(listofpts,A)
