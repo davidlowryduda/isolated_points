@@ -1,3 +1,4 @@
+SetProfile(true);
 AttachSpec("/Users/sachihashimoto/repos/ModularCurves/equations/equations.spec");                                                      
 path := OpenImageContext("/Users/sachihashimoto/repos/ModularCurves/equations/OpenImage/data-files");                                                                           
 AttachSpec("isolated.spec");
