@@ -46,7 +46,7 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orb := Orbits(H);
-    orbm := [#x div 2 : x in orb | VectorOrder(x[1]) eq m];
+    orbm := [ m ne 2 select #x div 2 else #x : x in orb | VectorOrder(x[1]) eq m];
     degrees := SetToSequence(Set(orbm)); //remove duplicates
     return degrees;
 end intrinsic;
@@ -113,8 +113,10 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
         return [*Sprint(j), true, {}*];
     end if;
 
+    G0:=ChangeRing(G,Integers(m0));
+
     allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg
-    for l in Divisors(k) do
+    for l in Divisors(m0) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
             for deg in listofdeg do
