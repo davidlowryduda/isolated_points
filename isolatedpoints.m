@@ -1,3 +1,9 @@
+intrinsic TransposeMatrixGroup(G::GrpMat) -> GrpMat
+    {Return the transpose}
+    Gt := sub<GL(2,Integers(#BaseRing(G))) | [Transpose(g):g in Generators(G)]>;
+    return Gt;
+end intrinsic;
+
 intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
     {Given G the adelic image of the Galois representation, compute the non-surjective primes}
         m:=Modulus(BaseRing(G));
@@ -36,8 +42,9 @@ end intrinsic;
 
 intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
     {compute all degrees of points without doing Riemann-Roch}
-    m := Modulus(BaseRing(G));
-    H := sub<GL(2,Integers(m))|G,-G!1>;
+    Gt := TransposeMatrixGroup(G);
+    m := Modulus(BaseRing(Gt));
+    H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orb := Orbits(H);
     orbm := [#x div 2 : x in orb | VectorOrder(x[1]) eq m];
     degrees := SetToSequence(Set(orbm)); //remove duplicates
@@ -106,14 +113,10 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
         return [*Sprint(j), true, {}*];
     end if;
 
-    G0:=ChangeRing(G,Integers(m0));
-    G0t := sub<GL(2,Integers(#BaseRing(G0))) | [Transpose(g):g in Generators(G0)]>;
-    k:=#BaseRing(G0t);
-
     allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg
     for l in Divisors(k) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
-            listofdeg := DegreesOfPoints(ChangeRing(G0t,Integers(l))); //MAJOR CHANGE!!
+            listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
             for deg in listofdeg do
                 Append(~allpoints, <l, deg>);
             end for;
