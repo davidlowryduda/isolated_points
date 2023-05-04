@@ -40,14 +40,14 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     return m div g;
 end intrinsic;
 
-intrinsic DegreesOfPoints(G::GrpMat) -> SeqEnum[RngIntElt]
+intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
     {compute all degrees of points without doing Riemann-Roch}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orb := Orbits(H);
     orbm := [ m ne 2 select #x div 2 else #x : x in orb | VectorOrder(x[1]) eq m];
-    degrees := SetToSequence(Set(orbm)); //remove duplicates
+    degrees := SequenceToMultiset(orbm); 
     return degrees;
 end intrinsic;
 
@@ -78,9 +78,9 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     A := AssociativeArray();
 
     nonisolated := easyRiemannRoch(allpts,A);
-    potisolated := SequenceToSet(allpts) diff SequenceToSet(nonisolated);
+    potisolated := SequenceToMultiset(allpts) diff SequenceToMultiset(nonisolated);
 
-    remove := {};
+    remove := {* *};
     for x in potisolated do //<l, deg> a point of degree deg on X1(l)
         for y in nonisolated do
             if IsDivisibleBy(x[1],y[1]) then
