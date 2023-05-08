@@ -120,9 +120,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
     for l in Divisors(m0) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
-            for deg in listofdeg do
-                allpoints := allpoints cat deg;
-            end for;
+            allpoints := allpoints cat deg;
         end if;
     end for;
 
