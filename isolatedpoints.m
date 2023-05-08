@@ -41,12 +41,13 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
 end intrinsic;
 
 intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
-    {compute all degrees of points without doing Riemann-Roch}
+    {compute all degrees of points without doing Riemann--Roch. 
+    Returns tuple <m,deg, P> where P is a vector in Z/mZ of order 2*deg when m neq 2, otherwise order deg}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orb := Orbits(H);
-    orbm := [ m ne 2 select #x div 2 else #x : x in orb | VectorOrder(x[1]) eq m];
+    orbm := [ m ne 2 select <m,#x div 2, x[1]> else <m,#x, x[1]> : x in orb | VectorOrder(x[1]) eq m];
     degrees := SequenceToMultiset(orbm); 
     return degrees;
 end intrinsic;
@@ -82,8 +83,8 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
 
     remove := {* *};
     for x in potisolated do //<l, deg> a point of degree deg on X1(l)
-        for y in nonisolated do
-            if IsDivisibleBy(x[1],y[1]) then
+        for y in nonisolated do 
+            if IsDivisibleBy(x[1],y[1]) and (x[1] div y[1]) * y[3] eq x[3] then
                 b:=x[1] div y[1]; //how much you are reducing the level by
                 deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
                 if deg eq x[2] div y[2] then Include(~remove,x); end if;
@@ -115,12 +116,12 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
 
     G0:=ChangeRing(G,Integers(m0));
 
-    allpoints := []; //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg
+    allpoints := []; //generate a list of <l, deg, P> such that E is a non CM point on X1(l) of degree deg, and P is a vector in Z/lZ of order 2*deg (when l ne 2)
     for l in Divisors(m0) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
             for deg in listofdeg do
-                Append(~allpoints, <l, deg>);
+                allpoints := allpoints cat deg;
             end for;
         end if;
     end for;
