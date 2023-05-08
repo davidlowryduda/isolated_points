@@ -1,6 +1,6 @@
 intrinsic TransposeMatrixGroup(G::GrpMat) -> GrpMat
     {Return the transpose}
-    Gt := sub<GL(2,Integers(#BaseRing(G))) | [Transpose(g):g in Generators(G)]>;
+    Gt := sub<GL(2,BaseRing(G)) | [Transpose(g):g in Generators(G)]>;
     return Gt;
 end intrinsic;
 
@@ -40,9 +40,22 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     return m div g;
 end intrinsic;
 
+//This will be obsolete
 intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
+    {compute all degrees of points without doing Riemann--Roch}
+    Gt := TransposeMatrixGroup(G);
+    m := Modulus(BaseRing(Gt));
+    H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
+    orb := Orbits(H);
+    orbm := [ m ne 2 select #x div 2 else #x : x in orb | VectorOrder(x[1]) eq m];
+    degrees := SequenceToMultiset(orbm); 
+    return degrees;
+end intrinsic;
+
+//TODO: fix this
+intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> SetMulti
     {compute all degrees of points without doing Riemann--Roch. 
-    Returns tuple <m,deg, P> where P is a vector in Z/mZ of order 2*deg when m neq 2, otherwise order deg}
+    returns only the points ...}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
@@ -81,16 +94,21 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     nonisolated := easyRiemannRoch(allpts,A);
     potisolated := SequenceToMultiset(allpts) diff SequenceToMultiset(nonisolated);
 
+
+
     remove := {* *};
-    for x in potisolated do //<l, deg> a point of degree deg on X1(l)
-        for y in nonisolated do 
-            if IsDivisibleBy(x[1],y[1]) and (x[1] div y[1]) * y[3] eq x[3] then
-                b:=x[1] div y[1]; //how much you are reducing the level by
-                deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
-                if deg eq x[2] div y[2] then Include(~remove,x); end if;
-            end if;
-        end for;
-    end for;
+
+    //TODO:rewrite this part
+    // for x in potisolated do //<l, deg, P> a point of degree deg on X1(l)
+    //     for y in nonisolated do //<l/b, degy, Q>
+    //         //H := sub<GL(2,Integers(l))|Gt,-Gt!1>; could check that we belong to the same orbit of H to fix this
+    //         if IsDivisibleBy(x[1],y[1]) then
+    //             b:=x[1] div y[1]; //how much you are reducing the level by
+    //             deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
+    //             if deg eq x[2] div y[2] then Include(~remove,x); end if;
+    //         end if;
+    //     end for;
+    // end for;
     //See https://arxiv.org/pdf/1808.04520.pdf Prop 2.2
 
     potisolated := potisolated diff remove; //the remaining potentially isolated
@@ -116,13 +134,8 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
 
     G0:=ChangeRing(G,Integers(m0));
 
-    allpoints := {**}; //generate a list of <l, deg, P> such that E is a non CM point on X1(l) of degree deg, and P is a vector in Z/lZ of order 2*deg (when l ne 2)
-    for l in Divisors(m0) do
-        if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
-            listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
-            allpoints := allpoints join listofdeg;
-        end if;
-    end for;
+    //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg, and...
+    allpoints := PrimitiveDegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
 
     potisolated := FilterByLevelMapping(allpoints);
 
