@@ -70,20 +70,20 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     If j is a sporadic point of degree d in level m then it becomes a point of
     d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
 
-    function CachedGenus(l, A)
-        if l notin Keys(A) then
-            A[l] := Genus(Gamma1(l));
+    function CachedGenus(m, A)
+        if m notin Keys(A) then
+            A[m] := Genus(Gamma1(m));
         end if; 
-        return A[l], A;
+        return A[m], A;
     end function;
 
     function easyRiemannRoch(listofpts,A)
         nonisolated := [];
         for pt in listofpts do
-            l, deg := Explode(pt);
-            genusGamma1, A := CachedGenus(l,A);
+            m, deg := Explode(pt);
+            genusGamma1, A := CachedGenus(m,A);
             if deg ge genusGamma1 + 1 then
-                Append(~nonisolated, <l, deg>); //"easy" Riemann--Roch condition
+                Append(~nonisolated, <m, deg>); //"easy" Riemann--Roch condition
             end if;
         end for;
         return nonisolated;
@@ -99,9 +99,9 @@ intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
     remove := {* *};
 
     //TODO:rewrite this part
-    // for x in potisolated do //<l, deg, P> a point of degree deg on X1(l)
-    //     for y in nonisolated do //<l/b, degy, Q>
-    //         //H := sub<GL(2,Integers(l))|Gt,-Gt!1>; could check that we belong to the same orbit of H to fix this
+    // for x in potisolated do //<m, deg, P> a point of degree deg on X1(m)
+    //     for y in nonisolated do //<m/b, degy, Q>
+    //         //H := sub<GL(2,Integers(m))|Gt,-Gt!1>; could check that we belong to the same orbit of H to fix this
     //         if IsDivisibleBy(x[1],y[1]) then
     //             b:=x[1] div y[1]; //how much you are reducing the level by
     //             deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
@@ -134,8 +134,8 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
 
     G0:=ChangeRing(G,Integers(m0));
 
-    //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg, and...
-    allpoints := PrimitiveDegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
+    //generate a list of <m, deg> such that E is a non CM point on X1(m) of degree deg, and...
+    allpoints := PrimitiveDegreesOfPoints(ChangeRing(G0,Integers(m))); //MAJOR CHANGE!!
 
     potisolated := FilterByLevelMapping(allpoints);
 
