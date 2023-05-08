@@ -116,11 +116,11 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
 
     G0:=ChangeRing(G,Integers(m0));
 
-    allpoints := []; //generate a list of <l, deg, P> such that E is a non CM point on X1(l) of degree deg, and P is a vector in Z/lZ of order 2*deg (when l ne 2)
+    allpoints := {**}; //generate a list of <l, deg, P> such that E is a non CM point on X1(l) of degree deg, and P is a vector in Z/lZ of order 2*deg (when l ne 2)
     for l in Divisors(m0) do
         if l gt 12 then //X1(11) is a rank 0 elliptic curve with no non noncuspidal rational pts
             listofdeg := DegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
-            allpoints := allpoints cat listofdeg;
+            allpoints := allpoints join listofdeg;
         end if;
     end for;
 
