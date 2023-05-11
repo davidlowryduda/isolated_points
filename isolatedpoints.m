@@ -128,7 +128,7 @@ intrinsic FilterByRiemannRoch(primitivepts::SeqEnum[Tup]) -> SeqEnum[Tup]
     A := AssociativeArray();
 
     nonisolated := easyRiemannRoch(primitivepts,A);
-    potisolated := primitivepts diff nonisolated;
+    potisolated := primitivepts diff SequenceToMultiset(nonisolated);
 
     return potisolated;
 
