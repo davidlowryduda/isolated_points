@@ -141,12 +141,12 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     CMjinv := [ -12288000, 54000, 0, 287496, 1728, 16581375, -3375, 8000, -32768, -884736, -884736000, -147197952000, -262537412640768000];
     require j notin CMjinv : "j is a CM j-invariant. All CM j-invariants are isolated.";
 
-    E:=EllipticCurveFromjInvariant(j);
-    G,n,S:=FindOpenImage(path, E);
-    m0:=ReducedLevel(G);
+    E := EllipticCurveFromjInvariant(j);
+    G,n,S := FindOpenImage(path, E);
+    m0 := ReducedLevel(G);
     
     if m0 eq 1 then
-        return [*Sprint(j), true, {}*];
+        return [*Sprint(j), {}*];
     end if;
 
     G0:=ChangeRing(G,Integers(m0));
@@ -164,6 +164,6 @@ end intrinsic;
 
 
 intrinsic NotIsolated(j::RngIntElt, path::Assoc) -> List
-    {}
+    {Coerce j into the rationals if it is integral}
     return NotIsolated(Rationals()!j, path);
 end intrinsic;
