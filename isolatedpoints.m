@@ -100,7 +100,7 @@ intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
     return degrees;
 end intrinsic;
 
-intrinsic FilterByRiemannRoch(primitivepts::SeqEnum[Tup]) -> SeqEnum[Tup]
+intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
     {Filtering levels and degrees based on Riemann--Roch.}
 
     function CachedGenus(m, A)
@@ -117,8 +117,8 @@ intrinsic FilterByRiemannRoch(primitivepts::SeqEnum[Tup]) -> SeqEnum[Tup]
             for pt in ptset do
                 m, deg := Explode(pt);
                 genusGamma1, A := CachedGenus(m,A);
-                if deg lt genusGamma1 + 1 then //"easy" Riemann--Roch condition
-                    Append(~nonisolated, x); 
+		if deg gt genusGamma1 + 1 then //"easy" Riemann--Roch condition
+		    Append(~nonisolated, x); 
                 end if;
             end for;
         end for;
@@ -152,7 +152,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     G0:=ChangeRing(G,Integers(m0));
 
     primitivepts := PrimitiveDegreesOfPoints(G0); //MAJOR CHANGE!!
-    potisolated := FilterByLevelMapping(primitivepts);
+    potisolated := FilterByRiemannRoch(primitivepts);
 
     if #potisolated gt 0 then
         return [*Sprint(j), potisolated*];
@@ -160,4 +160,10 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
         return [*Sprint(j), potisolated*];
     end if;
 
+end intrinsic;
+
+
+intrinsic NotIsolated(j::RngIntElt, path::Assoc) -> List
+    {}
+    return NotIsolated(Rationals()!j, path);
 end intrinsic;
