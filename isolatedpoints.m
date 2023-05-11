@@ -117,7 +117,7 @@ intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
             for pt in ptset do
                 m, deg := Explode(pt);
                 genusGamma1, A := CachedGenus(m,A);
-		if deg gt genusGamma1 + 1 then //"easy" Riemann--Roch condition
+	        if deg ge genusGamma1 + 1 then //"easy" Riemann--Roch condition
 		    Append(~nonisolated, x); 
                 end if;
             end for;
