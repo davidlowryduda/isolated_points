@@ -40,7 +40,7 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     return m div g;
 end intrinsic;
 
-//This will be obsolete
+//This is obsolete
 intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
     {compute all degrees of points without doing Riemann--Roch}
     Gt := TransposeMatrixGroup(G);
@@ -52,79 +52,96 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
     return degrees;
 end intrinsic;
 
-//TODO: fix this
-intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> SetMulti
-    {compute all degrees of points without doing Riemann--Roch. 
-    returns only the points ...}
+function CoveringDegree(m,n)
+    assert(m mod n eq 0);
+    b:=m div n;
+    c:=(n le 2 and m gt 2) select 1/2 else 1;
+    return c*b^2*&*[Rationals()|(1 - 1/p^2):p in PrimeFactors(b)|n mod p ne 0];
+end function;
+
+
+intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
+    {Return a multiset D such that D = [<m, [a1, d1>,  .. ],[<m, [<b1, e1>,  .. ]
+    s.t. for each set [<m, [<a1, d1>,  .. ] the corresponding point on X1(m)
+    maps down under the natural projection map to an isolated point of degree di point on X1(a1)}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
-    orb := Orbits(H);
-    orbm := [ m ne 2 select <m,#x div 2, x[1]> else <m,#x, x[1]> : x in orb | VectorOrder(x[1]) eq m];
-    degrees := SequenceToMultiset(orbm); 
+    orbH := Orbits(H);
+
+    degrees:={*CartesianProduct(Integers(),Parent({<1,1>}))|  *};
+
+    for x in orbH do
+        e:=VectorOrder(x[1]);
+        degs_e:={};
+        for d in Divisors(e) do
+            ed:=e div d;
+            orb_dx:=Orbit(H,d*x[1]);
+            norb_dx := #orb_dx;
+            res_fld_deg := e gt 2 and ed le 2 select #x/(2*norb_dx) else #x/norb_dx;
+            if CoveringDegree(e,ed) eq res_fld_deg then
+                if ed le 2 then
+                    Include(~degs_e,<ed,norb_dx>);
+                else
+                    Include(~degs_e,<ed,norb_dx div 2>);
+                end if;
+            end if;
+        end for;
+        A:={d[1]:d in degs_e};
+        B:={};
+        while #A gt 0 do
+            a:=Min(A);
+            Include(~B,a);
+            A:={b:b in A|b mod a ne 0};
+        end while;
+        degs_e:={d:d in degs_e|d[1] in B};
+        Include(~degrees, <e,degs_e>);
+    end for;
     return degrees;
 end intrinsic;
 
-intrinsic FilterByLevelMapping(allpts::SeqEnum[Tup]) -> SeqEnum[Tup]
-    {Filtering levels and degrees based on the level reduction theorem of BELOV.
-    If j is a sporadic point of degree d in level m then it becomes a point of
-    d/deg(f) in level n where f:X1(m)-->X1(n) is the natural projection map.}
+intrinsic FilterByRiemannRoch(primitivepts::SeqEnum[Tup]) -> SeqEnum[Tup]
+    {Filtering levels and degrees based on Riemann--Roch.}
 
-    function CachedGenus(l, A)
-        if l notin Keys(A) then
-            A[l] := Genus(Gamma1(l));
+    function CachedGenus(m, A)
+        if m notin Keys(A) then
+            A[m] := Genus(Gamma1(m));
         end if; 
-        return A[l], A;
+        return A[m], A;
     end function;
 
     function easyRiemannRoch(listofpts,A)
         nonisolated := [];
-        for pt in listofpts do
-            l, deg := Explode(pt);
-            genusGamma1, A := CachedGenus(l,A);
-            if deg ge genusGamma1 + 1 then
-                Append(~nonisolated, <l, deg>); //"easy" Riemann--Roch condition
-            end if;
+        for x in primitivepts do 
+            n, ptset := Explode(x);
+            for pt in ptset do
+                m, deg := Explode(pt);
+                genusGamma1, A := CachedGenus(m,A);
+                if deg lt genusGamma1 + 1 then //"easy" Riemann--Roch condition
+                    Append(~nonisolated, x); 
+                end if;
+            end for;
         end for;
         return nonisolated;
     end function;
 
     A := AssociativeArray();
 
-    nonisolated := easyRiemannRoch(allpts,A);
-    potisolated := SequenceToMultiset(allpts) diff SequenceToMultiset(nonisolated);
-
-
-
-    remove := {* *};
-
-    //TODO:rewrite this part
-    // for x in potisolated do //<l, deg, P> a point of degree deg on X1(l)
-    //     for y in nonisolated do //<l/b, degy, Q>
-    //         //H := sub<GL(2,Integers(l))|Gt,-Gt!1>; could check that we belong to the same orbit of H to fix this
-    //         if IsDivisibleBy(x[1],y[1]) then
-    //             b:=x[1] div y[1]; //how much you are reducing the level by
-    //             deg:=b^2*&*[Rationals() | 1-1/p^2 : p in PrimeDivisors(x[1]) | p notin PrimeDivisors(y[1])];
-    //             if deg eq x[2] div y[2] then Include(~remove,x); end if;
-    //         end if;
-    //     end for;
-    // end for;
-    //See https://arxiv.org/pdf/1808.04520.pdf Prop 2.2
-
-    potisolated := potisolated diff remove; //the remaining potentially isolated
+    nonisolated := easyRiemannRoch(primitivepts,A);
+    potisolated := primitivepts diff nonisolated;
 
     return potisolated;
 
 end intrinsic;
 
 
-intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
+intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     {main function to check if a j invariant is sporadic}
-    if #a eq 0 then
-        a := [1,0,0,-36/(j-1728),-1/(j-1728)];
-        assert jInvariant(EllipticCurve(a)) eq j;
-    end if;
-    E:=EllipticCurve(a);
+
+    CMjinv := [ -12288000, 54000, 0, 287496, 1728, 16581375, -3375, 8000, -32768, -884736, -884736000, -147197952000, -262537412640768000];
+    require j notin CMjinv : "j is a CM j-invariant. All CM j-invariants are isolated.";
+
+    E:=EllipticCurveFromjInvariant(j);
     G,n,S:=FindOpenImage(path, E);
     m0:=ReducedLevel(G);
     
@@ -134,15 +151,13 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc: a:=[]) -> List
 
     G0:=ChangeRing(G,Integers(m0));
 
-    //generate a list of <l, deg> such that E is a non CM point on X1(l) of degree deg, and...
-    allpoints := PrimitiveDegreesOfPoints(ChangeRing(G0,Integers(l))); //MAJOR CHANGE!!
-
-    potisolated := FilterByLevelMapping(allpoints);
+    primitivepts := PrimitiveDegreesOfPoints(G0); //MAJOR CHANGE!!
+    potisolated := FilterByLevelMapping(primitivepts);
 
     if #potisolated gt 0 then
-        return [*Sprint(j), false, potisolated*];
+        return [*Sprint(j), potisolated*];
     else
-        return [*Sprint(j), true, potisolated*];
+        return [*Sprint(j), potisolated*];
     end if;
 
 end intrinsic;
