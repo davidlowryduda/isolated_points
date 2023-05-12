@@ -134,6 +134,19 @@ intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
 
 end intrinsic;
 
+function CondensePoints(output)
+    S := {* *};
+    for x in output do
+        for y in x[2] do
+            m := Multiplicity(output, x) - Multiplicity(S, y);
+            while m gt 0 do
+                Include(~S, y);
+                m := m-1;
+            end while;
+        end for;
+    end for;
+    return S;
+end function;
 
 intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     {main function to check if a j invariant is sporadic}
@@ -155,6 +168,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     potisolated := FilterByRiemannRoch(primitivepts);
 
     if #potisolated gt 0 then
+        potisolated := CondensePoints(potisolated);
         return [*Sprint(j), potisolated*];
     else
         return [*Sprint(j), potisolated*];
