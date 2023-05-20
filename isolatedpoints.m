@@ -1,17 +1,20 @@
 intrinsic TransposeMatrixGroup(G::GrpMat) -> GrpMat
-    {Return the transpose}
+    {Return the transpose of G}
     Gt := sub<GL(2,BaseRing(G)) | [Transpose(g):g in Generators(G)]>;
     return Gt;
 end intrinsic;
 
 intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
-    {Given G the adelic image of the Galois representation, compute the non-surjective primes}
-        m:=Modulus(BaseRing(G));
-        return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
+    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
+    where N is the level, return the non-surjective primes}
+    m:=Modulus(BaseRing(G));
+    return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
 end intrinsic;
 
 intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
-    {Level reduction from the output of Zywina's algorithm}
+    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
+    where N is the level, return the level of the m-adic Galois representation, 
+    where m is the product of 2, 3, and any larger primes which are non-surjective}
     m:=Modulus(BaseRing(G));
     NS:=Set(NonSurjectivePrimes(G));
     sE:={2,3} join NS;
@@ -23,7 +26,7 @@ intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
             G:=ChangeRing(G,Integers(m0));
         end while;
         if not p in NS and Valuation(m0,p) eq 1 then
-            if m0 eq p and #G eq #GL(2,GF(p)) then
+            if m0 eq p then
                 return 1;
             elif #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then 
                 m0:=m0 div p;
@@ -40,9 +43,9 @@ intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     return m div g;
 end intrinsic;
 
-//This is obsolete
+//This function is not called
 intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
-    {compute all degrees of points without doing Riemann--Roch}
+    {Given mod m image G, return all degrees of closed points on X_1(m)}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
@@ -52,18 +55,19 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
     return degrees;
 end intrinsic;
 
-function CoveringDegree(m,n)
+intrinsic CoveringDegree(m::RngIntElt,n::RngIntElt) -> RngIntElt
+    {Given positive integers with n dividing m, return the degree of the natural map from X_1(m) to X_1(n)}
     assert(m mod n eq 0);
     b:=m div n;
     c:=(n le 2 and m gt 2) select 1/2 else 1;
     return c*b^2*&*[Rationals()|(1 - 1/p^2):p in PrimeFactors(b)|n mod p ne 0];
-end function;
-
+end intrinsic;
 
 intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
-    {Return a multiset D such that D = [<m, [a1, d1>,  .. ],[<m, [<b1, e1>,  .. ]
-    s.t. for each set [<m, [<a1, d1>,  .. ] the corresponding point on X1(m)
-    maps down under the natural projection map to an isolated point of degree di point on X1(a1)}
+    {Given mod m image G, return a multiset with entries <n, \{<a1, d1>,  ... \}> 
+    for all positive divisors n of m such that the degree of the corresponding 
+    closed point on X_1(n) is as large as possible given that its image on X_1(ai) 
+    has degree di}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
@@ -101,9 +105,11 @@ intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
 end intrinsic;
 
 intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
-    {Filtering levels and degrees based on Riemann--Roch.}
+    {Given multiset of elements of the form <n, \{<a1, d1>,  ... \}>, 
+    return those such that di is greater than genus(X_1(ai)) for some i}
+    A := AssociativeArray();
 
-    function CachedGenus(m, A)
+    function CachedGenus(m,A)
         if m notin Keys(A) then
             A[m] := Genus(Gamma1(m));
         end if; 
@@ -125,13 +131,10 @@ intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
         return nonisolated;
     end function;
 
-    A := AssociativeArray();
-
     nonisolated := easyRiemannRoch(primitivepts,A);
     potisolated := primitivepts diff SequenceToMultiset(nonisolated);
 
     return potisolated;
-
 end intrinsic;
 
 function CondensePoints(output)
@@ -149,8 +152,7 @@ function CondensePoints(output)
 end function;
 
 intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
-    {main function to check if a j invariant is sporadic}
-
+    {Main function to check if a rational j invariant is isolated}
     CMjinv := [ -12288000, 54000, 0, 287496, 1728, 16581375, -3375, 8000, -32768, -884736, -884736000, -147197952000, -262537412640768000];
     require j notin CMjinv : "j is a CM j-invariant. All CM j-invariants are isolated.";
 
@@ -159,23 +161,21 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     m0 := ReducedLevel(G);
     
     if m0 eq 1 then
-        return [*Sprint(j), {}*];
+        return [* j, {* *}*];
     end if;
 
     G0:=ChangeRing(G,Integers(m0));
-
-    primitivepts := PrimitiveDegreesOfPoints(G0); //MAJOR CHANGE!!
+    primitivepts := PrimitiveDegreesOfPoints(G0); 
     potisolated := FilterByRiemannRoch(primitivepts);
 
     if #potisolated gt 0 then
         potisolated := CondensePoints(potisolated);
-        return [*Sprint(j), potisolated*];
+        return [* j, potisolated*];
     else
-        return [*Sprint(j), potisolated*];
+        return [* j, potisolated*];
     end if;
 
 end intrinsic;
-
 
 intrinsic NotIsolated(j::RngIntElt, path::Assoc) -> List
     {Coerce j into the rationals if it is integral}
