@@ -7,7 +7,7 @@ end intrinsic;
 intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
     {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
     where N is the level, return the non-surjective primes}
-    m:=Modulus(BaseRing(G));
+    m := Modulus(BaseRing(G));
     return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
 end intrinsic;
 
@@ -15,21 +15,21 @@ intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
     {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
     where N is the level, return the level of the m-adic Galois representation, 
     where m is the product of 2, 3, and any larger primes which are non-surjective}
-    m:=Modulus(BaseRing(G));
-    NS:=Set(NonSurjectivePrimes(G));
-    sE:={2,3} join NS;
-    m0:=&*[p^Valuation(m,p):p in sE];
-    G:=ChangeRing(G,Integers(m0));
+    m := Modulus(BaseRing(G));
+    NS := Set(NonSurjectivePrimes(G));
+    sE := {2,3} join NS;
+    m0 := &*[p^Valuation(m,p):p in sE];
+    G := ChangeRing(G,Integers(m0));
     for p in PrimeFactors(m0) do
         while Valuation(m0,p) gt 1 and #G/#ChangeRing(G,Integers(m0 div p)) eq p^4 do
-            m0:=m0 div p;
-            G:=ChangeRing(G,Integers(m0));
+            m0 := m0 div p;
+            G := ChangeRing(G,Integers(m0));
         end while;
         if not p in NS and Valuation(m0,p) eq 1 then
             if m0 eq p then
                 return 1;
             elif #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then 
-                m0:=m0 div p;
+                m0 := m0 div p;
             end if;
         end if;
     end for;
@@ -38,8 +38,8 @@ end intrinsic;
 
 intrinsic VectorOrder(v::ModTupRngElt) -> RngIntElt
     {Order of a vector with entries in Z/mZ}
-    m:=#Parent(v[1]);
-    g:=GCD([m, Integers()!v[2], Integers()!v[1]]);
+    m := #Parent(v[1]);
+    g := GCD([m, Integers()!v[2], Integers()!v[1]]);
     return m div g;
 end intrinsic;
 
@@ -58,8 +58,8 @@ end intrinsic;
 intrinsic CoveringDegree(m::RngIntElt,n::RngIntElt) -> RngIntElt
     {Given positive integers with n dividing m, return the degree of the natural map from X_1(m) to X_1(n)}
     assert(m mod n eq 0);
-    b:=m div n;
-    c:=(n le 2 and m gt 2) select 1/2 else 1;
+    b := m div n;
+    c := (n le 2 and m gt 2) select 1/2 else 1;
     return c*b^2*&*[Rationals()|(1 - 1/p^2):p in PrimeFactors(b)|n mod p ne 0];
 end intrinsic;
 
@@ -73,14 +73,14 @@ intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orbH := Orbits(H);
 
-    degrees:={*CartesianProduct(Integers(),Parent({<1,1>}))|  *};
+    degrees := {*CartesianProduct(Integers(),Parent({<1,1>}))|  *};
 
     for x in orbH do
-        e:=VectorOrder(x[1]);
-        degs_e:={};
+        e := VectorOrder(x[1]);
+        degs_e := {};
         for d in Divisors(e) do
-            ed:=e div d;
-            orb_dx:=Orbit(H,d*x[1]);
+            ed := e div d;
+            orb_dx := Orbit(H,d*x[1]);
             norb_dx := #orb_dx;
             res_fld_deg := e gt 2 and ed le 2 select #x/(2*norb_dx) else #x/norb_dx;
             if CoveringDegree(e,ed) eq res_fld_deg then
@@ -91,14 +91,14 @@ intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
                 end if;
             end if;
         end for;
-        A:={d[1]:d in degs_e};
-        B:={};
+        A := {d[1]:d in degs_e};
+        B := {};
         while #A gt 0 do
-            a:=Min(A);
+            a := Min(A);
             Include(~B,a);
-            A:={b:b in A|b mod a ne 0};
+            A := {b:b in A|b mod a ne 0};
         end while;
-        degs_e:={d:d in degs_e|d[1] in B};
+        degs_e := {d:d in degs_e|d[1] in B};
         Include(~degrees, <e,degs_e>);
     end for;
     return degrees;
@@ -164,7 +164,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
         return [* j, {* *}*];
     end if;
 
-    G0:=ChangeRing(G,Integers(m0));
+    G0 := ChangeRing(G,Integers(m0));
     primitivepts := PrimitiveDegreesOfPoints(G0); 
     potisolated := FilterByRiemannRoch(primitivepts);
 
@@ -174,7 +174,6 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     else
         return [* j, potisolated*];
     end if;
-
 end intrinsic;
 
 intrinsic NotIsolated(j::RngIntElt, path::Assoc) -> List
