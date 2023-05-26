@@ -1,0 +1,13 @@
+
+#  \copy (SELECT jinv FROM ec_curvedata where adelic_index > 2 AND cm = 0 AND adelic_genus = 0) to '/scratch/home/sachihashimoto/isolated.csv' CSV HEADER;
+#
+# on a server hosting the LMFDB.
+# then run  sort isolated.csv | uniq > isolated.txt 
+
+# or in sage
+# import lmfdb
+# from lmfdb import db
+#
+# foo = set( a/b for a,b in db.ec_curvedata.search({'adelic_index' : {'$gt' : 2}, 'cm': '0', 'adelic_genus': 0}, ['jinv']))
+#
+# - Sachi
