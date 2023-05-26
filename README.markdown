@@ -13,9 +13,9 @@ On a data set of curves: txt file with list of Cremona labels/Weierstrass coeffi
 
 Output: 
 On a specific curve:     [j-invariant, empty list] or 
-                         [j-invariant, set of pairs (label and degree)]
+                         [j-invariant, set of pairs (level and degree)]
 
-The list [< n_1,d_1>, \dots, < n_k,d_k>] contains all points such that any isolated point $x \in X_1(N)$ with $j(x)= j$ maps down under the natural projection map to an isolated point of degree $d_i$ on $X_1(n_i)$ for $1 \leq i \leq k$.
+The list [< n_1,d_1>, ..., < n_k,d_k>] contains all points such that any isolated point $x \in X_1(N)$ with $j(x)= j$ maps down under the natural projection map to an isolated point of degree $d_i$ on $X_1(n_i)$ for $1 \leq i \leq k$.
 
 INSTRUCTIONS:
 
