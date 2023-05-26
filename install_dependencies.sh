@@ -1,7 +1,7 @@
 #!/bin/bash
 currdir=$(pwd)
 read -p "Enter the directory to download parallel2023: " whereparallel
-read -p "Enter the directory to clone modular curves repo: " wheremodcurves
+read -p "Enter the directory to clone the OpenImage repo: " whereopenimage
  
 #Install parallel
     cd $whereparallel
@@ -13,14 +13,8 @@ read -p "Enter the directory to clone modular curves repo: " wheremodcurves
     ./configure && make && sudo make install
     cd ..
 
-#Clone David Roe's github directory on Modular curves
-cd $wheremodcurves
-    git clone https://github.com/roed314/ModularCurves.git
-    cd ModularCurves/equations
-    rm -rf Gm-Reduce
-    rm -rf OpenImage
-    git clone https://github.com/SamSchiavone/Gm-Reduce.git
-    git clone https://github.com/AndrewVSutherland/OpenImage.git
-
+#Clone David Roe's version of the OpenImage directory 
+cd $whereopenimage
+    git clone https://github.com/roed314/OpenImage
 cd $currdir
 

@@ -175,8 +175,3 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
         return [* j, potisolated*];
     end if;
 end intrinsic;
-
-intrinsic NotIsolated(j::RngIntElt, path::Assoc) -> List
-    {Coerce j into the rationals if it is integral}
-    return NotIsolated(Rationals()!j, path);
-end intrinsic;
