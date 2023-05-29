@@ -151,15 +151,21 @@ function CondensePoints(output)
     return S;
 end function;
 
-intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
+intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
     {Main function to check if a rational j invariant is isolated}
     CMjinv := [ -12288000, 54000, 0, 287496, 1728, 16581375, -3375, 8000, -32768, -884736, -884736000, -147197952000, -262537412640768000];
     require j notin CMjinv : "j is a CM j-invariant. All CM j-invariants are isolated.";
 
-    E := EllipticCurveFromjInvariant(j);
+    if ainvs eq [] then
+        E := EllipticCurveFromjInvariant(j);
+    else
+        require #ainvs eq 5 : "ainvs should be a list of Weierstrass coefficients for the elliptic curve";
+        E := EllipticCurve(ainvs);
+        require Rationals()!jInvariant(E) eq j : "The j-invariant of the elliptic curve specified by the Weierstrass coefficients should match the given j-invariant";
+    end if;
     G,n,S := FindOpenImage(path, E);
     m0 := ReducedLevel(G);
-        
+
     if m0 eq 1 then
         return [* j, {* *}*];
     end if;
