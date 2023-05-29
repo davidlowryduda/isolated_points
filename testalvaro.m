@@ -1,8 +1,8 @@
 SetProfile(true);
-// AttachSpec("/Users/sachihashimoto/repos/ModularCurves/equations/equations.spec");                                                      
-// path := OpenImageContext("/Users/sachihashimoto/repos/ModularCurves/equations/OpenImage/data-files");                                                                           
-AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");                                                      
-path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files");                                                               
+AttachSpec("/Users/sachihashimoto/repos/ModularCurves/equations/equations.spec");                                                      
+path := OpenImageContext("/Users/sachihashimoto/repos/ModularCurves/equations/OpenImage/data-files");                                                                           
+// AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");                                                      
+// path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files");                                                               
 
 
 AttachSpec("isolated.spec");

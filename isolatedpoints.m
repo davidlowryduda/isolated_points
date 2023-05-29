@@ -159,7 +159,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc) -> List
     E := EllipticCurveFromjInvariant(j);
     G,n,S := FindOpenImage(path, E);
     m0 := ReducedLevel(G);
-    
+        
     if m0 eq 1 then
         return [* j, {* *}*];
     end if;
