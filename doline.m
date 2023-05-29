@@ -7,7 +7,7 @@ if assigned seq then
     SetColumns(0);
     SetAutoColumns(false);
     seq := eval seq;
-    inputs := Split(Read("alvarodata.txt"), "\n");
+    inputs := Split(Read("adelicgenusgt0curves.txt"), "\n");
     input := inputs[seq];
     jinv := eval input;
     jinv := Rationals()!jinv;
