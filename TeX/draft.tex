@@ -10,6 +10,10 @@
 \usepackage{verbatim}
 \usepackage{colonequals}
 
+%for tables
+\usepackage{tabularx}
+\usepackage{booktabs}
+
 % Presented to you by Technicolor, and the number 3
 \usepackage{graphics}
 %\usepackage{ulem}
@@ -120,6 +124,8 @@ anchorcolor=darkblue,citecolor=darkblue}
 \newcommand{\travis}[1]{\textcolor{orange}{Travis: #1}}
 \newcommand{\abedit}[1]{{\color{blue} #1}}
 \newcommand{\fedit}[1]{{\color{cyan} #1}}
+\newcommand{\sedit}[1]{{\color{purple} #1}}
+
 % Don't have subsections appear in TOC
 %\setcounter{tocdepth}{1}
 
@@ -135,17 +141,19 @@ We develop an algorithm to test whether a non-CM elliptic curve $E/\Q$ gives ris
 
 \section{Introduction}
 \label{sec:intro}
-\abbey{Updated to account for isolated points.}
-The modular curve $X_1(N)$ is an algebraic curve over $\Q$ whose non-cuspidal points parametrize elliptic curves with a distinguished point of order $N$. We are interested in studying isolated points on $X_1(N)$. Roughly speaking these are points of degree $d$ not belonging to an infinite family of degree $d$ points parametrized by a geometric object. For example, if $f: X_1(N) \rightarrow \PP^1$ is a rational map of degree $d$, then $f^{-1}(\PP^1(\Q))$ contains infinitely many closed points of degree $d$ by Hilbert's irreducibility theorem \cite[Chapter 9]{serre97}. We say a degree $d$ point \emph{not} arising from such a map is \textbf{$\PP^1$-isolated}. Other infinite families of degree $d$ points correspond to positive rank abelian subvarieties of the curve's Jacobian; see Section \ref{sec:background} for details. A point which is not thus parametrized is \textbf{AV-isolated}. If a closed point $x\in X_1(N)$ is both $\PP^1$- and AV-isolated, then we say $x$ is \textbf{isolated}. Isolated points can be thought of as those points whose existence is not explained by a geometric construction. The lack of control of isolated points in infinite families of modular curves lies at the heart of several important open problems. See, for example, \cite[Question 1]{MazurNote} and \cite[Theorem 1.3]{BourdonNajman2021}.
 
-One special class of isolated points is \textbf{sporadic} points, which are $x \in X_1(N)$ such that there are only finitely many points on $X_1(N)$ of degree at most $\deg(x)$. Hence a non-cuspidal sporadic point corresponds to an elliptic curve with a point of order $N$ in ``usually low degree." Elliptic curves with complex multiplication (CM) provide many natural examples of sporadic points, since the extra endomorphisms of a CM elliptic curve constrain the size of the image of the associated Galois representation. Indeed, as shown in \cite[Theorem 8.2]{CGPS2022}, there exist sporadic CM points on $X_1(N)$ for all $N\geq 721$.
+The modular curve $X_1(N)$ is an algebraic curve over $\Q$ whose non-cuspidal points parametrize elliptic curves with a distinguished point of order $N$. We are interested in studying isolated points on $X_1(N)$. Roughly speaking these are points of degree $d$ not belonging to an infinite family of degree $d$ points parametrized by a geometric object. For example, if $f: X_1(N) \rightarrow \PP^1$ is a rational map of degree $d$, then $f^{-1}(\PP^1(\Q))$ contains infinitely many closed points of degree $d$ by Hilbert's irreducibility theorem \cite[Chapter~9]{serre97}. We say a degree $d$ point \emph{not} arising from such a map is \textbf{$\PP^1$-isolated}. Other infinite families of degree $d$ points correspond to positive rank abelian subvarieties of the curve's Jacobian; see Section \ref{sec:background} for details. A point which is not thus parametrized is \textbf{AV-isolated}. If a closed point $x\in X_1(N)$ is both $\PP^1$- and AV-isolated, then we say $x$ is \textbf{isolated}. Isolated points can be thought of as those points whose existence is not explained by a geometric construction. The lack of control of isolated points in infinite families of modular curves lies at the heart of several important open problems. See, for example, \cite[Question~1]{MazurNote} and \cite[Theorem~1.3]{BourdonNajman2021}.
+
+One special class of isolated points is \textbf{sporadic} points, which are $x \in X_1(N)$ such that there are only finitely many points on $X_1(N)$ of degree at most $\deg(x)$. Hence a non-cuspidal sporadic point corresponds to an elliptic curve with a point of order $N$ in ``usually low degree." Elliptic curves with complex multiplication (CM) provide many natural examples of sporadic points, since the extra endomorphisms of a CM elliptic curve constrain the size of the image of the associated Galois representation. Indeed, as shown in \cite[Theorem~8.2]{CGPS2022}, there exist sporadic CM points on $X_1(N)$ for all $N\geq 721$.
 
 
 Non-CM isolated points on $X_1(N)$ remain much more mysterious. One recent line of investigation has focused on the class of isolated points associated to non-CM elliptic curves with $j$-invariant in $\Q$. To date, there are only three known examples of such curves, up to isomorphism over $\overline{\Q}$:
 \begin{itemize}
-\item The elliptic curve with $j$-invariant $-140625/8$ corresponds to two points of degree 3 on $X_1(21)$. Since there are only finitely many points of degree at most 3 on this modular curve, these are sporadic (and hence isolated) points. This example was first discovered by Najman \cite{najman16}. In fact, this is the unique elliptic curve giving a sporadic point of degree at most 3 on \emph{any} modular curve of the form $X_1(N)$, as shown in recent work of Derickx, Etropolski, van Hoeij, Morrow, and Zureick-Brown \cite{DEvHMZB2021}.
-\item The elliptic curve with $j$-invariant $-9317$ gives three degree 6 points on $X_1(37)$, as in work of van Hoeij \cite{vanHoeij}. Since 6 is less than half the $\Q$-gonality of $X_1(37)$, as computed in \cite{DerickxVanHoeij2014}, the point is necessarily sporadic by work of Frey \cite{frey}.
-\item The elliptic curve with $j$-invariant $351/4$ gives an isolated point of degree 9 on $X_1(28)$; see \cite[Theorem 2]{OddDeg}. There are infinitely many points on $X_1(28)$ of degree 6, as shown in \cite{DerickxVanHoeij2014}, so this point is isolated but not sporadic.
+    \item The elliptic curve with $j$-invariant $-140625/8$ corresponds to two points of degree 3 on $X_1(21)$. Since there are only finitely many points of degree at most 3 on this modular curve, these are sporadic (and hence isolated) points. This example was first discovered by Najman \cite{najman16}. In fact, this is the unique elliptic curve giving a sporadic point of degree at most 3 on \emph{any} modular curve of the form $X_1(N)$, as shown in recent work of Derickx, Etropolski, van Hoeij, Morrow, and Zureick-Brown \cite{DEvHMZB2021}.
+    
+    \item The elliptic curve with $j$-invariant $-9317$ gives three degree 6 points on $X_1(37)$, as in work of van Hoeij \cite{vanHoeij}. Since 6 is less than half the $\Q$-gonality of $X_1(37)$, as computed in \cite{DerickxVanHoeij2014}, the point is necessarily sporadic by work of Frey \cite{frey}.
+    
+    \item The elliptic curve with $j$-invariant $351/4$ gives an isolated point of degree 9 on $X_1(28)$; see \cite[Theorem 2]{OddDeg}. There are infinitely many points on $X_1(28)$ of degree 6, as shown in \cite{DerickxVanHoeij2014}, so this point is isolated but not sporadic.
 \end{itemize}
 
 If $x \in X_1(N)$ is a sporadic (resp. isolated) point, we say $j(x) \in X_1(1) \cong \mathbf{P}^1$ is a \textbf{sporadic} (resp. \textbf{isolated}) \textbf{$j$-invariant}. Thus the three $j$-invariants listed above are isolated $j$-invariants, while $-140625/8$  and $-9317$ are also sporadic $j$-invariants. We have good reason to believe that the set of all isolated $j$-invariants in $\Q$ is finite.
@@ -156,46 +164,74 @@ Suppose there exists a constant $C$ such that the mod $\ell$ Galois representati
 
 \noindent The assumption about Galois representations stated in Theorem \ref{BELOVfiniteness} was originally asked as a question by Serre \cite{serre72}, and it has now been formally conjectured by both Sutherland \cite{sutherland} and Zywina \cite{ZywinaImages}. It is even suspected that $C=37$. Theorem \ref{BELOVfiniteness} is known unconditionally for points of odd degree \cite{OddDeg}: indeed, $j=-140625/8$ and $j=351/4$ are the only non-CM $j$-invariants in $\Q$ giving an isolated point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers.
 
-In \cite{BELOV}, they ask whether one can explicitly determine the set of isolated $j$-invariants in $\Q$. This is the motivation for the present work. We develop an algorithm which can be used to determine whether a given non-CM $j$-invariant $j\in \Q$ is isolated. Starting with the adelic image of the adelic Galois representation associated $E/\Q$ with $j(E)=j(x)$, as computed by Zywina \cite{ZywinaAlgorithm}, we apply various filters inspired by \cite{BELOV} to determine whether there exists an isolated point on $x \in X_1(N)$ with $j(x)=j$.
+In \cite{BELOV}, they ask whether one can explicitly determine the set of isolated $j$-invariants in $\Q$. This is the motivation for the present work. We develop an algorithm which can be used to determine whether a given non-CM $j$-invariant $j\in \Q$ is isolated. Starting with the adelic image of the adelic Galois representation associated $E/\Q$ with $j(E)=j(x)$, as computed by Zywina \cite{ZywinaAlgorithm}, we apply various filters to determine whether there exists an isolated point on $x \in X_1(N)$ with $j(x)=j$.
 
 \begin{algorithm}[h!]
 \caption{Main Algorithm}
-\KwIn{A non-CM $j$-invariant $j \in \Q$.}
-\KwOut{A list $[j,\{\langle a_1,d_1\rangle, \dots, \langle a_k,d_k\rangle \}]$ such that any isolated point $x \in X_1(N)$ with $j(x)=j$ maps down under the natural projection map to an isolated point of degree $d_i$ on $X_1(a_i)$ for some $1 \leq i \leq k$.}
+    \KwIn{A non-CM $j$-invariant $j \in \Q$.}
+    \KwOut{A \abedit{finite} list $[j,\{\langle a_1,d_1\rangle, \dots, \langle a_k,d_k\rangle \}]$ such that any isolated point $x \in X_1(N)$ with $j(x)=j$ maps down under the natural projection map to an isolated point of degree $d_i$ on $X_1(a_i)$ for some $1 \leq i \leq k$.}
 \end{algorithm}
 
-\noindent In particular, if the output of Algorithm \ref{alg:mainalgorithm} is the empty set, then $j$ is not an isolated $j$-invariant. We give an overview of the main algorithm in Section \ref{alg:mainalgorithm}, with key sub-algorithms described in detail in Sections \ref{sec:madicrep} and \ref{sec:primitivedeg}. We address the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}.
+\noindent In particular, if the output of Algorithm \ref{alg:mainalgorithm} is the empty set, then $j$ is not an isolated $j$-invariant. 
 
-Running Algorithm \ref{alg:mainalgorithm} on all elliptic curves currently in the $L$-functions and Modular Forms Database (LMFDB) \cite{LMFDB} gives a list of 95 $j$-invariants which require further consideration; see the Appendix. After applying certain additional filters to address special cases, as discussed in Section~\ref{sec:remainingfilters}, we arrive at the following result.
+One of the key filters we use is based on \cite[Theorem 4.3]{BELOV}.
+
+\begin{theorem}[\cite{BELOV}]
+Let $f: C \rightarrow D$ be a finite map of curves, let $x \in C$ be a closed point, and let $y=f(x)\in D$. Assume that $\deg(x)=\deg(y)\cdot \deg(f)$.
+\begin{enumerate}
+\item If $x$ is $\PP^1$-isolated, then $y$ is $\PP^1$-isolated.
+\item If $x$ is AV-isolated, then $y$ is AV-isolated.
+\item $x$ is sporadic, then $y$ is sporadic.
+\end{enumerate}
+\end{theorem}
+
+\noindent Since the image of the adelic Galois representation of a non-CM elliptic curve $E/\Q$ has finite level, this theorem reduces the problem of determining whether $j(E)$ is isolated to the problem of determining whether $E$ gives rise to an isolated point on a finite number of modular curves. While a sufficient finite list can be deduced directly from the adelic level as found by Zywina \cite{ZywinaAlgorithm}, our output works to reduce this list to its minimal size. This inspires the notion of \textbf{primitive points} on modular curves, as studied in Section \ref{sec:PrimitivePoints}. In particular, $j(E)$ is isolated if and only if there exists an isolated primitive point corresponding to $E$. Moreover, any point $x\in X_1(N)$ with $j(x)=j(E)$ corresponds to a \emph{unique} primitive point (Proposition \ref{Prop:single_sink}).
+
+The second part of Algorithm \ref{alg:mainalgorithm} works to show the primitive points corresponding to $E$ are \emph{not} isolated. For example, if the Riemann-Roch space associated to $x \in X_1(N)$ with $j(x)=j(E)$ has dimension at least 2, then $x$ is not $\PP^1$-isolated (and hence not isolated). In other cases, we can show $x \in X_1(N)$ is not isolated by applying the following result.
+
+\begin{proposition} \label{Prop:Genus0Intro}
+Let $E/\Q$ be an elliptic curve, and let $H \leq \GL_2(\Z/N\Z)$ be the image of the mod $N$ Galois representation of $E$, after some choice of basis. If the modular curve $X_H$ has genus 0, then there are no isolated points on $X_1(N)$ associated to $E$.
+\end{proposition}
+
+\noindent In particular, this result implies any elliptic curve with adelic image of genus 0 does not give rise to any isolated points on $X_1(N)$, even as $N$ ranges over all positive integers. However, even when the adelic image of $E$ has positive genus, it can still be that $\im \rho_{E,N}$ has genus 0 for all $N$ corresponding to primitive points. This makes Proposition \ref{Prop:Genus0Intro} more broadly applicable.
+
+Running Algorithm \ref{alg:mainalgorithm} on all elliptic curves currently in the $L$-functions and Modular Forms Database (LMFDB) \cite{LMFDB} gives a list of 95 $j$-invariants which require further consideration; see the Appendix. \abbey{I think we should build Prop. \ref{Prop:Genus0Intro} into the algorithm. Would need to update to mention only Table 1 instead.} After applying certain additional filters to address special cases, as discussed in Section~\ref{sec:remainingfilters}, we arrive at the following result.
 
 \begin{theorem}\label{LMFDBoutputThm}
 Let $x=[E,P]\in X_1(N)$ be a non-CM isolated point with $j(E) \in \Q$.
 Fix an equation for $E/\Q$ and let $N_E$ denote its conductor.
 Suppose that one of the following holds:
 \begin{itemize}
-    \item$N_E \leq 500{,}000$,
+    \item $N_E \leq 500{,}000$,
     \item $N_E$ is only divisible by primes $p \leq 7$, or
     \item $N_E=p \leq 200{,}000{,}000$ for some prime number $p$.
 \end{itemize}
-Then $j(E) \in \{-140625/8,-9317,351/4, -162677523113838677\}$. Moreover, each of these $j$-invariants corresponds to a $\PP^1$-isolated point on $X_1(21)$, $X_1(37)$, $X_1(28)$, and $X_1(37)$, respectively.
+Then $j(E) \in \{-140625/8,-9317,351/4, -162677523113838677\}$. Moreover, each one of these $j$-invariants corresponds to a $\PP^1$-isolated point on $X_1(21)$, $X_1(37)$, $X_1(28)$, and $X_1(37)$, respectively.
 \end{theorem}
 
-Based on these results, we conjecture that the four non-CM isolated $j$-invariants identified above are in fact the \emph{only} $j$-invariants in $\Q$ associated to non-CM elliptic curves which give rise to $\PP^1$-isolated points.
+Based on these results, we conjecture that the four non-CM isolated $j$-invariants identified above are in fact the \emph{only} $j$-invariants in $\Q$ associated to non-CM elliptic curves which give rise to $\PP^1$-isolated points. Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$ by \cite[Theorem 7.1]{BELOV}, it follows conversely that every $j$-invariant in this set is isolated.
+ 
 
-\begin{conjecture}
-If $x\in X_1(N)$ is a $\PP^1$-isolated point with $j(x) \in \Q$, then $j(x)=-140625/8$,$-9317$, $351/4$, $-162677523113838677$, or one of the 13 CM $j$-invariants in $\Q$.
+\begin{conjecture}\label{conj}
+If $x\in X_1(N)$ is a $\PP^1$-isolated point with $j(x) \in \Q$, then $j(x)=-140625/8$, $-9317$, $351/4$, $-162677523113838677$, or one of the 13 CM $j$-invariants in $\Q$.
 \end{conjecture}
+\begin{remark}
+\filip{New remark.}
+Let $x\in X_1(N)$ be a $\PP^1$-isolated point with $j(x) \in \Q$. One expects that the square-free part of the conductor of any $E$ with $j(E)=j(x)$ will be very small.  The reason for this is that any such isolated point will necessarily have small mod $p$ image for some $p$ dividing $N$. This in turn forces potentially good reduction on $E$ in all primes, except possibly for $p=2$, see \cite[Corollary 4.4]{Mazur1978} for one (out of many) example of this phenomenon. Indeed this is the case for all the curves appearing in \Cref{conj}; their conductors are either a square, or twice a square. 
 
-\noindent Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$ by \cite[Theorem 7.1]{BELOV}, it follows conversely that every $j$-invariant in this set is isolated.
+Hence one might except to find most or all of the $\PP^1$-isolated points among elliptic curves with relatively small conductor (and hence in the LMFDB). This observation perhaps makes the computational evidence supporting \Cref{conj} more convincing. 
+\end{remark}
 
 
-It is worth noting that the sporadic points on $X_1(21)$ associated to $j=-140625/8$ and the sporadic points on $X_1(37)$ associated to $j=-9317$ lie above exceptional rational points on $X_0(21)$ and $X_0(37)$, respectively. We say a point $x \in X_0(N)(\Q)$ is \textbf{exceptional} if $X_0(N)(\Q)$ is finite and $x$ corresponds to a non-CM elliptic curve over $\Q$. Thus it is natural to ask whether there exist other sporadic points on $X_1(N')$ lying above such exceptional rational points. Running Algorithm~\ref{alg:mainalgorithm} on the 14 $j$-invariants corresponding to exceptional rational points on $X_0(N)$ (see, for example, \cite[Table 4]{LRAnn}) shows that there are no additional sporadic $j$-invariants in this set.
+We say a point $x \in X_0(N)(\Q)$ is \textbf{exceptional} if $X_0(N)(\Q)$ is finite and $x$ corresponds to a non-CM elliptic curve over $\Q$. It is worth noting that the sporadic points on $X_1(21)$ associated to $j=-140625/8$ and the sporadic points on $X_1(37)$ associated to $j=-9317$ lie above exceptional points on $X_0(21)$ and $X_0(37)$, respectively. Thus it is natural to ask whether there exist other sporadic \abedit{$j$-invariants corresponding to} exceptional rational points on $X_0(N)$. Running Algorithm~\ref{alg:mainalgorithm} on the 14 $j$-invariants corresponding to exceptional rational points on $X_0(N)$ (see, for example, \cite[Table 4]{LRAnn}) shows that there are no additional sporadic $j$-invariants in this set.
 \begin{theorem}
-Let $E$ be an elliptic curve corresponding to an exceptional rational point on $X_0(N)$. If there exists a sporadic point $x \in X_1(N')$ with $j(x)=j(E)$, then $j(E) =-140625/8$ or $-9317$.
+Let $E$ be an elliptic curve corresponding to an exceptional rational point on $X_0(N)$ for some positive integer $N$. \abedit{If $j(E)$ is sporadic, then $j(E)=-140625/8$ or $-9317$.}
 \end{theorem}
 
 It is still an open problem to determine all sporadic points $x \in \cup_{N \in \Z^+} X_1(N)$ with $j(x) =-140625/8$ or $-9317$.
 
+\subsection{Outline}
+After providing relevant background material in Section \ref{sec:background}, we establish  preliminary mathematical results on genus 0 adelic images ($\S$\ref{sec:genus0}) and primitive points on modular curves ($\S$\ref{sec:PrimitivePoints}). We give an overview of the main algorithm in Section \ref{sec:mainalg}, with key sub-algorithms described in detail in Sections \ref{sec:madicrep} and \ref{sec:primitivedeg}. We address the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}. The output of the algorithm and its final analysis is discussed in Section \ref{sec:remainingfilters}.
 
 \section*{Acknowledgments}
 We thank Pete Clark, Maarten Derickx, Jeremy Rouse, and David Zureick-Brown for helpful conversations.
@@ -238,7 +274,7 @@ If $C$ has genus $g\geq 2$, then the collection of all points on $C$ with coordi
 It follows from Theorem \ref{thm:FiniteIsolated} that every sporadic point is isolated, but the converse need not hold.
 
 \subsection{Modular Curves}
-For any subgroup $H \leq \GL_2(\Z/N\Z)$, we define the modular curve $X_H$ to be the coarse space of the stack $\mathcal{M}_H$, as defined in Deligne--Rapoport \cite{DR}. The curve $X_H$ is a scheme over $\text{Spec }\Z[1/N]$ and parametrises generalized elliptic curves with $H$-level structure. \abedit{In particular, its $k$-rational points roughly classify elliptic curves over $k$ whose mod $N$ image is contained in $H$}; see, for example, \cite[$\S2.3$]{RSZB2022} for details. If we take
+For any subgroup $H \leq \GL_2(\Z/N\Z)$, we define the modular curve $X_H$ to be the coarse space of the stack $\mathcal{M}_H$, as defined in Deligne--Rapoport \cite{DR}. The curve $X_H$ is a scheme over $\text{Spec }\Z[1/N]$ and parametrizes generalized elliptic curves with $H$-level structure. \abedit{In particular, its $k$-rational points roughly classify elliptic curves over $k$ whose mod $N$ image is contained in $H$}; see, for example, \cite[$\S2.3$]{RSZB2022} for details. If we take
 \[
 B_1(N) =\left\{ \begin{pmatrix}
 1 & * \\
@@ -257,7 +293,7 @@ with matrices acting via linear fractional transformations. If $N \geq 4$, then 
 
 \abedit{We may also define a modular curve associated to an open subgroup $G$ of $\GL_2(\widehat{\Z})$. For any $N \in \Z^+$, let $\pi:\GL_2(\widehat{\Z}) \rightarrow \GL_2(\Z/N\Z)$ be the natural projection map, and define $G(N) \coloneqq \pi(G)$. We say $G$ has \textbf{level} $N$ if $G=\pi^{-1}(G(N))$ and $N$ is minimal with respect to this property.} If $\det(G)=\widehat{\Z}^{\times}$, we define the modular curve $X_G \coloneqq X_{G(N)}$. If $G=\GL_2(\widehat{\Z})$, then we identify $X_G \cong \PP^1$ with the $j$-line.
 
-\subsection{Closed Points on Modular Curves}\abbey{I updated the first 2 paragraphs of this section.} To discuss isolated points on modular curves, we must consider closed points on $X_1(N)$, viewed always as a scheme over $\Q$. Let $k$ be a field with an embedding of $k$ into $\overline \Q$. Given an elliptic curve $E/k$ with $P \in E(k)$ of order $N$, the pair $(E,P)$ induces a $k$-valued point on $X_1(N)$ via the moduli interpretation described above. We denote this $k$-valued point by $(E,P)_k$, and by definition it corresponds to a morphism of $\Q$-schemes $f:\text{Spec } k \rightarrow X_1(N)$. The map $f$ sends the unique point of $\text{Spec } k$ to a point $x \in X$, and we call $x$ the \textbf{closed point} associated to $(E,P)$.\footnote{Note $x$ is indeed closed since $\Q(x)/\Q$ is finite; see, for example, \cite[Exercise 5.9, p.76] {Liu2002}.} We define the \textbf{degree} of $x$ to be the degree of the residue field $\Q(x)$ over $\Q$. Since there are many scheme-valued points which induce the same closed point, it is sometimes preferable to consider Galois orbits of points in $X_1(N)(\overline{\Q})$, which are in bijection with the set of closed points. Thus one could alternatively define the closed point associated to $(E,P)$ as the $\Gal_\Q$-orbit of $(E,P)_{\overline{\Q}}$. \sachi{I think the difference between $k$-valued points and $k$-rational points is confusing, since the names are so similar. It would be nice to explicitly point out what is meant by $k$-rationality somewhere (in constrast to $k$-valued).} \abbey{They are all the same thing for a scheme over a field. I used the term $k$-valued b/c it's the term used in Qing Liu's book \cite{Liu2002}, but it matches what Poonen calls a $k$-rational point or a $k$-point of a scheme over a field in \emph{Rational points on varieties}, for example. The definition is actually already above --- it's a morphism of $\Q$-schemes $f:\text{Spec} k \rightarrow X_1(N)$. If you say $k$-rational point, I imagine most people just think of points with coordinates in $k$, rather than this scheme-theoretic definition. These two notions coincide, but it's something to prove, for example, as in Prop. 2.18 in Section 3.2.3 of \cite{Liu2002}.}
+\subsection{Closed Points on Modular Curves}\abbey{I updated the first 2 paragraphs of this section.} To discuss isolated points on modular curves, we must consider closed points on $X_1(N)$, viewed always as a scheme over $\Q$. Let $k$ be a field with an embedding of $k$ into $\overline \Q$. Given an elliptic curve $E/k$ with $P \in E(k)$ of order $N$, the pair $(E,P)$ induces a $k$-valued point on $X_1(N)$ via the moduli interpretation described above. We denote this $k$-valued point by $(E,P)_k$, and by definition it corresponds to a morphism of $\Q$-schemes $f:\text{Spec } k \rightarrow X_1(N)$. The map $f$ sends the unique point of $\text{Spec } k$ to a point $x \in X$, and we call $x$ the \textbf{closed point} associated to $(E,P)$.\footnote{Note $x$ is indeed closed since $\Q(x)/\Q$ is finite; see, for example, \cite[Exercise 5.9, p.76] {Liu2002}.} We define the \textbf{degree} of $x$ to be the degree of the residue field $\Q(x)$ over $\Q$. Since there are many scheme-valued points which induce the same closed point, it is sometimes preferable to consider Galois orbits of points in $X_1(N)(\overline{\Q})$, which are in bijection with the set of closed points. Thus one could alternatively define the closed point associated to $(E,P)$ as the $\Gal_\Q$-orbit of $(E,P)_{\overline{\Q}}$. 
 
 \begin{remark} Given a $k$-valued point $(E,P)_k$, we note that the degree of the associated closed point $x$ may be strictly less than the degree of $k$. However, there always exists $E'/\Q(x)$ with $j(E')=j(E)$ and $P' \in E'(\Q(x))$, where the point $P' \in E'$ maps to $P \in E$ under a $\overline \Q$-isomorphism sending $E$ to $E'$. See \cite[p. 274, Proposition VI.3.2]{DR}. The pair $(E',P')$ gives a $\Q(x)$-valued point, and it is the unique $\Q(x)$-valued point such that $(E,P)_{k}=(E',P')_{k}.$
 \end{remark}
@@ -282,7 +318,7 @@ See, for example, \cite[Lemma 2.5]{BourdonNajman2021}.%{OddDegQCurve}.
 \begin{remark}\label{ResidueFieldRmk} In particular, if $E/\Q(j(E))$ does not have complex multiplication and $P=(x_0,y_0)$, then one can take $\Q(x)\cong\Q(j(E),x_0)$. See \cite[p. 107]{shimura}.
 \end{remark}
 \begin{example}
-Let $E_1:y^2+xy+y=x^3-x^2-3x+3$ and $P_1=(-1,2)$ a point of order 7. Then $(E_1,P_1)$ gives a $\Q$-valued point on $X_1(7)/\Q$ and also a closed point $x\in X_1(7)$ of degree 1. On the other hand, let $E_2:y^2=x^3-43x-166$ and $P_2=(5,i\sqrt{256})$ a point of order 7. Then $(E_2,P_2)$ gives a $\Q(i)$-valued point on $X_1(7)/\Q$ and also a closed point $x\in X_1(7)$ of degree 1 by \abedit{Remark \ref{ResidueFieldRmk}} \sachi{(and therefore a $\Q$-rational point)} \abbey{We want to think of it as \emph{inducing} a $\Q$-rational point---as explained in the paragraph below, or in Remark 7 above---rather than $(E_2,P_2)$ itself being $\Q$-rational. The non-cuspidal $\Q$-rational points of $X_1(7)(\Q)$ correspond to $\Q$-isomorphism classes of elliptic curves $E/\Q$ with a point $P\in E(\Q)$ of order 7, where this comes from the curve being a fine moduli space. So the representative $E_2,P_2$ does not show up here, since $P_2$ is not in $\Q$.}. In fact, both $(E_1,P_1)$ and $(E_2,P_2)$ induce the same geometric point on $X_1(7)$ since $(E_1,P_1)_{\overline{\Q}}=(E_2,P_2)_{\overline{\Q}}$. 
+Let $E_1:y^2+xy+y=x^3-x^2-3x+3$ and $P_1=(-1,2)$ a point of order 7. Then $(E_1,P_1)$ gives a $\Q$-valued point on $X_1(7)/\Q$ and also a closed point $x\in X_1(7)$ of degree 1. On the other hand, let $E_2:y^2=x^3-43x-166$ and $P_2=(5,i\sqrt{256})$ a point of order 7. Then $(E_2,P_2)$ gives a $\Q(i)$-valued point on $X_1(7)/\Q$ and also a closed point $x\in X_1(7)$ of degree 1 by \abedit{Remark \ref{ResidueFieldRmk}}. In fact, both $(E_1,P_1)$ and $(E_2,P_2)$ induce the same geometric point on $X_1(7)$ since $(E_1,P_1)_{\overline{\Q}}=(E_2,P_2)_{\overline{\Q}}$. 
 
 One could alternatively compute the Kubert--Tate normal form associated to $E_2/\Q(i)$, with $P_2=(5,i\sqrt{256})$:
 \[E_3: y^2-xy-4y=x^3-4x^2,\, \, P_3=(0,0).
@@ -308,7 +344,7 @@ Let $N$ be the level of $G$. For any subgroup $H$ of $\GL_2(\Z /N\Z)$, we have $
 
 To determine its degree, let $\Gamma$ and $\Gamma'$ be the intersection with $\SL_2(\Z)$ of the inverse image of $G$ and $G'$ in $\GL_2(\Z)$. Over $\bC$, the morphism $f$ is the quotient map $\Gamma \backslash \mathcal{H} \rightarrow \Gamma' \backslash \mathcal{H}$. Since the kernel of the action of $\SL_2(\Z)$ on $\mathcal H$ is $\pm I$, the degree of $f$ is as claimed.
     \end{proof}
-Let $a$ and $b$ be positive integers. Taking $G=\pi^{-1}(B_1(ab))$ and $G'=\pi^{-1}(B_1(a))$ gives the following corollary, which under the moduli interpretation corresponds to sending $(E,P)$ to $(E,bP)$.    \begin{corollary}
+Let $a$ and $b$ be positive integers. Taking $G=\pi^{-1}(B_1(ab))$ and $G'=\pi^{-1}(B_1(a))$ gives the following corollary, which under the moduli interpretation corresponds to sending $(E,P)$ to $(E,bP)$.    \begin{corollary}\label{Cor:DegreeFormula}
                 For positive integers $a$ and $b$, the natural $\Q$-rational map $f\colon X_1(ab) \rightarrow X_1(a)$ has
                 \[
                     \deg(f)=
@@ -318,7 +354,7 @@ Let $a$ and $b$ be positive integers. Taking $G=\pi^{-1}(B_1(ab))$ and $G'=\pi^{
                 where $c_{f}=1/2$ if $a \leq 2$ and $ab>2$ and $c_{f}=1$ otherwise. 
     \end{corollary}
 
-\subsection{Galois Representations}\abbey{Recently added section.} If $E$ is an elliptic curve defined over a number field $k$, then $\Gal_k$ acts naturally on the points of $E$. On torsion points, this action is described by the \textbf{adelic Galois representation} associated to $E/k$, 
+\subsection{Galois Representations} If $E$ is an elliptic curve defined over a number field $k$, then $\Gal_k$ acts naturally on the points of $E$. On torsion points, this action is described by the \textbf{adelic Galois representation} associated to $E/k$, 
 \[
 \rho_{E}: \Gal_k \rightarrow \Aut(E(\overline{k})_{\text{tors}}) \cong \GL_2(\widehat{\Z}). 
 \]
@@ -352,10 +388,13 @@ If $E/k$ is a non-CM elliptic curve, we define the \textbf{level} of $\rho_E$ to
 %\begin{proof}This follows from the arguments \cite[$\S5.3$]{BELOV} and \cite[Theorem 4.3]{BELOV}. \abbey{This is mentioned in Remark 5.5 of \cite{BELOV} in particular.}\end{proof}
 
 \section{Genus 0 adelic images do not produce isolated points}
+\label{sec:genus0images}
 
 \abbey{I moved this from the end.}
 \label{sec:genus0}
-Let $E/\Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. By $G(N)$ denote the image of its mod $N$ representation. Denote by $B_1(N)$ the subgroup of $\GL_2(\Z/N\Z)$ consisting of the upper triangular matrices with a $1$ in the upper left entry. Note that $X_{B_1(N)}=X_1(N)$. We say that a congruence group $\Gamma$ is of genus $g$ if $X_\Gamma$ is of genus $g$. We say that a point $P$ corresponds to an elliptic curve $E$ if $j(P)=j(E)$.
+Let $E/\Q$ be an elliptic curve and $G\in \GL_2(\hat \Z)$ its adelic image. Let $G(N)$ denote the image of its mod $N$ representation. Denote by $B_1(N)$ the subgroup of $\GL_2(\Z/N\Z)$ consisting of the upper triangular matrices with a $1$ in the upper left entry. Note that $X_{B_1(N)}=X_1(N)$. We say that a congruence group $\Gamma$ is of genus $g$ if $X_\Gamma$ is of genus $g$. We say that a point $P$ corresponds to an elliptic curve $E$ if $j(P)=j(E)$. \sedit{In this section, we show that elliptic curves with genus $0$ mod $N$ image  do not correspond to $\PP^1$-isolated points on $X_1(N)$.}
+
+\abbey{Do we want to add a check for this as part of our main algorithm? That is, if $\langle a, d\rangle$ appears in our list indicating that $E$ gives a possibly isolated point on $X_1(a)$ of degree $d$, should we check whether $X_{\im \rho_{E,a}}$ has genus 0? If so, $\langle a, d\rangle$ can be removed from the list. Then the long list currently in the appendix could be removed, since Table 1 would suffice.}
 
 \begin{lemma} \label{lem:map to Symd}
 Let $f\colon X \to Y$ be a finite morphism of curves of degree $d$. Then $f$ induces a non-constant morphism $f^*\colon Y \to X^{(d)}$.
@@ -438,17 +477,21 @@ As $g(x')$ is of degree $d$ and $q(g(x'))=h(x)\in X_{G'}(\Q)$, it follows $\deg 
 
 
 \section{Primitive Points on Modular Curves}
+\label{sec:PrimitivePoints}
+
 \abbey{New section which answers Zev's question about the PrimitiveDegreesOfPoints algorithm in the affirmative.}
-At a high level, our algorithm to decide whether a given $E$ defined over $\Q$ is \abedit{gives rise to} an isolated point on $X_1(N)$ for some $N\geq 1$ proceeds in two steps. First, we reduce this to a finite computation by computing a level $n$ associated to the adelic image of $E$ so that we need only consider levels $m|n$. Next, we try to reduce the  levels $m|n$ which we need to check: our filters for non-isolated points work better for points of lower level, in general. In this section, we introduce a notion of a primitive point on a modular curve. 
+At a high level, our algorithm to decide whether a given $E/\Q$ gives rise to an isolated point on $X_1(N)$ for some $N\geq 1$ proceeds in two steps. First, we reduce this to a finite computation by computing a level $n$ associated to the adelic image of $E$, so that we need only consider levels $m|n$. Next, we try to reduce the  levels $m|n$ which we need to check: our filters for non-isolated points work better for points of lower level, in general. In this section, we introduce a notion of a primitive point on a modular curve. 
 For a computable integer $m$ \abbey{We don't need any restrictions here -- $m$ doesn't have to correspond to the level. The point is that any isolated point on $X_1(n)$ for $n \mid m$ will map down under the natural projection map to a primitive point which is isolated by \cite[Theorem 4.3]{BELOV}. So I think it's better to postpone discussion of the level until later sections.} associated to the adelic image of $E$, the $m$-primitive points above $E$ of degree $d$ on $X_1(a)$ will have the property that any isolated point on $X_1(N)$ for any $N$ will map, under the natural map, to some primitive  point \abedit{which is isolated}. 
 
-Let $m\geq 1$ be an integer. We now define the $m$-primitive points above a given elliptic curve $E$ defined over $\Q$. We begin by defining a directed graph $G=G(E,m)$ on the points of $X_1(n)$ \abedit{corresponding to $E$} for $n|m$. The vertices of $G(E,m)$ are tuples $(x,n,d)$ where:
+Let $m\geq 1$ be an integer. 
+%We now define the $m$-primitive points above a given elliptic curve $E/\Q$. 
+We begin by defining a directed graph $G(E,m)$ on the points of $X_1(n)$ corresponding to $E$ for all $n|m$. The vertices of $G(E,m)$ are tuples $(x,n,d)$ where:
 \begin{enumerate}
     \item $n|m$,
     \item $x$ is a degree $d$ point on $X_1(n)$, and 
     \item $j(x)=j(E)$.
 \end{enumerate}
-We connect $(x,n,d)$ with an arrow to $(x',n',d')$ if: 
+We connect $(x,n,d)$ with an arrow \sachi{a directed edge} to $(x',n',d')$ if: 
 \begin{enumerate}
     \item $n'$ is a proper divisor of $n$,
     \item $x'=f(x)$ where $f\colon X_1(n)\to X_1(n')$ is the natural map, and
@@ -461,23 +504,31 @@ This is a directed acyclic graph. A \textbf{sink} in a directed acyclic graph is
 \begin{definition}\label{def:mprimitive}
     Let $E$ be an elliptic curve over $\Q$ and let $m\geq 1$ be an integer. The \textbf{$m$-primitive points} above $E$ are the sinks \abedit{of} $G(E,m)$. The \textbf{$m$-primitive degrees} are the tuples $(n,d)$, where $(x,n,d)$ is $m$-primitive for $E$. \travis{multiplicity?}
 \end{definition}
+
+\abedit{
+\begin{theorem}
+    Let $E/\Q$ be a non-CM elliptic curve. Then there are only finitely many primitive points associated to $E$. Moreover, $j(E)$ is isolated if and only if one of the primitive points associated to $E$ is isolated.
+\end{theorem}
+
+}
 In Section~\ref{sec:primitivedeg}, we give an algorithm for enumerating the sinks of $G(E,m)$. 
-\begin{remark}
-Suppose $n'' | n' | n | m$ and that $(x,n,d), (x',n',d'), (x'',n'',d'')$ are vertices. This graph is \textbf{transitive}, meaning that if there is an arrow from $(x,n,d)$ $(x',n',d')$ and from $(x',n',d')$ to $(x'',n'',d''),$ then 
-there is also an arrow from $(x,n,d)$ to $(x'',n'',d'')$. \travis{Moreover, if there is an arrow from $(x,n,d)$ to $(x'',n'',d''),$ then we  claim there \abedit{is} an arrow from $(x,n,d)$ to $(x',n',d')$, \abedit{where $x'$ is the image of $x$ on $X_1(n')$ and $n'$ properly divides $n$}. Intuitively, if the degree grows as much as possible from level $n''$ to level $n$ then it also grows as much as possible from level $n'$ to level $n$. Indeed: let $g_1:X_1(n) \rightarrow X_1(n')$ and $g_2:X_1(n') \rightarrow X_1(n'')$. Suppose for the sake of contradiction that  $\abedit{d}<\abedit{d'}\cdot\deg g_1$. But since $\abedit{d'} \leq \abedit{d''} \cdot \deg g_2$, this would imply $\abedit{d}<\abedit{d''} \cdot\deg g_1\cdot \deg g_2 $. This contradicts our assumption that there is an arrow from $(x,n,d)$ to $(x'',n'',d'')$.}    
+\begin{remark}\label{Remark:Transitivity}
+Suppose $n'' | n' | n | m$ and that $(x,n,d), (x',n',d'), (x'',n'',d'')$ are vertices. This graph is \textbf{transitive}, meaning that if there is an arrow \sedit{edge} from $(x,n,d)$ \sedit{to} $(x',n',d')$ and from $(x',n',d')$ to $(x'',n'',d''),$ then 
+there is also an arrow \sedit{edge} from $(x,n,d)$ to $(x'',n'',d'')$. \travis{Moreover, if there is an arrow from $(x,n,d)$ to $(x'',n'',d''),$ then we  claim there \abedit{is} an arrow from $(x,n,d)$ to $(x',n',d')$, \abedit{where $x'$ is the image of $x$ on $X_1(n')$ and $n'$ is any multiple of $n''$ which properly divides $n$}. Intuitively, if the degree grows as much as possible from level $n''$ to level $n$ then it also grows as much as possible from level $n'$ to level $n$. Indeed, let $g_1:X_1(n) \rightarrow X_1(n')$ and $g_2:X_1(n') \rightarrow X_1(n'')$. Suppose for the sake of contradiction that  $\abedit{d}<\abedit{d'}\cdot\deg g_1$. But since $\abedit{d'} \leq \abedit{d''} \cdot \deg g_2$, this would imply $\abedit{d}<\abedit{d''} \cdot\deg g_1\cdot \deg g_2 $. This contradicts our assumption that there is an arrow from $(x,n,d)$ to $(x'',n'',d'')$.}    
 \end{remark}
 
 
-Now fix a vertex $(x,n,d)$ and consider its \textbf{descendants}, i.e. all vertices $(x',n',d')$ reachable by a path from $(x,n,d)$. This is a directed acyclic graph with a single source, $(x,n,d)$. \abedit{In this section, we will show that this graph has a single sink as well.}    \abbey{Is there standard notation for this? I use $D(v)$ below.}
+Now fix a vertex $(x,n,d)$ and consider \travis{the graph induced by $(x,n,d)$ and} its \textbf{descendants}, i.e. all vertices $(x',n',d')$ reachable by a path from $(x,n,d)$. This is a directed acyclic graph with a single source, $(x,n,d)$.  \abedit{In this section, we will show that this graph has a single sink as well.}    \abbey{Is there standard notation for this? I use $D(v)$ below.} \sachi{I think this is typically the out-neighborhood of a vertex, denoted $N^+(v)$. i.e. this is the set of vertices $w$ such that there is an edge from $v$ to $w$. By the way, what we have defined as $D(v)$ (and also $N^+(v)$) is technically not directed acyclic graph, it's just a set -- but we can consider the induced subgraph on $N^+(v)$, i.e. the set of these vertices and along with all of the edges going between them that were in the original graph.} \travis{added that we consider the induced graph, making it a graph instead of a set}\travis{I think out-neighborhood happens to work for our DAG, since $(x,n,d)$ is adjacent to any vertex it has a path to. It wouldn't in general be the same thing.}
 
 \begin{proposition}\label{Prop:single_sink}
-    Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. Fix $v=(x,m,d)$ in $G(E,m)$, and consider the subgraph $D(v)$ of all its descendants. Then $D(v)$ has a single sink.
+    Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. Fix $v=(x,n,d)$ in $G(E,m)$, and consider the \sedit{induced} subgraph \sedit{on the set} $D(v)$ of all its descendants. Then \sedit{this subgraph} has a single sink. \abbey{Is there a reason why we can't let $D(v)$ -- or some other, better notation -- denote the induced subgraph, not just the set of descendants? It seems better to emphasize the subgraph for the purposes of this statement. We could also just say, ``For any fixed vertex $v$ in $G(E,m)$, the induced subgraph on its descendants has a single sink." Is this better?} \sachi{There is no reason why -- we should just define it this way in the beginning :) Right now we are saying it's a set, so I found it a bit confusing, since it's not entirely clear which edges we are taking on the set of vertices. I think either phrasing is OK -- as you suggest, we can also define $D(v)$ to be the induced subgraph on the set of descendents (instead of the set of descendents itself), or remark that we abuse notation and denote the induced subgraph and the set of vertices by the same notation.}
 \end{proposition}
 
 \subsection{Preliminary Results}
 
 \begin{lemma}\label{lem:LCM}
-Let $n_1,n_2 \in \Z^+$ and define $n \coloneqq \lcm(n_1,n_2)$. If $g=\gcd(n_1,n_2)$, we let $n_1=g\cdot n_1'$ and $n_2=g\cdot n_2'$. Suppose $E/F$ is an elliptic curve, and $P \in E(\overline{F})$ is a point of order $n$. If $n_2'P\in E(F)$ and $n_1'P \in E(F)$, then $P \in E(F)$.
+Let $n_1,n_2 \in \Z^+$ and $n \coloneqq \lcm(n_1,n_2)$. For $g=\gcd(n_1,n_2)$, we define $n_1'\coloneqq n_1/g$ and $n_2'\coloneqq n_2/g$. 
+Suppose $E/F$ is an elliptic curve, and $P \in E(\overline{F})$ is a point of order $n$. If $n_2'P\in E(F)$ and $n_1'P \in E(F)$, then $P \in E(F)$.
 \end{lemma}
 
 \begin{proof}
@@ -488,7 +539,7 @@ Note $n_2'P \in E(F)$ is a point of order $n_1$, and $n_1'P \in E(F)$ is a point
 \end{proof}
 
 \begin{lemma} \label{lem:compositum_res_fields}
-Let $n_1,n_2 \in \Z^+$ and define $n \coloneqq \lcm(n_1,n_2)$. If $g=\gcd(n_1,n_2)$, we let $n_1=g\cdot n_1'$ and $n_2=g\cdot n_2'$. Let $x=[E,P] \in X_1(n)$ for an elliptic curve $E$ with $j(E) \neq 0,1728$, and define $x_1=[E,n_2'P] \in X_1(n_1)$ and $x_2=[E,n_1'P] \in X_1(n_2)$. The residue field $\Q(x)$ is at most a quadratic extension of the compositum $\Q(x_1)\Q(x_2)$. Moreover:
+Let $n_1,n_2 \in \Z^+$ and $n \coloneqq \lcm(n_1,n_2)$. For $g=\gcd(n_1,n_2)$, we define $n_1'\coloneqq n_1/g$ and $n_2'\coloneqq n_2/g$. Let $x=[E,P] \in X_1(n)$ for an elliptic curve $E$ with $j(E) \neq 0,1728$, and define $x_1=[E,n_2'P] \in X_1(n_1)$ and $x_2=[E,n_1'P] \in X_1(n_2)$. The residue field $\Q(x)$ is at most a quadratic extension of the compositum $\Q(x_1)\Q(x_2)$. Moreover:
 \begin{enumerate}
 \item If $g>2$, then $\Q(x_1)\Q(x_2)=\Q(x)$.
 \item If $n_1=2$ or if $n_2=2$, then $\Q(x_1)\Q(x_2)=\Q(x)$.
@@ -504,10 +555,10 @@ Suppose that $F/F_1F_2$ is a quadratic extension. Then consider $E'/F_1F_2$, and
 \end{proof}
 
 \subsection{Proof of Proposition \ref{Prop:single_sink}}
-The proof of Proposition \ref{Prop:single_sink} will appear as a corollary to the following more general result.
+The proof of Proposition \ref{Prop:single_sink} will appear as a corollary to the following result.
 
 \begin{proposition}\label{Prop:gcd}
-Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. In $G(E,m)$,
+Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. In the graph $G(E,m)$,
 suppose $(x,n,d)$ is connected by a path to both $(x_1,n_1,d_1)$ and $(x_2,n_2,d_2)$, where $n=\lcm(n_1,n_2)$. Then \abedit{if $\gcd(n_1,n_2) \neq n_1,n_2$}, it follows that both $(x_1,n_1,d_1)$ and $(x_2,n_2,d_2)$ connect to $(x_3, \gcd(n_1,n_2),d_3)$.
 
 \end{proposition}
@@ -551,16 +602,14 @@ suppose $(x,n,d)$ is connected by a path to both $(x_1,n_1,d_1)$ and $(x_2,n_2,d
         \caption{Degrees of Residue Fields}
     \end{figure}
     
-    \begin{proof}  By assumption, the integer $g=\gcd(n_1,n_2)$ is a proper divisor of both $n_1=gn_1'$ and $n_2=gn_2'$.
-    
-    Let $f_1: X_1(n) \rightarrow X_1(n_1)$ and let $f_2: X_1(n) \rightarrow X_1(n_2)$. We consider two cases.
+    \begin{proof}  By assumption, the integer $g=\gcd(n_1,n_2)$ is a proper divisor of both $n_1=gn_1'$ and $n_2=gn_2'$. Let $f_1: X_1(n) \rightarrow X_1(n_1)$ and let $f_2: X_1(n) \rightarrow X_1(n_2)$. We consider two cases.
     \begin{enumerate}
-    \item Suppose $ g>2$, or if $g=1$, that exactly one of $n_1$ or $n_2$ is greater than 2. In the latter case, without loss of generality we may assume $n_1>2$, and $n_2=2$. Then $\Q(x_1)\Q(x_2)=\Q(x)$ by Lemma \ref{lem:compositum_res_fields}, and so by assumption
+    \item Suppose $ g>2$, \abedit{or if $g=1$, that there exists $n_i \leq 2$. In the latter case, our assumptions imply that exactly one of $n_1$ or $n_2$ is equal to 2 and the other is greater than 2. So if $g=1$,} without loss of generality we may assume $n_1>2$ and $n_2=2$. Then $\Q(x_1)\Q(x_2)=\Q(x)$ by Lemma \ref{lem:compositum_res_fields}, and so by assumption
     \begin{align*}
     [\Q(x_1)\Q(x_2):\Q(x_1)]=\deg(f_1),\\
     [\Q(x_1)\Q(x_2):\Q(x_2)]=\deg(f_2).
     \end{align*}
-        It follows from properties of composite fields that $\deg(f_1) \leq \frac{d_2}{d_3}$ and $\deg(f_2) \leq \frac{d_1}{d_3}$; see Figure 1. Note that for a prime $p \mid n_1'$, we have $p \nmid g$ if and only if $p \nmid n_2$. Similarly, for a prime $p \mid n_2'$, we have $p \nmid g$ if and only if $p \nmid n_1$. Thus
+        It follows from properties of composite fields that $\deg(f_1) \leq \frac{d_2}{d_3}$ and $\deg(f_2) \leq \frac{d_1}{d_3}$; see Figure 1. Note that for a prime $p \mid n_1'$, we have $p \nmid g$ if and only if $p \nmid n_2$. Similarly, for a prime $p \mid n_2'$, we have $p \nmid g$ if and only if $p \nmid n_1$. Thus by Corollary \ref{Cor:DegreeFormula}, we have
     \begin{align*}
     \frac{d_1}{d_3} \leq \deg(X_1(n_1) \rightarrow X_1(g))=\deg(f_2),\\
         \frac{d_2}{d_3} \leq \deg(X_1(n_2) \rightarrow X_1(g))=\deg(f_1).
@@ -576,20 +625,18 @@ suppose $(x,n,d)$ is connected by a path to both $(x_1,n_1,d_1)$ and $(x_2,n_2,d
     \end{proof}
 
 \begin{corollary}
-Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. Fix $v=(x,m,d)\in G(E,m)$, and consider the subgraph $D(v)$ of all its descendants. Then $D(v)$ has a single sink.
+Let $m\geq 1$ be an integer and let $E/\Q$ be an elliptic curve. Fix $v=(x,n,d)\in G(E,m)$, and consider the \sedit{induced} subgraph \sedit{on} $D(v)$ \sedit{the set} of all its descendants. Then $D(v)$ has a single sink.
 \end{corollary}
 
 \begin{proof}
-Suppose for the sake of contradiction that $D(v)$ has two distinct sinks, $v_1=(x_1,n_1,d_1)$ and $v_2=(x_2,n_2,d_2)$. But having a path from $(x,n,d)$ to each of $v_1,v_2$ implies there is a path from $(x',\text{lcm}(n_1,n_2),d')$ to each of $v_1,v_2$. But then both $v_1,v_2$ map to $(x_3,\text{gcd}(n_1,n_2),d_3)$ by Proposition \ref{Prop:gcd}, contradicting the fact that they were both sinks.
-
-\abbey{need to rule out case where $\gcd=n_1$ or $n_2$ since removed from proposition}
+Suppose for the sake of contradiction that \sedit{the subgraph induced by} $D(v)$ has two distinct sinks, $v_1=(x_1,n_1,d_1)$ and $v_2=(x_2,n_2,d_2)$. \abedit{If $n_1 \mid n_2$, then the arrows from $v$ to $v_1$ and $v$ to $v_2$ force there to be an arrow from $v_2$ to $v_1$. This contradicts the fact that $v_2$ is a sink, so it must be that $n_1 \nmid n_2$. Similarly, it must be that $n_2 \nmid n_1$. Note} having a path from $v$ to each of $v_1,v_2$ implies there is a path from $(x',\text{lcm}(n_1,n_2),d')$ to each of $v_1,v_2$; see Remark \ref{Remark:Transitivity}. But then both $v_1,v_2$ map to $(x_3,\text{gcd}(n_1,n_2),d_3)$ by Proposition \ref{Prop:gcd}, contradicting the fact that they were both sinks.
 %If $n_1 \mid n_2$, then the claim holds since the natural map $X_1(n) \rightarrow X_1(n_1)$ factors through $X_1(n_2)$ in this case \abbey{Add more details. Also, this is allowing for a vertex to (trivially) connect to itself... modify definition to allow?}; similarly, the claim holds if $n_2 \mid n_1$.
 \end{proof}
 
 
 \section{Overview of the Main Algorithm}
 \label{sec:mainalg}
-\abbey{Section updated to match revised algorithm; added examples.} The following algorithm is the main procedure for determining whether a given non-CM $j$-invariant in $\Q$ is the image of a $\PP^1$-isolated point on $X_1(N)$ for some $N$ based on results in \cite{BELOV,ZywinaAlgorithm}. We note that for any CM $j$-invariant $j$, there exists infinitely many $N\in\Z^+$ for which there is a sporadic point $x\in X_1(N)$ with $j(x)=j$ by \cite[Theorem 7.1]{BELOV}, so it is not necessary to consider them in this algorithm. The outline below gives an overview of the structure, while the algorithms to perform particular steps are described in detail in Sections \ref{sec:madicrep} and \ref{sec:primitivedeg}. We will prove a theorem on the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}.
+The following algorithm is the main procedure for determining whether a given non-CM $j$-invariant in $\Q$ is the image of a $\PP^1$-isolated point on $X_1(N)$ for some $N$ based on results in \cite{BELOV,ZywinaAlgorithm}. We note that for any CM $j$-invariant $j$, there exists infinitely many $N\in\Z^+$ for which there is a sporadic point $x\in X_1(N)$ with $j(x)=j$ by \cite[Theorem 7.1]{BELOV}, so it is not necessary to consider them in this algorithm. The outline below gives an overview of the structure, while the algorithms to perform particular steps are described in detail in Sections \ref{sec:madicrep} and \ref{sec:primitivedeg}. We will prove a theorem on the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}.
 
 
 \setcounter{algocf}{0}
@@ -600,7 +647,7 @@ Suppose for the sake of contradiction that $D(v)$ has two distinct sinks, $v_1=(
 Construct an elliptic curve $E/\Q$ with $j(E)=j$.\\
 Compute the adelic image $G$ of $E/\Q$ as a subgroup of $\GL_2(\hat{\Z})$ using Zywina's algorithm \cite{ZywinaAlgorithm}. Represent the output as the level $N$ and the subgroup $G(N)$ of $\GL_2(\Z/N\Z)$.\\
 Apply Algorithm \ref{alg:reduce_level} to $G(N)$ to obtain the level $m_0$ of the $m$-adic Galois representation associated to $E$, where $m$ is the product of 2, 3, and all non-surjective primes.\\
-Using Algorithm \ref{alg:compute_prim_degree}, return a multiset $D$ with entries $\langle n, \{\langle a_1, d_1\rangle ,  \dots,  \langle a_r, d_r\rangle \} \rangle$
+Using Algorithm \ref{alg:compute_prim_degree}, return a multiset $D$ \abbey{updated to match new definitions} with entries $\langle n, \{\langle a_1, d_1\rangle ,  \dots,  \langle a_r, d_r\rangle \} \rangle$
     for all positive divisors $n$ of $m_0$ such that the degree of the corresponding 
     closed point on $X_1(n)$ is as large as possible given that its image on $X_1(a_i) $
     has degree $d_i$.\\
@@ -630,7 +677,7 @@ If $j=-882216989/131072$, then Algorithm \ref{alg:mainalgorithm} returns  $[j,\{
 
 \section{\texorpdfstring{Computing the level of the $m$-adic representation}{Computing the level of the m-adic representation}}
 \label{sec:madicrep}
-\abbey{Updated the algorithm description to be less technical; added math proposition to justify; added examples.}
+
 Let $E/\Q$ be a non-CM elliptic curve, and define the set 
 \[
 S_E\coloneqq \{2,3\} \cup \{ \ell: \rho_{E,\ell^{\infty}}(\Gal_{\Q}) \neq \GL_2(\Z_{\ell}) \}.
@@ -646,7 +693,9 @@ Compute smallest $m_0$ dividing $n$ such that \[\#G(n)=\#G(m_0) \cdot \#\ker(\GL
   \Return{$m_0$}
 \end{algorithm}
 
-
+  \begin{example}
+Suppose $E/\Q$ is a non-CM elliptic curve such that $\rho_{E}$ has level $N$. As above, define $n=\prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$ and let $m_0$ be the level of $\rho_{E,m^{\infty}}$ for $m= \prod_{\ell \in S_E} \ell$. It follows that $m_0| n$ and $n | N$. Each of these divisibilities can be proper \abbey{emphasize at start -- or start of secction}. For example, if $E=75072.bc2$, we see that $\rho_E$ has level $N=4682=2^2 \cdot 3 \cdot 17 \cdot 23$. Since 2 is the only non-surjective prime, $n=2^2$. However, the level of the $m$-adic Galois representation associated to $E$ is 2. On the other hand, it can also happen that $N=m_0$. For example, if $E=54.b2$, we see that $\rho_E$ has level 72, and this is also the level of the $m$-adic Galois representation associated to $E$.
+\end{example}
   \begin{proposition}
   Let $E/\Q$ be a non-CM elliptic curve, and let $\im \rho_E=G \leq \GL_2(\widehat{\Z})$ be a subgroup of level $N$. Define $n \coloneqq \prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$. If $m_0$ is the smallest positive integer dividing $n$ such that \[\#G(n)=\#G(m_0) \cdot \#\ker(\GL_2(\Z/n\Z) \rightarrow \GL_2(\Z/m_0\Z)),\] then $m_0$ is the level of the $m$-adic Galois representation associated to $E$ for $m= \prod_{\ell \in S_E} \ell$.
   \end{proposition}
@@ -674,9 +723,7 @@ By construction $m_0$ is the smallest positive integer with this property.
   Algorithm \ref{alg:reduce_level} is correct.
   \end{corollary}
   
-  \begin{example}
-Suppose $E/\Q$ is a non-CM elliptic curve such that $\rho_{E}$ has level $N$. As above, define $n=\prod_{\ell \in S_E} \ell^{v_{\ell}(N)}$ and let $m_0$ be the level of $\rho_{E,m^{\infty}}$ for $m= \prod_{\ell \in S_E} \ell$. It follows that $m_0| n$ and $n | N$. Each of these divisibilities can be proper. For example, if $E=75072.bc2$, we see that $\rho_E$ has level $N=4682=2^2 \cdot 3 \cdot 17 \cdot 23$. Since 2 is the only non-surjective prime, $n=2^2$. However, the level of the $m$-adic Galois representation associated to $E$ is 2. On the other hand, it can also happen that $N=m_0$. For example, if $E=54.b2$, we see that $\rho_E$ has level 72, and this is also the level of the $m$-adic Galois representation associated to $E$.
-\end{example}
+
 
 
 
@@ -731,7 +778,7 @@ Let $E$ be an elliptic curve over $\Q$ and let $m\geq1$ be an integer. In this s
 
 \abbey{In practice, it appeared that for an element $\langle n, \{\langle a_1, d_1\rangle,  \ldots \}\rangle$ in the output of this algorithm, the set $\#\{\langle a_1, d_1\rangle,  \ldots \}$ contains only 1 element. (Zev's observation) See section 4 for a proof of this.} 
 
-We briefly discuss how we execute the loop in Step~\ref{alg:compute_primitive_degrees:minimal_levels} in Algorithm~\ref{alg:compute_prim_degree}. The orbits of $H$ acting on $(\Z/m\Z)^2$ are in bijection with the elements in the multiset output by Algorithm~\ref{alg:compute_prim_degree}. We discuss how we build the list in $L$ corresponding to an orbit orbit $x=vH$, where $v\in (\Z/m\Z)^2$ is a representative $x$. We initialize $L$ to the empty list. Let $n$ be the order of $v$ in $(\Z/m\Z)^2$. For a divisor $a$ of $n$, we compute the orbit $y=avH$ of $av$ under the action of $H$. These orbits $x$ and $y$ correspond to points $(E,P)$ and $(E,aP)$ on $X_1(n)$ and $X_1(\frac{n}{a})$. Proposition~\ref{prop:compute_degrees} below allows us to compute $\deg x$ and $\deg y$ from $n,n/a,\#vH$, and $\#avH$.  If  $\deg(x)/\deg(y)=\deg(f)$ then we include $( \frac{n}{a},\deg y)$  in the list $L$. 
+We briefly discuss how we execute the loop in Step~\ref{alg:compute_primitive_degrees:minimal_levels} in Algorithm~\ref{alg:compute_prim_degree}. The orbits of $H$ acting on $(\Z/m\Z)^2$ are in bijection with the elements in the multiset output by Algorithm~\ref{alg:compute_prim_degree}. We discuss how we build the list in $L$ corresponding to an orbit orbit $x=vH$, where $v\in (\Z/m\Z)^2$ is a representative $x$. We initialize $L$ to the empty list. Let $n$ be the order of $v$ in $(\Z/m\Z)^2$. For a divisor $a$ of $n$, we compute the orbit $y=avH$ of $av$ under the action of $H$. These orbits $x$ and $y$ correspond to points $(E,P)$ and $(E,aP)$ on $X_1(n)$ and $X_1(\frac{n}{a})$. Proposition~\ref{prop:compute_degrees} below allows us to compute $\deg x$ and $\deg y$ from $n,n/a,\#vH$, and $\#avH$.  If  $\deg(x)/\deg(y)=\deg(f)$, then we include $(\frac{n}{a},\deg y)$  in the list $L$. 
 % ($\deg y$ is computed as $c\#dvH$ where $c=\frac{1}{2}$ if $ed\leq 2$ and $c=1$ otherwise). 
 After repeating this procedure for each divisor of $n$,  we remove every element $( a,d)$ of $L$ such that there exists $( a',d') $ with $a'|a$ and $a'\not=a$. This corresponds to identifying the 
 sinks in the subgraph $G(E,m)$ consisting of vertices reachable by a path from the point $(x,n,\deg x)$: we simply enumerate every vertex reachable from $(x,n,d)$, and remove every vertex which is not a sink. 
@@ -747,9 +794,9 @@ $\#vH=\#vG$.
     We begin by noting that $(E, P)$ and $(E, -P)$ induce the same closed point $x$ on $X_1(n)$. Therefore, since $E$ is defined over $\Q$, the degree of
     $x$ depends only on $x(P)$ and is equal to $[\Q(x(P)):\Q]$. 
     % Indeed: assuming $E$ is given by $y^2=f(x)$, if $d=f(x(P))$ is not a square in $\Q(x(P))$, then the quadratic twist $E^{(d)}:dy^2=f(x)$ has the $\Q(x(P))$-rational point $P'=(x(P),1)$ of order $n$, and $(E^{(d)},P')$ represents the same point as $(E,P)$.  
-    We next observe that $[\Q(P):\Q]=\#vG$. Assume that $n>2$. When $-I\in G$, the points $P$ and $-P$ are distinct and in the same Galois orbit so $[\Q(x(P)):\Q]=[\Q(P):\Q]/2$ and $\#vH=\#vG$. We conclude that 
+    We next observe that $[\Q(P):\Q]=\#vG$. Assume that $n>2$. When $-I\in G$, the points $P$ and $-P$ are distinct and in the same Galois orbit so $[\Q(x(P)):\Q]=\frac{1}{2}[\Q(P):\Q]$ and $\#vH=\#vG$. We conclude that 
     \[
-    \deg x = [\Q(x(P)):\Q] = [\Q(P):\Q]/2 = \frac{1}{2}\#vG = \frac{1}{2}\#vH. 
+    \deg x = [\Q(x(P)):\Q] = \frac{1}{2}[\Q(P):\Q] = \frac{1}{2}\#vG = \frac{1}{2}\#vH. 
     \]
     % To see this: let $L$ be the Galois closure of $\Q(P)/\Q$. We have that 
     % \[
@@ -759,7 +806,7 @@ $\#vH=\#vG$.
     \[
     2\#vG=\#vH = [\Q(P'):\Q] = 2[\Q(x(P')):\Q] = 2[\Q(x(P)):\Q],
     \]
-    so we again have that the degree of the point represented by $(E,P)$ is $\#vH/2$. 
+    so we again have that the degree of the point represented by $(E,P)$ is $\frac{1}{2}\#vH$. 
 
     Now assume $n\leq 2$. Then $-I=I$ in $\GL_2(\Z/n\Z)$ so $G=H$, and $\Q(x(P))=\Q(P)$. We conclude 
     \[
@@ -802,7 +849,7 @@ $\#vH=\#vG$.
 \section{Validity of Main Algorithm}
 \label{sec:validity}
 
-\abbey{New section.} In this section, we will prove results on the validity of our Main Algorithm as stated in Section \ref{sec:mainalg}. After recording preliminary results in Section \ref{sec:prelimresult}, we will give the proof in Section \ref{sec:proofvalidity}. The section concludes with an additional example.
+In this section, we will prove results on the validity of our Main Algorithm as stated in Section \ref{sec:mainalg}. After recording preliminary results in Section \ref{sec:prelimresult}, we will give the proof in Section \ref{sec:proofvalidity}. The section concludes with an additional example.
 
 \subsection{Preliminary Results}
 \label{sec:prelimresult}
@@ -865,16 +912,31 @@ We end this section with an extended example to illustrate the impact of each st
 \section{Remaining Filters}
 \label{sec:remainingfilters}
 
-\sachi{Swap this section with the next section?} \abbey{I moved the last section way earlier -- what do you think?}
 
 \abedit{Suppose $E/\Q$ is non-CM elliptic curve such that one of the following holds:
 \begin{itemize}
     \item$N_E \leq 500{,}000$,
     \item $N_E$ is only divisible by primes $p \leq 7$, or
     \item $N_E=p \leq 200{,}000{,}000$ for some prime number $p$.
-\end{itemize} Then running Algorithm 1 on $E$ results in the empty set, aside from the output for those $j$-invariants given in the Appendix.}
-In this section we describe additional criteria which can prove that there are no isolated points on $X_1(N)$ for a fixed $N$ corresponding to a given $j$-invariant \abedit{$j \notin \{-140625/8,-9317,351/4, -162677523113838677\}$, proving Theorem \ref{LMFDBoutputThm}}. 
+\end{itemize} Then running Algorithm 1 on $E$ results in the empty set, aside from the output for those $95$ $j$-invariants given in the Appendix.}
+Additionally, the only $j$-invariants corresponding to points of degree $d$ on $X_1(N)$ whose mod $N$ image is genus $>0$ are listed in Table~\ref{table:imagegt0}, along with the output of the algorithm and the genus of the mod $N$ image. \abbey{I'm so interested in this genus 5 curve with an exceptional non-CM rational point which gives rise to the degree 9 point on $X_1(28)$. Is there any explanation for the rational point on this genus 5 curve? We kind of understand why the other isolated $j$-invariants arise, but not this one.}
+	\begin{table}[h]
+	\begin{center}
+		\begin{tabularx}{242pt}{l l c} \toprule
+		$j$ & $<N, d>$ & genus  \\\midrule
+$-140625/8$ &  $\{ <21, 3>^2 \} $ & $1$\\
+ $-162677523113838677$& $\{ <37, 18> \}$ & $4$\\
+ $-882216989/131072$ & $\{ <17, 4>^2\}$ & $1$ \\
+ $-9317$ & $\{ <37, 6>^3 \} $ & $4$\\
+ $16778985534208729/81000$ & $\{ <24, 4>^2 \}$ & $1$\\
+ $351/4$ & $\{ <28, 9>^2 \}$ & $5$\\ \bottomrule
+		\end{tabularx}
+		\caption{Output of main algorithm with mod $N$ genus $>0$}\label{table:imagegt0}
+	\end{center}
+\end{table}
 
+In this section we describe additional computations that prove that the only $\PP^1$-isolated points on $X_1(N)$ for a fixed $N$ correspond to the four $j$-invariants $j=-140625/8,-9317,351/4, -16267752311383867$, proving Theorem \ref{LMFDBoutputThm}. 
+\if{false}
 \begin{proposition} \abbey{New plan is to use result about genus 0 mod $N$ images in place of this Proposition (instead of working to correct it).}
     Let $E/\Q$ be an elliptic curve and let $G_0$ be the image mod $N$ Galois representation attached to $E$, viewed as a subgroup of $\GL_2(\Z/N\Z)$ after some choice of basis for $E[N]$. Let $y=(E,P)$ be a degree $d$ point on $X_1(N)$. Suppose there is a conjugate $c(B_1(N))$ of $B_1(N)$ such that $B:=\langle c(B_1(N)), G_0 \rangle \leq \GL_2(\Z/N\Z)$ and $X_B$ is of genus 0. If $[\pm B: \pm c(B_1(N))]=d$, then $y$ is not $\PP^1$-isolated.
 \end{proposition}
@@ -885,8 +947,15 @@ In this section we describe additional criteria which can prove that there are n
     By \Cref{prop:mapdegree} it follows that there exists a degree $d$ map $f\colon X_1(N)\rightarrow X_B\simeq \PP^1$ of degree $d$. Since $G_0$ is contained in $B$, it follows that $E$ corresponds to  $x\in X_B(\Q)$ such that $f(y)=x$ \abbey{I don't think we necessarily have $f(y)=x$; see comment directly above proof.}. Hence $y$ is not $\PP^1$-isolated.
 \end{proof}
 
-\subsection{Special cases}
-We now explain how we dealt with cases that passed all the filters. 
+\fi
+
+
+\subsubsection{Degree $18$ point on $X_1(37)$ corresponding to $j=-162677523113838677$}
+
+We show that the point $x\in X_1(37)(K)$, where $K$ is a degree 18 number field, and $j(x)=-162677523113838677$ is $\PP^1$-isolated. We explicitly compute the coordinates of $x$ on a model of $X_1(37)$ and define  $\sigma_i$, for $i=1,\ldots, 18$ to be the automorphisms of $K$ and $D=\sum_{i=1}^{18}\sigma_i(x)$. Reducing everything modulo $3$ and denoting the reduction of $D$ modulo $3$ by $\overline{D}$, we obtain $\ell(\overline{D})=1$, which shows that the reduction 
+$\overline{x}$ of $x$ modulo 3 is $\PP^1$-isolated, and hence it follows that $x$ is $\PP^1$-isolated.  %\abbey{I believe we mean that it \emph{is} $\PP^1$-isolated.} \filip{Yes, fixed.}
+\sachi{Do we need to prove this is isolated or was it already done in van Hoeij and Derickx? It seems asymmetric that this is the only isolated point we talk about, of the four.} \abbey{I don't think they proved (or, at least, published a proof) that it was $\PP^1$-isolated -- it's not sporadic, and it looks like they stopped looking for points on $X_1(37)$ after degree 17. See here: https://www.math.fsu.edu/~hoeij/files/X1N/LowDegreePlaces. The other three $j$-invariants were known to be isolated before and are described in the introduction. However, $j(x)=-162677523113838677$ was known to give a degree 18 point prior to our computation, since it gives a rational point on $X_0(37)$ and $\deg(X_1(37) \rightarrow X_0(37))=18$. So it's not so much that this is ``discovering" a new $\PP^1$-isolated point, as just making the official observation that this known point is actually $\PP^1$-isolated.}
+
 
 \subsubsection{Degree $4$ point on $X_1(17)$ corresponding to $j=-882216989/131072$}
 To show that this point is not isolated we compute the coordinates of \fedit{a} degree $4$ point $x$ corresponding to our curve on a model of $X_1(17)$. \abbey{Does this construction depend on which closed point of degree 4 we choose? There are 2.} \filip{I didn't check, but it probably shouldn't. I changed "the" to "a" in the previous sentence.} The point $x$ is defined over a cyclic quartic field. Let $\sigma_i$, for $i=1,\ldots, 4$ be the automorphisms of $K$ and $D=\sum_{i=1}^4\sigma_i(x)$. We compute $\ell(D)=2$, which implies that $x$ is not $\PP^1$-isolated. 
@@ -894,18 +963,17 @@ To show that this point is not isolated we compute the coordinates of \fedit{a} 
 The fact that this point is not $\PP^1$-isolated also follows from the results of \cite[Proposition 6.7]{DerickxMazurKamienny}, where it is shown that there are no $\PP^1$-isolated quartic points on $X_1(17)$.
 
 
-\subsubsection{Degree $18$ point on $X_1(37)$ corresponding to $j=-162677523113838677$}
-
-We show that the points $x\in X_1(37)(K)$, where $K$ is a degree 18 number field, and $j(x)=-162677523113838677$ is $\PP^1$-isolated. We explicitly compute the coordinates of $x$ on a model of $X_1(37)$ and define  $\sigma_i$, for $i=1,\ldots, 18$ to be the automorphisms of $K$ and $D=\sum_{i=1}^{18}\sigma_i(x)$. Reducing everything modulo $3$ and denoting the reduction of $D$ modulo $3$ by $\overline{D}$, we obtain $\ell(\overline{D})=1$, which shows that the reduction 
-$\overline{x}$ of $x$ modulo 3 is $\PP^1$-isolated, and hence it follows that $x$ is $\PP^1$-isolated.  %\abbey{I believe we mean that it \emph{is} $\PP^1$-isolated.} \filip{Yes, fixed.}
-
 \filip{I did not go into much details here, as I think more details would entail just writing a bunch of equations, and the code where all the computations are dove, will be supplied.}
 
+\subsubsection{Degree $4$ point on $X_1(24)$ corresponding to $j=16778985534208729/81000$}
+\sachi{can/should we combine this with the previous subsection?}
+To show that this point is not isolated we compute the coordinates of a degree $4$ point $x$ corresponding to our curve on a model of $X_1(24)$. The point $x$ is defined over a quartic field. Let $\sigma_i$, for $i=1,\ldots, 4$ be the automorphisms of $K$ and $D=\sum_{i=1}^4\sigma_i(x)$. \sachi{is this how you did this Filip?}
+We compute $\ell(D)=2$, which implies that $x$ is not $\PP^1$-isolated. 
 
 \newpage
 \section*{Appendix}
 \label{appendix}
-\abbey{Added output of Algorithm 1.}
+
 Suppose $E/\Q$ is non-CM elliptic curve such that one of the following holds:
 \begin{itemize}
     \item$N_E \leq 500{,}000$,
