@@ -1,7 +1,8 @@
 
 # CIRM project on sporadic points #
 
-Code associated to the paper "Towards a classification of isolated j-invariants" by (author list)
+Code associated to the paper "Towards a classification of isolated j-invariants" 
+by Abbey Bourdon, Sachi Hashimoto, Timo Keller, Zev Klagsbrun, David Lowry-Duda, Travis Morrison, Filip Najman, Himanshu Shukla
 
 System requirements: Magma version at least 2.27 is required to read the data files.
 
@@ -65,7 +66,7 @@ $1 \leq i \leq k$.
 
 ## Advanced instructions ##
 
-To run for a list of curves in the file adelicgenus0curves.txt you also need to
+To run for the entire list of curves in the file adelicgenusgt0curves.txt you also need to
 install GNU parallel. Then execute the following command
 
     parallel --joblog JOB_LOG_FILE_NAME --shuf --timeout TIMEOUT \
