@@ -1,12 +1,9 @@
 SetProfile(true);
-AttachSpec("/Users/sachihashimoto/repos/ModularCurves/equations/equations.spec");                                                      
-path := OpenImageContext("/Users/sachihashimoto/repos/ModularCurves/equations/OpenImage/data-files");                                                                           
-// AttachSpec("/usr/people/hashimot/ModularCurves/equations/equations.spec");                                                      
-// path := OpenImageContext("/usr/people/hashimot/ModularCurves/equations/OpenImage/data-files");                                                               
-
+AttachSpec("../OpenImage/OpenImage.spec");                                                      
+path := OpenImageContext("../OpenImage/data-files");                                                                           
+Attach("../ell-adic-galois-images/groups/gl2.m");
 
 AttachSpec("isolated.spec");
-
 
 inputs := Split(Read("alvarodata.txt"), "\n");
 for  input in inputs do

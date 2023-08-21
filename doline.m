@@ -1,7 +1,7 @@
 
 //code snippet for parallelizing the execution of NotIsolated()
-AttachSpec("/usr/people/hashimot/OpenImage/OpenImage.spec");                                                      
-path := OpenImageContext("/usr/people/hashimot/OpenImage/data-files");                                                               
+AttachSpec("../OpenImage.spec");                                                      
+path := OpenImageContext("../OpenImage/data-files");                                                               
 AttachSpec("isolated.spec");
 if assigned seq then
     SetColumns(0);

@@ -151,6 +151,18 @@ function CondensePoints(output)
     return S;
 end function;
 
+function FilterOutGenus0(potisolated, G)
+    S := {* *};
+    for pt in potisolated do
+        a, d := Explode(pt);
+        Gmoda := ChangeRing(G,Integers(a));
+        if GL2Genus(Gmoda) ne 0 then
+            Include(~S, pt);
+        end if;
+    end for;
+    return S;
+end function;
+
 intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
     {Main function to check if a rational j invariant is isolated}
     CMjinv := [ -12288000, 54000, 0, 287496, 1728, 16581375, -3375, 8000, -32768, -884736, -884736000, -147197952000, -262537412640768000];
@@ -176,6 +188,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
 
     if #potisolated gt 0 then
         potisolated := CondensePoints(potisolated);
+        potisolated := FilterOutGenus0(potisolated,G0);
         return [* j, potisolated*];
     else
         return [* j, potisolated*];

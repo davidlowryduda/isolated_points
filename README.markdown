@@ -26,21 +26,22 @@ $1 \leq i \leq k$.
 ## INSTRUCTIONS ##
 
 1. This repository depends David Roe's modified version of David Zywina's
-   repository found here <https://github.com/roed314/OpenImage.git>. To clone
-   the repo, run
+   repository found here <https://github.com/roed314/OpenImage.git> as well as <https://github.com/AndrewVSutherland/ell-adic-galois-images> by by Jeremy Rouse, Andrew V. Sutherland, and David Zureick-Brown. To clone these repos, run
 
    ```
    git clone https://github.com/roed314/OpenImage.git
+   git clone https://github.com/AndrewVSutherland/ell-adic-galois-images.git
    ```
 
    To run for a specific curve given by a j-invariant j, do the following.
 
 2. Open magma.
 
-3. Attach the spec file for the OpenImage repository, by running
+3. Attach the required files for the above repositories, by running
 
    ```
    AttachSpec("path/to/OpenImage/OpenImage.spec");
+   AttachSpec("path/to/ell-adic-galois-images/groups/gl2.m");
    ```
 
 4. Attach the spec file for this repository by running
