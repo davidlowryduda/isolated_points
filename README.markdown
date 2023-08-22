@@ -41,7 +41,7 @@ $1 \leq i \leq k$.
 
    ```
    AttachSpec("path/to/OpenImage/OpenImage.spec");
-   AttachSpec("path/to/ell-adic-galois-images/groups/gl2.m");
+   Attach("path/to/ell-adic-galois-images/groups/gl2.m");
    ```
 
 4. Attach the spec file for this repository by running
