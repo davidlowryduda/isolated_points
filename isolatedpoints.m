@@ -175,7 +175,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
         E := EllipticCurve(ainvs);
         require Rationals()!jInvariant(E) eq j : "The j-invariant of the elliptic curve specified by the Weierstrass coefficients should match the given j-invariant";
     end if;
-    G,n,S := FindOpenImage(path, E);
+    G,_,_ := FindOpenImage(path, E);
     m0 := ReducedLevel(G);
 
     if m0 eq 1 then
