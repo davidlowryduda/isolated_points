@@ -9,8 +9,8 @@ System requirements: Magma version at least 2.27 is required to read the data fi
 Input:
 
 On a specific curve:     j-invariant
-On a data set of curves: txt file with list of Cremona labels/Weierstrass coefficient array
-                         delimited by newline character, e.g. adelicgenus0curves.txt
+On a data set of curves: txt file with list of j-invariants
+                         delimited by newline character, e.g. adelicgenusgt0curves.txt
 
 Output:
 
