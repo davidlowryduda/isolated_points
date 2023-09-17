@@ -1,5 +1,5 @@
 
-# CIRM project on sporadic points #
+# CIRM project on isolated points #
 
 Code associated to the paper "Towards a classification of isolated j-invariants" 
 by Abbey Bourdon, Sachi Hashimoto, Timo Keller, Zev Klagsbrun, David Lowry-Duda, Travis Morrison, Filip Najman, Himanshu Shukla
