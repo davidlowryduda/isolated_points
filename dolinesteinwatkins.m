@@ -1,5 +1,6 @@
-AttachSpec("../OpenImage.spec");                                                      
-path := OpenImageContext("../OpenImage/data-files");                                                               
+AttachSpec("../OpenImage/OpenImage.spec");                                                      
+path := OpenImageContext("../OpenImage/data-files");  
+Attach("../ell-adic-galois-images/groups/gl2.m");                                                             
 AttachSpec("isolated.spec");
 
 
