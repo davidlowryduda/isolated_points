@@ -183,11 +183,6 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
     end if;
 
     G0 := ChangeRing(G,Integers(m0));
-
-    if GL2Genus(G0) eq 0 then
-        return [* j, {* *} *];
-    end if;
-
     primitivepts := PrimitiveDegreesOfPoints(G0); 
     potisolated := FilterByRiemannRoch(primitivepts);
 
