@@ -1,7 +1,7 @@
 \documentclass[11pt,reqno]{amsart}
 % We ain't got no time for eq. nums. on the left
 \usepackage{soul}%added for \st
-
+\usepackage{numprint} %for numbers
 % Enable UTF-8 encodings for input, to enter é instead of \'{e}.
 \usepackage[utf8]{inputenc}
 \usepackage[all,cmtip]{xy}
@@ -146,17 +146,26 @@ anchorcolor=darkblue,citecolor=darkblue}
 % Don't have subsections appear in TOC
 %\setcounter{tocdepth}{1}
 
+% Longstanding AMS bug: https://tex.stackexchange.com/a/540046/32739
+\makeatletter
+\let\@wraptoccontribs\wraptoccontribs
+\makeatother
+
 \title{Towards a Classification of Isolated $j$-invariants}
 \input{author_info.tex}
+\contrib[with an appendix by]{Maarten Derickx and Mark van Hoeij}
+
 %\date{\today}
 
 \begin{document}
+\maketitle
 
 \begin{abstract}
-We develop an algorithm to test whether a non-CM elliptic curve $E/\Q$ gives rise to an isolated point of any degree on any modular curve of the form $X_1(N)$. This builds on prior work of Zywina which gives a method for computing the image of the adelic Galois representation associated to $E$. Running this algorithm on all elliptic curves presently in the $L$-functions and Modular Forms Database yields strong evidence for the conjecture that $E$ gives rise to a $\PP^1$-isolated point on $X_1(N)$ if and only if $j(E)=-140625/8, -9317,$ $351/4$, or $-162677523113838677$.
+We develop an algorithm to test whether a non-CM elliptic curve $E/\Q$ gives rise to an isolated point of any degree on any modular curve of the form $X_1(N)$. This builds on prior work of Zywina which gives a method for computing the image of the adelic Galois representation associated to $E$. Running this algorithm on all elliptic curves presently in the $L$-functions and Modular Forms Database and the Stein--Watkins Database gives strong evidence for the conjecture that $E$ gives rise to an isolated point on $X_1(N)$ if and only if $j(E)=-140625/8, -9317,$ $351/4$, or $-162677523113838677$.
 \end{abstract}
 
-\maketitle
+
+
 
 \section{Introduction}
 \label{sec:intro}
@@ -191,9 +200,10 @@ If $x \in X_1(N)$ is an isolated (resp. sporadic) point, we say $j(x) \in X_1(1)
 %\noindent The assumption about Galois representations stated in Theorem \ref{BELOVfiniteness} was originally asked as a question by Serre \cite{serre72}, and it has now been formally conjectured by both Sutherland \cite{sutherland} and Zywina \cite{ZywinaImages}. It is even suspected that $C=37$. 
 
 This question serves as motivation for the present work. To this end, we develop an algorithm which can be used to determine whether a given non-CM $j$-invariant in $\Q$ is isolated. Starting with the image of the adelic Galois representation associated to $E/\Q$ with $j(E)=j$, as computed by Zywina \cite{ZywinaAlgorithm}, we apply various filters to determine whether there exists an isolated point $x \in X_1(N)$ with $j(x)=j$ for some $N$.
-% DLD TODO - words on what algorithm is
 
 \begin{algorithm}[h!]
+\renewcommand{\thealgocf}{} % We force this algorithm to be unnumbered so that
+                            % hyperrefs to Algorithm1 go the the correct algorithm.
 \caption{Main Algorithm} 
     \KwIn{A non-CM $j$-invariant $j \in \Q$.}
     \KwOut{A finite list $\{(a_1, d_1), \ldots, (a_k, d_k)\}$ of (level, degree) pairs such that $j$ is isolated if and only if there exists an isolated point $x \in X_1(a_i)$ of degree $d_i$ with $j(x) = j$ for some $(a_i, d_i)$ in the list.}
@@ -205,40 +215,41 @@ If the output is nonempty,
 %In some cases,
 one can try to use other techniques to determine whether each point of degree $d_i$ on $X_1(a_i)$ associated to $E$ is isolated, from which we can definitively say whether $j(E)$ is an isolated $j$-invariant.
 
-Running Algorithm \ref{alg:mainalgorithm} on all elliptic curves currently in the $L$-functions and Modular Forms Database (LMFDB) \cite{LMFDB} shows that all but 6 of the non-CM $j$-invariants in $\Q$ from the LMFDB
-are \emph{not} isolated. As noted above, three of these $6$ $j$-invariants are known to be isolated; in Section~\ref{sec:remainingfilters} we perform a case-by-case analysis to study the remaining $3$ candidates. This gives the following result.
+We ran Algorithm \ref{alg:mainalgorithm} on all elliptic curves currently in the $L$-functions and Modular Forms Database (LMFDB) \cite{LMFDB} and in the Stein--Watkins Database \cite{SteinWatkins}, which together contain over 36~million distinct non-CM $j$-invariants associated to elliptic curves over $\Q$ of conductor at most $10^8$. The output shows that all but 6 of the non-CM $j$-invariants included in these databases are \emph{not} isolated. As noted above, half of these remaining $j$-invariants are known to be isolated; in Section~\ref{sec:remainingfilters} we perform a case-by-case analysis on the remaining $3$ candidates. In particular, these findings imply the following result.
 
 \begin{theorem}\label{LMFDBoutputThm}
 Let $x=[E,P]\in X_1(N)$ be a non-CM isolated point with $j(E) \in \Q$.
 Fix an equation for $E/\Q$ and let $N_E$ denote its conductor.
 Suppose that one of the following holds:
 \begin{itemize}
-    \item $N_E \leq 500{,}000$,
+    \item $N_E \leq \numprint{500000}$,
     \item $N_E$ is only divisible by primes $p \leq 7$, or
-    \item $N_E=p \leq 300{,}000{,}000$ for some prime number $p$.
+    \item $N_E=p \leq \numprint{300000000}$ for some prime number $p$.
 \end{itemize}
 Then $j(E) \in \{-140625/8,-9317,351/4, -162677523113838677\}$. Moreover, each one of these $j$-invariants corresponds to a $\PP^1$-isolated point on $X_1(21)$, $X_1(37)$, $X_1(28)$, or $X_1(37)$, respectively.
 \end{theorem}
 
 \begin{remark}
-Though we did not find a result in the literature showing the degree 18 point on $X_1(37)$ associated to $j=-162677523113838677$ is $\PP^1$-isolated, the point itself was well-known prior to this work. Indeed, this $j$-invariant corresponds to one of two non-CM elliptic curves over $\Q$ with a rational cyclic 37-isogeny (see, e.g., \cite[Table 4]{LRAnn}), and any elliptic curve with a $\Q$-rational cyclic $N$-isogeny will give a point on $X_1(N)$ in degree at most $\varphi(N)/2$.
+Though we did not find a result in the literature showing the degree 18 point on $X_1(37)$ associated to $j=-162677523113838677$ is $\PP^1$-isolated, the point itself was well-known prior to this work. Indeed, this $j$-invariant corresponds to one of two non-CM elliptic curves over $\Q$ with a rational cyclic 37-isogeny (see, e.g., \cite[Table 4]{LRAnn}), and any elliptic curve with a $\Q$-rational cyclic $N$-isogeny will give a point on $X_1(N)$ in degree at most $\varphi(N)/2$. \abedit{The appendix by} Maarten Derickx and Mark van Hoeij \abedit{shows} that this point is AV-isolated as well, allowing us to conclude that the 4 $j$-invariants identified in Theorem \ref{LMFDBoutputThm} are in fact \emph{isolated}.
 \end{remark}
-We conjecture that the four non-CM isolated $j$-invariants identified above are in fact the \emph{only} $j$-invariants in $\Q$ associated to non-CM elliptic curves which give rise to $\PP^1$-isolated points on $X_1(N)$. Such a result has already been established for points of odd degree: by \cite{OddDeg} we know that $j=-140625/8$ and $j=351/4$ are the only non-CM $j$-invariants in $\Q$ giving an isolated point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers.
+
+We conjecture that the four non-CM $j$-invariants identified above are the \emph{only} $j$-invariants in $\Q$ associated to non-CM elliptic curves which give rise to isolated points on $X_1(N)$. Such a result has already been established for points of odd degree: by \cite{OddDeg} we know that $j=-140625/8$ and $j=351/4$ are the only non-CM $j$-invariants in $\Q$ giving an isolated point of odd degree on $X_1(N)$, even as $N$ ranges over all positive integers.
 
 
 \begin{conjecture}\label{conj}
-If $x\in X_1(N)$ is a $\PP^1$-isolated point with $j(x) \in \Q$, then $j(x)=-140625/8$, $-9317$, $351/4$, $-162677523113838677$, or one of the 13 CM $j$-invariants in $\Q$.
+If $x\in X_1(N)$ is an isolated point with $j(x) \in \Q$, then $j(x)=-140625/8$, $-9317$, $351/4$, $-162677523113838677$, or one of the 13 CM $j$-invariants in $\Q$.
 \end{conjecture}
 
-\noindent Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$ by \cite[Theorem 7.1]{BELOV}, it follows conversely that every $j$-invariant in this set is $\PP^1$-isolated. 
+\noindent Since any CM elliptic curve is known to produce sporadic points on infinitely many modular curves of the form $X_1(N)$ by \cite[Theorem 7.1]{BELOV}, it follows conversely that every $j$-invariant in this set is $\PP^1$-isolated (and in fact isolated --- \abedit{see the appendix}).
 
 \begin{remark}
-Let $x\in X_1(N)$ be a $\PP^1$-isolated point with $j(x) \in \Q$. One expects that the square-free part of the conductor of any $E$ with $j(E) = j(x)$ will be very small. The reason for this is that any such isolated point will generally have small mod $\ell$ image for some $\ell$ dividing $N$. Unless $\ell$ is small, we expect this to force potentially good reduction on $E$ at all odd primes; see~\cite[Corollary 4.4]{Mazur1978} and \cite[Theorem 5.1]{BiluParent11} for examples of this phenomenon. Indeed this happens for all the curves appearing in~\Cref{conj}: their conductors are either a square, or twice a square.
+Let $x\in X_1(N)$ be an isolated point with $j(x) \in \Q$. One expects that the square-free part of the conductor of any $E$ with $j(E) = j(x)$ will be very small. The reason for this is that any such isolated point will generally have small mod $\ell$ image for some $\ell$ dividing $N$. Unless $\ell$ is small, we expect this to force potentially good reduction on $E$ at all odd primes; see~\cite[Corollary 4.4]{Mazur1978} and \cite[Theorem 5.1]{BiluParent11} for examples of this phenomenon. Indeed this happens for all the curves appearing in~\Cref{conj}: their conductors are either a square, or twice a square.
 
-Heuristically one might except to find most or all of the $\PP^1$-isolated points among elliptic curves with relatively small conductor (and hence in the LMFDB). One can also numerically observe that elliptic curves with small Galois representations are over-represented among curves with small conductor. Only 4 of the first 50 curves ordered by conductor have trivial torsion groups and all of them have non-trivial isogenies, while one expects asymptotically almost all curves to have surjective Galois representations when ordered by height, see \cite[Theorem 1]{Duke97}.
+Heuristically one might except to find most or all of the isolated points among elliptic curves with relatively small conductor (and hence in the LMFDB). One can also numerically observe that elliptic curves with small Galois representations are over-represented among curves with small conductor. Only 4 of the first 50 curves ordered by conductor have trivial torsion groups and all of them have non-trivial isogenies, while one expects asymptotically almost all curves to have surjective Galois representations when ordered by height, see \cite[Theorem 1]{Duke97}.
 
 These observations bolster the computational evidence supporting \Cref{conj}.
 \end{remark}
+
 
 
 It is natural to suspect a connection between isolated points on $X_1(N)$ and isolated points on $X_0(N)$, the modular curve parametrizing elliptic curves with a rational cyclic $N$-isogeny. We say a point $x \in X_0(N)(\Q)$ is \textbf{exceptional} if $X_0(N)(\Q)$ is finite and $x$ corresponds to a non-CM elliptic curve over $\Q$. It is worth noting that the sporadic points on $X_1(21)$ associated to $j=-140625/8$ and the sporadic points on $X_1(37)$ associated to $j=-9317$ lie above exceptional rational points on $X_0(21)$ and $X_0(37)$, respectively. One might wonder whether other sporadic $j$-invariants can be obtained by a similar construction. Running Algorithm~\ref{alg:mainalgorithm} on all 14 $j$-invariants corresponding to exceptional rational points on $X_0(N)$ for any $N$ (described, for example, in~\cite[Table 4]{LRAnn}) shows that there are no additional sporadic $j$-invariants. 
@@ -274,12 +285,17 @@ Let $E/\Q$ be an elliptic curve, and let $H \leq \GL_2(\Z/N\Z)$ be the image of 
 A more recent example is \cite[Conjecture 17]{BalakrishnanMazur23}, where Balakrishnan and Mazur conjecture that for sufficiently large $N$, any elliptic curve giving a quadratic point on $X_0(N)$ must have complex multiplication. Since a quadratic point on $X_0(N)$ will give a sporadic point on $X_1(N)$ for $N$ sufficiently large, we can connect this conjecture to one about non-CM isolated points $x \in X_1(N)$ with $j(x)$ generating at most a quadratic extension.
 
 \subsection{Outline}
-After providing relevant background material in Section \ref{sec:background}, we give an overview of the main algorithm in Section \ref{sec:mainalg}. The sub-algorithms used to compute primitive points and related mathematical results are discussed in Sections \ref{sec:madicrep}--\ref{sec:primitivedeg}, with the proof of Theorem \ref{Thm:PrimPtsIntro} appearing in Section \ref{sec:PrimitivePoints}. Results on genus 0 adelic images, including the proof of Theorem \ref{Prop:Genus0Intro}, are in Section \ref{sec:genus0}.  We address the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}. The output the main algorithm obtained after running it on all elliptic curves in the LMFDB and its final analysis is discussed in Section \ref{sec:remainingfilters}.
+After providing relevant background material in Section \ref{sec:background}, we give an overview of the main algorithm in Section \ref{sec:mainalg}. The sub-algorithms used to compute primitive points and related mathematical results are discussed in Sections \ref{sec:madicrep}--\ref{sec:primitivedeg}, with the proof of Theorem \ref{Thm:PrimPtsIntro} appearing in Section \ref{sec:PrimitivePoints}. Results on genus 0 adelic images, including the proof of Theorem \ref{Prop:Genus0Intro}, are in Section \ref{sec:genus0}.  We address the validity of Algorithm \ref{alg:mainalgorithm} in Section \ref{sec:validity}. The output the main algorithm obtained after running it on elliptic curves in the LMFDB and the Stein--Watkins database is discussed in Section \ref{sec:remainingfilters}, along with its final analysis.
 
 \subsection{Code} We have implemented our algorithm in Magma \cite{Magma}. Code is available in the GitHub repository at \url{https://github.com/davidlowryduda/isolated_points}.
 
 \section*{Acknowledgments}
-We thank Pete Clark, Maarten Derickx, Jeremy Rouse, and David Zureick-Brown for helpful conversations. We also thank David Zywina for making his code to compute Galois images available, and David Roe for further making Zywina's code and implementation more readily available for other mathematicians to use; this project would not have been possible without their work. This project began at the \emph{COmputations and their Uses in Number Theory} conference at CIRM in March 2023; we thank the organizers as well as CIRM for providing the opportunity for collaboration.
+We thank Pete Clark, Maarten Derickx, Jeremy Rouse, Andrew Sutherland, and David Zureick-Brown for helpful conversations. We also thank David Zywina for making his code to compute Galois images available, and David Roe for further making Zywina's code and implementation more readily available for other mathematicians to use; this project would not have been possible without their work. This project began at the \emph{COmputations and their Uses in Number Theory} conference at CIRM in March 2023; we thank the organizers as well as CIRM for providing the opportunity for collaboration.
+
+AB was supported by NSF Grants DMS-2145270 and DMS-1928930. Part of the work was completed while this author was in residence at the Simons Laufer Mathematical Science Institute in Berkeley, CA, during the semester of Diophantine Geometry. TK was partially supported by the 2021 MSCA Postdoctoral Fellowship 01064790 -- ExplicitRatPoints. DLD was supported by the Simons Collaboration in Arithmetic Geometry, Number Theory, and Computation via the Simons Foundation grant 546235. TM was partially supported by the Commonwealth Cyber Initiative. FN is supported by the QuantiXLie Centre of Excellence, a
+  project co-financed by the Croatian Government and European Union
+  through the European Regional Development Fund - the Competitiveness
+  and Cohesion Operational Programme (Grant KK.01.1.1.01.0004). HS is supported by the DFG-grant STO 299/17-1.
 
 \section{Background}
 \label{sec:background}
@@ -871,14 +887,14 @@ Hence any point in the support of the divisor represented by $f^*(y)$ in $X_B$ i
 \end{proof}
 
 
-\begin{corollary}
+\begin{corollary}\label{cor:adelicgaloisgenus0}
 Let $E/\Q$ be an elliptic curve with adelic image $G$ of genus $0$ and $n$ a positive integer. %Then there does not exist an $n$ such that a point corresponding to $E$ on $X_1(n)$ is $\PP^1$-isolated.
 Then 
 %for all $n$ 
 every $x \in X_1(n)$ with $j(x) = j(E)$ is $\PP^1$-parametrized.
 \end{corollary}
 \begin{proof}
-Since $G$ is by assumption of genus $0$, it follows that so is $G(n)$. The result then follows from Proposition~\ref{Genus0Prop}.
+Since $G$ is by assumption of genus $0$, it follows that so is $G(n)$. The result then follows from Theorem~\ref{Genus0Prop}.
 \end{proof}
 
 
@@ -982,16 +998,16 @@ We end this section with an extended example to illustrate the impact of each st
 \end{enumerate}
 \end{example}
 
-\section{Remaining Filters}
+\section{Remaining Filters and Computational Results}
 \label{sec:remainingfilters}
 
 
 Suppose $E/\Q$ is non-CM elliptic curve such that one of the following holds:
 \begin{itemize}
-    \item$N_E \leq 500{,}000$,
+    \item$N_E \leq \numprint{500000} $,
     \item $N_E$ is only divisible by primes $p \leq 7$, or
-    \item $N_E=p \leq 300{,}000{,}000$ for some prime number $p$.
-\end{itemize} Then running Algorithm 1 on $E$ results in the empty set, aside from the $j$-invariants listed in Table~\ref{table:imagegt0}. The final step in the main algorithm filters out curves with mod $N$ genus $0$; we also list in the table the mod $N$ genus.  This genus is computed using code associated to the paper \cite{RSZB2022}. 
+    \item $N_E=p \leq \numprint{300000000}$ for some prime number $p$.
+\end{itemize} Then running Algorithm \ref{alg:mainalgorithm} on $E$ results in the empty set, aside from the $j$-invariants listed in Table~\ref{table:imagegt0}; the output from elliptic curves in the Stein--Watkins database yields no additional $j$-invariants. The final step in the main algorithm filters out curves with mod $N$ genus $0$; we also list in the table the mod $N$ genus.  This genus is computed using code associated to the paper \cite{RSZB2022}. 
 	\begin{table}[h]
 	\begin{center}
 		\begin{tabularx}{266pt}{l l c} \toprule
@@ -1034,6 +1050,120 @@ To show that these points are not isolated we compute the coordinates of a degre
 
 The fact that the degree $4$ point on $X_1(17)$ is not $\PP^1$-isolated also follows from the results of \cite[Proposition 6.7]{DerickxMazurKamienny}, where it is shown that there are no $\PP^1$-isolated quartic points on $X_1(17)$.
 
+\subsection{Computations}
+We give some details on the implementation and runtime of the algorithm in this section.
+We ran Algorithm \ref{alg:mainalgorithm}
+on two databases of $j$-invariants of elliptic curves over $\Q$:
+\begin{itemize}
+\item The LMFDB \cite{LMFDB} contains all elliptic curves over $\Q$ of conductor up to \numprint{500000} and includes roughly $2$~million $j$-invariants.
+\item The Stein--Watkins database \cite{SteinWatkins} contains roughly $36$~million unique $j$-invariants of elliptic curves over $\Q$ of absolute discriminant at most $10^{12}$ that have conductor at most $10^8$ or prime conductor at most $10^{10}$. However, it has been filtered to include just one representative from each isogeny class and each class of quadratic twists.
+\end{itemize}
+All computations were run on a server with an AMD EPYC 7713 2GHz CPU and Magma V2.28-3 \cite{Magma}.
+For every elliptic curve $E/\Q$ in the LMFDB, the database contains the genus of $X_G$ where $G$ is the image of the adelic Galois represenation of $E$. Applying Corollary \ref{cor:adelicgaloisgenus0}, we filtered the roughly $2$~million $j$-invariants of non-CM elliptic curves $E/\Q$ in the LMFDB to a set of \numprint{30141}, such that the image of the adelic Galois representation of $E$ is greater than $0$. On this set, the computation took $2$~CPU hours and $1714$ MB of memory. The Stein--Watkins database contains \numprint{35788699} unique $j$-invariants of non-CM elliptic curves over $\Q$, with no information about the image of the adelic Galois representation. Running Algorithm \ref{alg:mainalgorithm} on this database took $442$ CPU hours.
+
+\section{Appendix: \abbey{Title Here}\\ by Maarten Derickx and Mark van Hoeij}
+
+
+        % READ Definition / Proposition 2.1 / Proposition 3.7 in https://arxiv.org/pdf/1707.00364v1.pdf
+        % The X in that definition will be X1(37)^{(18}) and the Y in that definition will be J1(37)/A
+        % where A is an abelian subvariety of J1(37). Now phi goes from X to Y.
+
+
+Let $X = X_1(37)$ and $D$ be the divisor for the degree 18 closed point in Section 9.0.1.
+Through the maps $X \rightarrow X_0(37) \rightarrow X_0(37)^+$, we can view the Jacobian of the latter, $A :=J_0(37)^+$,
+as a abelian subvariety of $J_1(37)$.
+The question of whether $D$ is % (positive rank)
+AV isolated is equivalent to $\Phi_d(D) + A$ not being contained in $W_{18}(X)$,
+where $W_d(X) := \Phi_d(X^{(d)})$ with $\Phi_d$ as in Section 2.1.
+
+
+
+\begin{lemma}
+Let $A$ be an abelian subvariety of ${\rm Jac}(X)$ and let
+$\pi: X^{(d)} \rightarrow J(X)/A$ be the composition of $\Phi_d$ with the quotient map.
+Let $D \in  X^{(d)}$ and suppose that $\Phi_d(D) + A \subseteq W_d(X)$,
+then $\pi$, restricted to the tangent space at $D$, is not injective.
+\end{lemma}
+
+
+
+\begin{proof} Assume that $\Phi_d$ is injective on the tangent space at $D$,
+otherwise there is nothing to prove as $\pi$ factors through $\Phi_d$.
+Then $\Phi_d$ induces an isomorphism between the tangent spaces of $X^{(d)}$ at $D$, and $W_d$ at $\Phi_d(D)$.
+The positive dimensional variety $\Phi_d(D) + A$ is contracted to a point under the quotient map
+$J(X) \rightarrow J(X)/A$, in particular the entire tangent space of  $\Phi_d(D) + A$ at $\Phi_d(D)$
+is sent to zero under the quotient map, and the result follows.
+\end{proof}
+
+\begin{corollary} If the corresponding map $\pi^* : {\rm Cot}_0 \,J(X)/A \rightarrow {\rm Cot}_D \,X^{(d)}$
+on cotangent spaces is surjective then there is no translate of $A$ contained in $W_d(X)$ passing through $\Phi_d(D)$.
+\end{corollary}
+
+\begin{proof} This is because a map on tangent spaces is injective if and only if the corresponding map
+on cotangent spaces is surjective.
+\end{proof}
+
+In other words,  if $\pi$ is a {\em formal immersion} \cite{Version1}
+        %
+        % Version1 = arxiv.org/pdf/1707.00364v1.pdf
+        % The definition is also in \cite[Definition 4.1]{DKKS2023}
+        % arxiv.org/pdf/1707.00364.pdf  or   https://msp.org/ant/2023/17-2/ant-v17-n2-p01-s.pdf
+        %
+        % However, Version 1  ( arxiv.org/pdf/1707.00364v1.pdf ) has more details!
+        %
+at $D$ then $D$ is AV-isolated.
+To prove that $\pi$ is a formal immersion at $D$, can use Proposition 3.7 in \cite{Version1}
+if we have a basis of the cotangent space of $A$ viewed as a subspace of $J(X)$.
+
+
+
+Write $D = y_1 + \cdots + y_{18}$ where the $y_i$ form the Galois orbit corresponding
+to the degree 18 closed point.
+These $y_i$ also form one orbit under the diamond operators (they map to the same point in $X_0(37)$).
+We order them in such a way that $y_i = \langle 2^i\rangle y_1$.
+Let $q_1$ be a uniformizer at $y_1$, and let $q_i := q_1 \circ \langle 2^{-i} \rangle$
+be the corresponding uniformizer at $y_i$. Note that since $A$ is inside $J_0(37)$
+we have $(\langle 2\rangle - 1)(A) = 0$, so $\langle2\rangle  - 1$ factors via $J(X)/A$.
+In particular all one-forms of the form $\langle 2^i\rangle (\langle 2\rangle  - 1) w$ inside ${\rm Cot}_0 \,J(X)$ come from ${\rm Cot}_0 \,J(X)/A$.
+
+Next we show that there is a one-form $w$ such that $a(w,q_1,1) = 1$ and $a(w,q_i,1)=0$ for all $i > 1$, with $a(\ldots)$ as
+in Proposition 3.7 in \cite{Version1}.
+By Riemann Roch, \[{\rm dim\,} H^0(O_X(y_1+ \ldots +y_{18})) - {\rm dim\,} H^0(\Omega^1(-y_1-\ldots-y_{18})) = 18 + 1 - 40\]
+and
+\[{\rm dim\,} H^0(O_X(y_2+ \ldots +y_{18})) - {\rm dim\,} H^0(\Omega^1(-y_2-\ldots-y_{18})) = 17 + 1 - 40.\] 
+Now ${\rm dim\,} H^0(O_X(y_1 + \ldots +y_{18}))  = 1$ (equivalent to the degree 18 point being $\PP^1$-isolated)
+and thus equal to ${\rm dim\,} H^0(O_X(y_2+\ldots+y_{18}))$. 
+Then by Riemann Roch, \[
+{\rm dim\,} H^0(\Omega^1(-y_2-\ldots-y_{18})) > {\rm dim\,} H^0(\Omega^1(-y_1-\ldots-y_{18})).\]
+So the wanted one-form $w$ can be found by picking an element of $H^0(\Omega^1(-y_2-\ldots-y_{18}))$
+that is not in $H^0(\Omega^1(-y_1-\ldots-y_{18}))$ and scaling it to make  $a(w,q_1,1) = 1$. 
+
+Now let $w_i =  \langle 2^i\rangle(\langle2\rangle - 1)w$. These one-forms all come from ${\rm Cot}_0 \,J(X)/A$ as mentioned before.
+The matrix in Proposition 3.7 in \cite{Version1} now has the following form:
+
+\[
+\begin{pmatrix}
+1& -1& 0& 0& \ldots& 0 \\
+0& 1& -1& 0& \ldots& 0 \\
+0& 0& 1& -1& \ldots & 0 \\
+\vdots&  \vdots  & \vdots   &   \ddots &  \ddots & \vdots\\
+0& 0& 0& \ldots & 1 & -1
+\end{pmatrix}
+\]
+
+This matrix has rank 17, but for Proposition 3.7, we need rank 18.
+An additional one-form $w’$ with $a(w’,q_1,1) = \ldots = a(w’,q_{18},1) = 1$ would increase
+the rank to 18.
+We can take $w’$ to be the pullback of a one-form on $J_0(37)^-$ to $J(X)$. Indeed, $J_0(37)^-$ is a quotient of
+$J_0(37)/A$ and thus of $J(X)/A$. Such $w'$ is invariant under the diamond operators so $a(w’,q_1,1) = \ldots = a(w’,q_{18},1)$
+automatically holds. It remains to show that it does not vanish at $y_1$.  
+% Let $y$ be the image of $y_1$ in $J_0(37)^-$.
+Since $J_0(37)^-$ is an elliptic curve, $w’$ does not vanish anywhere,
+and in particular not at the image of $y_1$ in $J_0(37)^-$.
+The only possibility for $w’$ to vanish at $y_1$ is then for $X_1(37) \rightarrow J_0(37)^-$
+to be ramified at $y_1$, however, this is not the case since the map is only ramified at CM points, and $y_1$ does not have CM. 
+Indeed, $X_1(37) \rightarrow X_0(37)$ only ramifies at $j=0$ and $j=1728$,
+while $X_0(37) \rightarrow J_0(37)^-$ only ramifies at fixed points of the Atkin-Lehner involution, which have CM as well (by an order in $\mathbb Q(\sqrt{-37})$).
 
 
 
