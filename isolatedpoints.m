@@ -5,15 +5,15 @@ intrinsic TransposeMatrixGroup(G::GrpMat) -> GrpMat
 end intrinsic;
 
 intrinsic NonSurjectivePrimes(G::GrpMat) -> SeqEnum[RngIntElt]
-    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
+    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve,
     where N is the level, return the non-surjective primes}
     m := Modulus(BaseRing(G));
     return [p:p in PrimeFactors(m)|#ChangeRing(G,GF(p)) ne #GL(2,GF(p))];
 end intrinsic;
 
 intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
-    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve, 
-    where N is the level, return the level of the m-adic Galois representation, 
+    {Given G the mod N reduction of the adelic Galois image of a non-CM elliptic curve,
+    where N is the level, return the level of the m-adic Galois representation,
     where m is the product of 2, 3, and any larger primes which are non-surjective}
     m := Modulus(BaseRing(G));
     NS := Set(NonSurjectivePrimes(G));
@@ -28,7 +28,7 @@ intrinsic ReducedLevel(G::GrpMat) -> RngIntElt
         if not p in NS and Valuation(m0,p) eq 1 then
             if m0 eq p then
                 return 1;
-            elif #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then 
+            elif #G/#ChangeRing(G,Integers(m0 div p)) eq #GL(2,GF(p)) then
                 m0 := m0 div p;
             end if;
         end if;
@@ -51,7 +51,7 @@ intrinsic DegreesOfPoints(G::GrpMat) -> SetMulti
     H := sub<GL(2,Integers(m))|Gt,-Gt!1>;
     orb := Orbits(H);
     orbm := [ m ne 2 select #x div 2 else #x : x in orb | VectorOrder(x[1]) eq m];
-    degrees := SequenceToMultiset(orbm); 
+    degrees := SequenceToMultiset(orbm);
     return degrees;
 end intrinsic;
 
@@ -64,9 +64,9 @@ intrinsic CoveringDegree(m::RngIntElt,n::RngIntElt) -> RngIntElt
 end intrinsic;
 
 intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
-    {Given mod m image G, return a multiset with entries <n, \{<a1, d1>,  ... \}> 
-    for all positive divisors n of m such that the degree of the corresponding 
-    closed point on X_1(n) is as large as possible given that its image on X_1(ai) 
+    {Given mod m image G, return a multiset with entries <n, \{<a1, d1>,  ... \}>
+    for all positive divisors n of m such that the degree of the corresponding
+    closed point on X_1(n) is as large as possible given that its image on X_1(ai)
     has degree di}
     Gt := TransposeMatrixGroup(G);
     m := Modulus(BaseRing(Gt));
@@ -105,26 +105,26 @@ intrinsic PrimitiveDegreesOfPoints(G::GrpMat) -> Assoc
 end intrinsic;
 
 intrinsic FilterByRiemannRoch(primitivepts::SetMulti) -> SeqEnum[Tup]
-    {Given multiset of elements of the form <n, \{<a1, d1>,  ... \}>, 
+    {Given multiset of elements of the form <n, \{<a1, d1>,  ... \}>,
     return those such that di is greater than genus(X_1(ai)) for some i}
     A := AssociativeArray();
 
     function CachedGenus(m,A)
         if m notin Keys(A) then
             A[m] := Genus(Gamma1(m));
-        end if; 
+        end if;
         return A[m], A;
     end function;
 
     function easyRiemannRoch(listofpts,A)
         nonisolated := [];
-        for x in primitivepts do 
+        for x in primitivepts do
             n, ptset := Explode(x);
             for pt in ptset do
                 m, deg := Explode(pt);
                 genusGamma1, A := CachedGenus(m,A);
             if deg ge genusGamma1 + 1 then //"easy" Riemann--Roch condition
-                  Append(~nonisolated, x); 
+                  Append(~nonisolated, x);
             end if;
             end for;
         end for;
@@ -183,7 +183,7 @@ intrinsic NotIsolated(j::FldRatElt, path::Assoc : ainvs :=[]) -> List
     end if;
 
     G0 := ChangeRing(G,Integers(m0));
-    primitivepts := PrimitiveDegreesOfPoints(G0); 
+    primitivepts := PrimitiveDegreesOfPoints(G0);
     potisolated := FilterByRiemannRoch(primitivepts);
 
     if #potisolated gt 0 then
