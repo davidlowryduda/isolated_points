@@ -1,7 +1,7 @@
 
 # CIRM project on isolated points #
 
-Code associated to the paper "Towards a classification of isolated j-invariants" 
+Code associated to the paper "Towards a classification of isolated j-invariants"
 by Abbey Bourdon, Sachi Hashimoto, Timo Keller, Zev Klagsbrun, David Lowry-Duda, Travis Morrison, Filip Najman, Himanshu Shukla
 
 System requirements: Magma version at least 2.27 is required to read the data files.
@@ -103,3 +103,29 @@ command ./install_dependencies.sh. This will install GNU parallel 2023 version
 and also the OpenImage github repo.
 
 
+## License Information ##
+
+Copyright (c) 2024, held by the isolated points team: Bourdon, Hashimoto, Keller, Klagsbrun, Lowry-Duda, Morrison, Najman, and Shukla.
+
+The magma files
+
+- appendix.m
+- Code_for_X1(17)_and_X1(24).m
+- doline.m
+- extrafilters.m
+- isolatedpoints.m
+- testlozanorobledo.m
+
+are made available as documentation, code, and educational materials under the
+Creative Commons Attribution 4.0 (CC-BY-4.0) license. See
+https://creativecommons.org/licenses/by/4.0/ for more details, or
+[LICENSE](./LICENSE) for a copy of the license text.
+
+We provide these in the hope that they will be useful. Please contact us if
+there are licensing reasons preventing you from making use of this code. We note
+that [this license is compatible with the GPL](https://www.gnu.org/licenses/license-list.en.html#ccby)
+as long as you make proper attribution and follow the other guidelines of CC-BY-4.0.
+
+
+The paper *Towards a classification of isolated j-invariants* (including early
+versions of the tex files) is not covered by this license.

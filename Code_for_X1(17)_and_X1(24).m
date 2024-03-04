@@ -1,5 +1,10 @@
 // Code verifying 9.0.2 where it is proved that the points on X_1(17) and X_1(24) found by the algorithm are not P^1-isolated
 
+// Copyright (c) 2024 Isolated Points Team
+// This is available under the terms of the CC-BY-4.0 License.
+// A copy of the CC-BY-4.0 License should be included with this program, but if
+// not then see <https://creativecommons.org/licenses/by/4.0/>.
+
 coords_jK := function(X,j,jinv,K);
     PP := Codomain(j);
     pt := PP ! [jinv];
@@ -102,7 +107,3 @@ P2:=Xk![pts[2,1], pts[2,2]];
 P3:=Xk![pts[3,1], pts[3,2]];
 P4:=Xk![pts[4,1], pts[4,2]];
 Dimension(RiemannRochSpace(Divisor(P1)+Divisor(P2)+Divisor(P3)+Divisor(P4)));
-
-
-
-

@@ -1,5 +1,10 @@
 // This code verifies the claim in the proof of the Theorem in the Appendix that the ramification points X_0(37)->J_0(37)^- have j-invariant 287496.
 
+// Copyright (c) 2024 Isolated Points Team
+// This is available under the terms of the CC-BY-4.0 License.
+// A copy of the CC-BY-4.0 License should be included with this program, but if
+// not then see <https://creativecommons.org/licenses/by/4.0/>.
+
 
 C := SmallModularCurve(37);
 G,b,_:=AutomorphismGroup(C);
