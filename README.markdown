@@ -53,7 +53,7 @@ $1 \leq i \leq k$.
 5. Define
 
    ```
-   path := OpenImageContext("path/to/datafiles")
+   path := OpenImageContext("path/to/data-files")
    ```
 
    where the path leads to the data files in the OpenImage repository.
